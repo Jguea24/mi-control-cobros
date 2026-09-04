@@ -1,0 +1,218 @@
+/* ═══════════════════════════════════════════════
+   Responsive Breakpoints
+   ═══════════════════════════════════════════════ */
+
+/* ── Desktop-small / Laptop (≤ 1280px) ───────── */
+@media (max-width: 1280px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── Tablet landscape (≤ 1024px) ─────────────── */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-header {
+    display: flex;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding-top: var(--header-height);
+  }
+
+  .top-header {
+    display: none;
+  }
+
+  .dashboard-tables {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .page-shell {
+    padding: 20px 20px 40px;
+  }
+}
+
+/* ── Tablet portrait (≤ 768px) ───────────────── */
+@media (max-width: 768px) {
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .clients-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .debts-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-header,
+  .list-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toolbar {
+    width: 100%;
+  }
+
+  .compact-field {
+    width: 100%;
+  }
+
+  .search-field {
+    width: 100%;
+  }
+
+  .dashboard-hero {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .dashboard-hero h2 {
+    font-size: 24px;
+  }
+
+  .hero-date {
+    white-space: normal;
+    font-size: 12px;
+  }
+
+  .client-form-header,
+  .debt-form-header,
+  .summary-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .form-section,
+  .form-actions {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .panel {
+    padding: 18px;
+    border-radius: var(--radius-md);
+  }
+
+  .page-title {
+    padding: 22px;
+    border-radius: var(--radius-md);
+  }
+
+  .page-title h2 {
+    font-size: 22px;
+  }
+
+  /* Login split-screen → single column */
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .login-branding {
+    display: none;
+  }
+
+  .login-form-side {
+    min-height: 100vh;
+    padding: 32px 20px;
+  }
+}
+
+/* ── Mobile (≤ 480px) ────────────────────────── */
+@media (max-width: 480px) {
+  .page-shell {
+    padding: 16px 14px 32px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-hero {
+    padding: 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .dashboard-hero h2 {
+    font-size: 22px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card strong {
+    font-size: 22px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .page-title {
+    padding: 18px;
+  }
+
+  .page-title h2 {
+    font-size: 20px;
+  }
+
+  .client-form-header h3,
+  .debt-form-header h3 {
+    font-size: 18px;
+  }
+
+  .summary-metric dd,
+  .summary-list dd {
+    font-size: 22px;
+  }
+
+  .balance-box strong {
+    font-size: 22px;
+  }
+
+  .row-actions {
+    flex-direction: column;
+  }
+
+  .row-actions .secondary-button,
+  .row-actions .danger-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mobile-header {
+    padding: 0 12px;
+  }
+}

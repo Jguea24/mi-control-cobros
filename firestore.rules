@@ -1,0 +1,550 @@
+rules_version = '2';
+
+service cloud.firestore {
+
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // FUNCIONES GENERALES
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function validString(field, minLen, maxLen) {
+      return request.resource.data[field] is string
+        && request.resource.data[field].size() >= minLen
+        && request.resource.data[field].size() <= maxLen;
+    }
+
+    function validOptionalEmailString(field, maxLen) {
+      return request.resource.data[field] is string
+        && request.resource.data[field].size() <= maxLen
+        && (
+          request.resource.data[field].size() == 0
+          || request.resource.data[field].matches(
+            "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+          )
+        );
+    }
+
+    function validDateString(field) {
+      return request.resource.data[field] is string
+        && request.resource.data[field].matches(
+          "^\\d{4}-\\d{2}-\\d{2}$"
+        );
+    }
+
+    function validMoney(field, minValue) {
+      return request.resource.data[field] is number
+        && request.resource.data[field] >= minValue
+        && request.resource.data[field] <= 999999999;
+    }
+
+    function validEstado(field) {
+      return request.resource.data[field] in [
+        "PENDIENTE",
+        "PAGADO",
+        "VENCIDA"
+      ];
+    }
+
+    function validMetodoPago(field) {
+      return request.resource.data[field] in [
+        "Efectivo",
+        "Transferencia",
+        "Deposito",
+        "Otro"
+      ];
+    }
+
+    function validCreatedAt(field) {
+      return request.resource.data[field] is timestamp
+        && request.resource.data[field] <= request.time;
+    }
+
+
+    // ===============================================================
+    // CLIENTES
+    // ===============================================================
+
+    function clienteFields() {
+      return [
+        "nombre",
+        "telefono",
+        "correo",
+        "direccion",
+        "notas",
+        "fechaRegistro",
+        "activo"
+      ];
+    }
+
+    function isValidCliente() {
+      return hasOnlyAllowedFields(clienteFields())
+        && hasRequiredFields(clienteFields())
+        && validString("nombre", 1, 120)
+        && validString("telefono", 0, 30)
+        && validOptionalEmailString("correo", 120)
+        && validString("direccion", 0, 200)
+        && validString("notas", 0, 1000)
+        && validCreatedAt("fechaRegistro")
+        && request.resource.data.activo is bool;
+    }
+
+    function clienteImmutableFieldsUnchanged() {
+      return request.resource.data.fechaRegistro
+        == resource.data.fechaRegistro;
+    }
+
+
+    // ===============================================================
+    // DEUDAS
+    // ===============================================================
+
+    function deudaFields() {
+      return [
+        "clienteId",
+        "concepto",
+        "monto",
+        "montoPagado",
+        "saldo",
+        "fecha",
+        "fechaRegistro",
+        "fechaVencimiento",
+        "estado",
+        "notas"
+      ];
+    }
+
+    function isValidDeuda() {
+      return hasOnlyAllowedFields(deudaFields())
+        && hasRequiredFields(deudaFields())
+        && validString("clienteId", 1, 160)
+        && validString("concepto", 1, 160)
+        && validMoney("monto", 0.01)
+        && validMoney("montoPagado", 0)
+        && validMoney("saldo", 0)
+        && validDateString("fecha")
+        && validCreatedAt("fechaRegistro")
+        && validDateString("fechaVencimiento")
+        && validEstado("estado")
+        && validString("notas", 0, 1000)
+        && request.resource.data.montoPagado
+           <= request.resource.data.monto
+        && request.resource.data.saldo
+           <= request.resource.data.monto;
+    }
+
+    function isValidDeudaCreate() {
+      return isValidDeuda()
+        && request.resource.data.montoPagado == 0
+        && request.resource.data.saldo
+           == request.resource.data.monto
+        && request.resource.data.estado
+           == "PENDIENTE";
+    }
+
+    function isValidDeudaPaymentUpdate() {
+      return isValidDeuda()
+        && request.resource.data.diff(resource.data)
+          .affectedKeys()
+          .hasOnly([
+            "montoPagado",
+            "saldo",
+            "estado"
+          ])
+        && request.resource.data.clienteId
+           == resource.data.clienteId
+        && request.resource.data.concepto
+           == resource.data.concepto
+        && request.resource.data.monto
+           == resource.data.monto
+        && request.resource.data.fecha
+           == resource.data.fecha
+        && request.resource.data.fechaRegistro
+           == resource.data.fechaRegistro
+        && request.resource.data.fechaVencimiento
+           == resource.data.fechaVencimiento
+        && request.resource.data.notas
+           == resource.data.notas
+        && request.resource.data.montoPagado
+           >= resource.data.montoPagado
+        && request.resource.data.saldo
+           <= resource.data.saldo;
+    }
+
+
+    // ===============================================================
+    // PAGOS
+    // ===============================================================
+
+    function pagoFields() {
+      return [
+        "deudaId",
+        "clienteId",
+        "monto",
+        "fecha",
+        "metodoPago",
+        "observacion"
+      ];
+    }
+
+    function isValidPago() {
+      return hasOnlyAllowedFields(pagoFields())
+        && hasRequiredFields(pagoFields())
+        && validString("deudaId", 1, 160)
+        && validString("clienteId", 1, 160)
+        && validMoney("monto", 0.01)
+        && validDateString("fecha")
+        && validMetodoPago("metodoPago")
+        && validString("observacion", 0, 1000);
+    }
+
+    function debtPathForPago() {
+      return /databases/$(database)/documents/deudas/$(request.resource.data.deudaId);
+    }
+
+    function pagoMatchesDebtUpdate() {
+
+      let before =
+        get(
+          debtPathForPago()
+        ).data;
+
+      let after =
+        getAfter(
+          debtPathForPago()
+        ).data;
+
+      return exists(
+          debtPathForPago()
+        )
+
+        && before.clienteId
+           == request.resource.data.clienteId
+
+        && after.clienteId
+           == before.clienteId
+
+        && after.monto
+           == before.monto
+
+        && after.montoPagado
+           >= before.montoPagado
+              + request.resource.data.monto
+              - 0.001
+
+        && after.montoPagado
+           <= before.montoPagado
+              + request.resource.data.monto
+              + 0.001
+
+        && after.saldo
+           >= before.saldo
+              - request.resource.data.monto
+              - 0.001
+
+        && after.saldo
+           <= before.saldo
+              - request.resource.data.monto
+              + 0.001
+
+        && before.saldo
+           >= request.resource.data.monto
+
+        && after.estado in [
+          "PENDIENTE",
+          "PAGADO",
+          "VENCIDA"
+        ];
+    }
+
+
+    // ===============================================================
+    // AHORROS
+    // ===============================================================
+
+    function ahorroFields() {
+      return [
+        "monto",
+        "fecha",
+        "concepto",
+        "observacion",
+        "usuarioId",
+        "usuarioEmail",
+        "fechaRegistro"
+      ];
+    }
+
+    function isValidAhorro() {
+
+      return
+        isAuthenticated()
+
+        && hasOnlyAllowedFields(
+          ahorroFields()
+        )
+
+        && hasRequiredFields(
+          ahorroFields()
+        )
+
+        // Monto
+        && validMoney(
+          "monto",
+          0.01
+        )
+
+        // Fecha del ahorro
+        && validDateString(
+          "fecha"
+        )
+
+        // Concepto
+        && validString(
+          "concepto",
+          1,
+          100
+        )
+
+        // Observación
+        && validString(
+          "observacion",
+          0,
+          500
+        )
+
+        // UID
+        && validString(
+          "usuarioId",
+          1,
+          200
+        )
+
+        // Correo
+        && validOptionalEmailString(
+          "usuarioEmail",
+          200
+        )
+
+        // Fecha de registro
+        && request.resource.data.fechaRegistro
+           is timestamp
+
+        && request.resource.data.fechaRegistro
+           <= request.time
+
+        // El ahorro pertenece al usuario autenticado
+        && request.resource.data.usuarioId
+           == request.auth.uid;
+    }
+
+
+    // ===============================================================
+    // GASTOS
+    // ===============================================================
+
+    function gastoFields() {
+      return [
+        "monto",
+        "fecha",
+        "categoria",
+        "descripcion",
+        "usuarioId",
+        "usuarioEmail",
+        "fechaRegistro"
+      ];
+    }
+
+    function isValidGasto() {
+
+      return
+        isAuthenticated()
+
+        && hasOnlyAllowedFields(
+          gastoFields()
+        )
+
+        && hasRequiredFields(
+          gastoFields()
+        )
+
+        // Monto
+        && validMoney(
+          "monto",
+          0.01
+        )
+
+        // Fecha
+        && validDateString(
+          "fecha"
+        )
+
+        // Categoría
+        && validString(
+          "categoria",
+          1,
+          50
+        )
+
+        // Descripción
+        && validString(
+          "descripcion",
+          1,
+          200
+        )
+
+        // UID del usuario
+        && validString(
+          "usuarioId",
+          1,
+          200
+        )
+
+        // Correo
+        && validOptionalEmailString(
+          "usuarioEmail",
+          200
+        )
+
+        // Fecha de registro
+        && request.resource.data.fechaRegistro
+           is timestamp
+
+        && request.resource.data.fechaRegistro
+           <= request.time
+
+        // El gasto pertenece al usuario autenticado
+        && request.resource.data.usuarioId
+           == request.auth.uid;
+    }
+
+
+    // ===============================================================
+    // COLECCIÓN CLIENTES
+    // ===============================================================
+
+    match /clientes/{clienteId} {
+
+      allow read:
+        if isAuthenticated();
+
+      allow create:
+        if isAuthenticated()
+        && isValidCliente();
+
+      allow update:
+        if isAuthenticated()
+        && isValidCliente()
+        && clienteImmutableFieldsUnchanged();
+
+      allow delete:
+        if false;
+    }
+
+
+    // ===============================================================
+    // COLECCIÓN DEUDAS
+    // ===============================================================
+
+    match /deudas/{deudaId} {
+
+      allow read:
+        if isAuthenticated();
+
+      allow create:
+        if isAuthenticated()
+        && isValidDeudaCreate();
+
+      allow update:
+        if isAuthenticated()
+        && isValidDeudaPaymentUpdate();
+
+      allow delete:
+        if false;
+    }
+
+
+    // ===============================================================
+    // COLECCIÓN PAGOS
+    // ===============================================================
+
+    match /pagos/{pagoId} {
+
+      allow read:
+        if isAuthenticated();
+
+      allow create:
+        if isAuthenticated()
+        && isValidPago()
+        && pagoMatchesDebtUpdate();
+
+      allow update, delete:
+        if false;
+    }
+
+
+    // ===============================================================
+    // COLECCIÓN AHORROS
+    // ===============================================================
+
+    match /ahorros/{ahorroId} {
+
+      // Consultar ahorros
+      allow read:
+        if isAuthenticated();
+
+      // Registrar ahorro
+      allow create:
+        if isAuthenticated()
+        && isValidAhorro();
+
+      // No modificar ni eliminar
+      allow update, delete:
+        if false;
+    }
+
+
+    // ===============================================================
+    // COLECCIÓN GASTOS
+    // ===============================================================
+
+    match /gastos/{gastoId} {
+
+      // Cada usuario solo puede consultar sus propios gastos
+      allow read:
+        if isAuthenticated()
+        && resource.data.usuarioId
+           == request.auth.uid;
+
+      // Registrar gasto
+      allow create:
+        if isAuthenticated()
+        && isValidGasto();
+
+      // No modificar ni eliminar por ahora
+      allow update, delete:
+        if false;
+    }
+
+
+    // ===============================================================
+    // DENEGAR TODO LO DEMÁS
+    // ===============================================================
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+  }
+}

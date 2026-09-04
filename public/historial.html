@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="Mi Control de Cobros - Historial de pagos">
+
+  <meta name="theme-color" content="#1d4ed8">
+
+  <title>Historial | Mi Control de Cobros</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+
+  <link rel="apple-touch-icon" href="assets/icons/icon.svg">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- CSS existente -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <script>
+
+    tailwind.config = {
+
+      theme: {
+
+        extend: {
+
+          colors: {
+
+            primary: {
+
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a'
+
+            }
+
+          },
+
+          boxShadow: {
+
+            soft:
+              '0 10px 30px rgba(15, 23, 42, 0.06)'
+
+          }
+
+        }
+
+      }
+
+    };
+
+  </script>
+
+</head>
+
+
+<body class="min-h-screen
+         bg-slate-50
+         text-slate-900">
+
+
+  <!-- =========================================================
+     APLICACIÓN
+========================================================= -->
+
+  <div class="min-h-screen lg:flex">
+
+
+    <!-- =======================================================
+       SIDEBAR
+  ======================================================== -->
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50
+           flex w-72
+           -translate-x-full
+           flex-col
+           border-r border-slate-200
+           bg-white
+           transition-transform
+           duration-300
+           lg:static
+           lg:translate-x-0">
+
+      <!-- LOGO -->
+
+      <div class="flex h-20
+             items-center
+             border-b border-slate-100
+             px-6">
+
+        <div class="flex items-center gap-3">
+
+          <div class="flex h-11 w-11
+                 items-center
+                 justify-center
+                 rounded-2xl
+                 bg-primary-600
+                 text-white
+                 shadow-lg
+                 shadow-primary-600/20">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2
+                 3 2 3 .895 3 2-1.343 2-3 2m0-8
+                 c1.11 0 2.08.402 2.599 1M12 8V7
+                 m0 1v8m0 0v1" />
+
+            </svg>
+
+          </div>
+
+
+          <div>
+
+            <h1 class="text-base
+                   font-black
+                   tracking-tight
+                   text-slate-950">
+              Mi Control
+            </h1>
+
+            <p class="text-xs
+                   font-medium
+                   text-slate-400">
+              Gestión de cobros
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+         NAVEGACIÓN
+    ====================================================== -->
+
+      <nav class="flex-1
+             space-y-1
+             overflow-y-auto
+             px-4 py-6" aria-label="Navegación principal">
+
+        <p class="mb-3 px-3
+               text-[10px]
+               font-black
+               uppercase
+               tracking-[0.18em]
+               text-slate-400">
+          Principal
+        </p>
+
+
+        <!-- Dashboard -->
+
+        <a href="index.html" class="group flex items-center
+               gap-3 rounded-xl
+               px-3 py-3
+               text-sm font-semibold
+               text-slate-600
+               transition
+               hover:bg-slate-50
+               hover:text-primary-700">
+
+          <span class="flex h-9 w-9
+                 items-center
+                 justify-center
+                 rounded-lg
+                 bg-slate-100
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7
+                 M5 10v10a1 1 0 001 1h3
+                 m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3" />
+
+            </svg>
+
+          </span>
+
+          Dashboard
+
+        </a>
+
+
+        <!-- Clientes -->
+
+        <a href="clientes.html" class="group flex items-center
+               gap-3 rounded-xl
+               px-3 py-3
+               text-sm font-semibold
+               text-slate-600
+               transition
+               hover:bg-slate-50
+               hover:text-primary-700">
+
+          <span class="flex h-9 w-9
+                 items-center
+                 justify-center
+                 rounded-lg
+                 bg-slate-100
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857
+                 M17 20H7
+                 m10 0v-2c0-.656-.126-1.283-.356-1.857
+                 M7 20H2v-2a3 3 0 015.356-1.857
+                 M7 20v-2c0-.656.126-1.283.356-1.857
+                 m0 0a5.002 5.002 0 019.288 0
+                 M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+
+            </svg>
+
+          </span>
+
+          Clientes
+
+        </a>
+
+
+        <!-- Deudas -->
+
+        <a href="deudas.html" class="group flex items-center
+               gap-3 rounded-xl
+               px-3 py-3
+               text-sm font-semibold
+               text-slate-600
+               transition
+               hover:bg-slate-50
+               hover:text-primary-700">
+
+          <span class="flex h-9 w-9
+                 items-center
+                 justify-center
+                 rounded-lg
+                 bg-slate-100
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m2-3h3v3
+                 m-1-2l-9 9m9-9l-3 0
+                 M5 20h3a2 2 0 002-2v-3
+                 a2 2 0 00-2-2H5a2 2 0 00-2 2v3a2 2 0 002 2z" />
+
+            </svg>
+
+          </span>
+
+          Deudas
+
+        </a>
+
+
+        <!-- Pagos -->
+
+        <a href="pagos.html" class="group flex items-center
+               gap-3 rounded-xl
+               px-3 py-3
+               text-sm font-semibold
+               text-slate-600
+               transition
+               hover:bg-slate-50
+               hover:text-primary-700">
+
+          <span class="flex h-9 w-9
+                 items-center
+                 justify-center
+                 rounded-lg
+                 bg-slate-100
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5
+                 a2 2 0 00-2 2v10a2 2 0 002 2h10
+                 a2 2 0 002-2v-2m4-4H9
+                 m0 0l3-3m-3 3l3 3" />
+
+            </svg>
+
+          </span>
+
+          Pagos
+
+        </a>
+
+
+        <!-- HISTORIAL ACTIVO -->
+
+        <a href="historial.html" aria-current="page" class="group flex items-center
+               gap-3 rounded-xl
+               bg-primary-50
+               px-3 py-3
+               text-sm font-bold
+               text-primary-700">
+
+          <span class="flex h-9 w-9
+                 items-center
+                 justify-center
+                 rounded-lg
+                 bg-primary-600
+                 text-white
+                 shadow-md
+                 shadow-primary-600/20">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3
+                 m6-3a9 9 0 11-18 0
+                 9 9 0 0118 0z" />
+
+            </svg>
+
+          </span>
+
+          Historial
+
+        </a>
+
+      </nav>
+
+
+      <!-- Cerrar sesión -->
+
+      <div class="border-t
+             border-slate-100
+             p-4">
+
+        <button id="logoutButton" type="button" class="group flex w-full
+               items-center gap-3
+               rounded-xl px-3 py-3
+               text-left
+               transition
+               hover:bg-red-50">
+
+          <span class="flex h-10 w-10
+                 items-center
+                 justify-center
+                 rounded-full
+                 bg-slate-100
+                 text-slate-500
+                 group-hover:bg-red-100
+                 group-hover:text-red-600">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4
+                 m4 4H7m6 4v1a2 2 0 01-2 2H5
+                 a2 2 0 01-2-2V7a2 2 0 012-2h6
+                 a2 2 0 012 2v1" />
+
+            </svg>
+
+          </span>
+
+
+          <span>
+
+            <span class="block text-sm
+                   font-bold text-slate-700">
+              Cerrar sesión
+            </span>
+
+            <span class="block text-xs
+                   text-slate-400">
+              Salir del sistema
+            </span>
+
+          </span>
+
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- Overlay móvil -->
+
+    <div id="sidebarOverlay" class="fixed inset-0 z-40 hidden
+           bg-slate-950/40
+           backdrop-blur-sm
+           lg:hidden"></div>
+
+
+    <!-- =======================================================
+       CONTENIDO PRINCIPAL
+  ======================================================== -->
+
+    <div class="flex min-h-screen
+           min-w-0
+           flex-1
+           flex-col">
+
+
+      <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+      <header class="sticky top-0 z-30
+             flex h-20
+             items-center
+             justify-between
+             border-b
+             border-slate-200
+             bg-white/90
+             px-4
+             backdrop-blur-md
+             sm:px-6
+             lg:px-8">
+
+        <div class="flex items-center gap-4">
+
+          <button id="menuButton" type="button" aria-label="Abrir menú" class="flex h-10 w-10
+                 items-center
+                 justify-center
+                 rounded-xl
+                 border
+                 border-slate-200
+                 text-slate-600
+                 hover:bg-slate-50
+                 lg:hidden">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+
+            </svg>
+
+          </button>
+
+
+          <div>
+
+            <div class="hidden
+                   items-center
+                   gap-2
+                   text-xs
+                   font-semibold
+                   text-slate-400
+                   sm:flex">
+
+              <span>
+                Mi Control de Cobros
+              </span>
+
+              <span>/</span>
+
+              <span class="text-primary-600">
+                Historial
+              </span>
+
+            </div>
+
+
+            <h2 class="text-lg
+                   font-black
+                   tracking-tight
+                   text-slate-950
+                   sm:text-xl">
+              Historial financiero
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="flex items-center gap-3">
+
+          <div class="hidden
+                 rounded-xl
+                 bg-emerald-50
+                 px-3 py-2
+                 text-xs
+                 font-bold
+                 text-emerald-700
+                 sm:block">
+
+            <span class="mr-1
+                   inline-block
+                   h-2 w-2
+                   rounded-full
+                   bg-emerald-500"></span>
+
+            Sistema activo
+
+          </div>
+
+
+          <div class="flex h-10 w-10
+                 items-center
+                 justify-center
+                 rounded-full
+                 bg-primary-100
+                 text-sm
+                 font-black
+                 text-primary-700">
+            U
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+      
+<main class="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+  <div class="mx-auto max-w-7xl">
+
+    <!-- =======================================================
+         HERO
+    ======================================================== -->
+    <section class="mb-8">
+      <div class="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-soft sm:p-8">
+        <div class="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary-600/20 blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl"></div>
+
+        <div class="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <div>
+            <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-blue-300">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              Actividad financiera
+            </div>
+
+            <h1 class="text-3xl font-black tracking-tight sm:text-4xl">
+              Historial financiero
+            </h1>
+
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
+              Consulta, filtra y analiza todos los pagos registrados en tu sistema.
+              Encuentra rápidamente una operación por cliente, fecha o estado.
+            </p>
+          </div>
+
+          <a href="pagos.html"
+             class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-black text-white transition hover:bg-white/15">
+            ← Ir a pagos
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         INDICADORES
+    ======================================================== -->
+    <section class="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Resumen del historial">
+
+      <article class="group relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100/70 p-5 shadow-card transition hover:-translate-y-1 hover:shadow-soft">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+            ✓
+          </div>
+          <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-700">
+            Cobrado
+          </span>
+        </div>
+        <p class="mt-5 text-xs font-bold uppercase tracking-wider text-slate-400">Total cobrado</p>
+        <strong id="historialTotalCobrado" class="mt-1 block text-2xl font-black tracking-tight text-slate-950">$0.00</strong>
+        <p class="mt-2 text-xs font-medium text-slate-400">Según los filtros aplicados</p>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-blue-100/70 p-5 shadow-card transition hover:-translate-y-1 hover:shadow-soft">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+            #
+          </div>
+          <span class="rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-blue-700">
+            Operaciones
+          </span>
+        </div>
+        <p class="mt-5 text-xs font-bold uppercase tracking-wider text-slate-400">Número de pagos</p>
+        <strong id="historialNumeroPagos" class="mt-1 block text-2xl font-black tracking-tight text-slate-950">0</strong>
+        <p class="mt-2 text-xs font-medium text-slate-400">Movimientos encontrados</p>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-2xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-violet-100/70 p-5 shadow-card transition hover:-translate-y-1 hover:shadow-soft">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-400"></div>
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-violet-700">
+            👥
+          </div>
+          <span class="rounded-full bg-violet-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-violet-700">
+            Clientes
+          </span>
+        </div>
+        <p class="mt-5 text-xs font-bold uppercase tracking-wider text-slate-400">Clientes con pagos</p>
+        <strong id="historialClientes" class="mt-1 block text-2xl font-black tracking-tight text-slate-950">0</strong>
+        <p class="mt-2 text-xs font-medium text-slate-400">Clientes incluidos en el resultado</p>
+      </article>
+
+      <article class="group relative overflow-hidden rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-amber-100/70 p-5 shadow-card transition hover:-translate-y-1 hover:shadow-soft">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 to-orange-400"></div>
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+            $
+          </div>
+          <span class="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-amber-700">
+            Promedio
+          </span>
+        </div>
+        <p class="mt-5 text-xs font-bold uppercase tracking-wider text-slate-400">Promedio por pago</p>
+        <strong id="historialPromedio" class="mt-1 block text-2xl font-black tracking-tight text-slate-950">$0.00</strong>
+        <p class="mt-2 text-xs font-medium text-slate-400">Monto promedio de las operaciones</p>
+      </article>
+
+    </section>
+
+    <!-- =======================================================
+         FILTROS
+    ======================================================== -->
+    <section class="mb-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft" aria-label="Filtros del historial">
+
+      <div class="border-b border-slate-100 px-6 py-5 sm:px-8">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+              ⚙
+            </div>
+            <div>
+              <h2 class="font-black text-slate-950">Filtrar historial</h2>
+              <p class="text-xs text-slate-400">Reduce los resultados para localizar una operación rápidamente</p>
+            </div>
+          </div>
+
+          <button id="limpiarFiltrosButton" type="button"
+                  class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-600 transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700">
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+
+      <div class="grid gap-5 p-6 lg:grid-cols-4 sm:p-8">
+
+        <div>
+          <label for="clienteFiltro" class="mb-2 block text-sm font-bold text-slate-700">Cliente</label>
+          <div class="relative">
+            <select id="clienteFiltro" name="clienteFiltro"
+                    class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-10 text-sm font-medium text-slate-700 outline-none transition focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-100">
+              <option value="TODOS">Todos los clientes</option>
+            </select>
+            <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">⌄</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="fechaInicial" class="mb-2 block text-sm font-bold text-slate-700">Fecha inicial</label>
+          <input id="fechaInicial" name="fechaInicial" type="date"
+                 class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium outline-none transition focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-100">
+        </div>
+
+        <div>
+          <label for="fechaFinal" class="mb-2 block text-sm font-bold text-slate-700">Fecha final</label>
+          <input id="fechaFinal" name="fechaFinal" type="date"
+                 class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium outline-none transition focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-100">
+        </div>
+
+        <div>
+          <label for="estadoFiltro" class="mb-2 block text-sm font-bold text-slate-700">Estado de la deuda</label>
+          <div class="relative">
+            <select id="estadoFiltro" name="estadoFiltro"
+                    class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-10 text-sm font-medium text-slate-700 outline-none transition focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-100">
+              <option value="TODOS">Todos los estados</option>
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="PAGADA">Pagada</option>
+              <option value="VENCIDA">Vencida</option>
+            </select>
+            <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">⌄</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================
+         TABLA
+    ======================================================== -->
+    <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft" aria-label="Movimientos del historial">
+
+      <div class="border-b border-slate-100 px-6 py-6 sm:px-8">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+              ☷
+            </div>
+
+            <div>
+              <h2 class="font-black text-slate-950">Movimientos registrados</h2>
+              <p id="historialCount" class="mt-0.5 text-xs text-slate-400">Cargando historial...</p>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
+            Actualización en tiempo real
+          </div>
+
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[1050px] text-left">
+
+          <thead>
+            <tr class="border-b border-slate-100 bg-slate-50/70">
+              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400">Fecha</th>
+              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400">Cliente</th>
+              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400">Deuda</th>
+              <th class="px-6 py-4 text-right text-[10px] font-black uppercase tracking-wider text-slate-400">Pago</th>
+              <th class="px-6 py-4 text-[10px] font-black uppercase tracking-wider text-slate-400">Método</th>
+              <th class="px-6 py-4 text-right text-[10px] font-black uppercase tracking-wider text-slate-400">Saldo</th>
+              <th class="px-6 py-4 text-center text-[10px] font-black uppercase tracking-wider text-slate-400">Estado</th>
+            </tr>
+          </thead>
+
+          <tbody id="historialTableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="7" class="px-6 py-14 text-center text-sm font-medium text-slate-400">
+                <div class="flex flex-col items-center gap-3">
+                  <div class="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-primary-600"></div>
+                  Cargando historial...
+                </div>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+      <div class="border-t border-slate-100 bg-slate-50/50 px-6 py-4">
+        <p class="text-xs font-medium text-slate-400">
+          El estado mostrado corresponde al estado actual de la deuda asociada al movimiento.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+
+
+      <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+      <footer class="border-t
+             border-slate-200
+             bg-white
+             px-6 py-5">
+
+        <div class="mx-auto
+               flex max-w-7xl
+               flex-col
+               justify-between
+               gap-2
+               text-xs
+               text-slate-400
+               sm:flex-row">
+
+          <p>
+            © 2026 Mi Control de Cobros
+          </p>
+
+          <p>
+            Gestión financiera segura y organizada
+          </p>
+
+        </div>
+
+      </footer>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+     MENÚ RESPONSIVE
+========================================================= -->
+
+  <script>
+
+    const menuButton =
+      document.getElementById("menuButton");
+
+    const sidebar =
+      document.getElementById("sidebar");
+
+    const sidebarOverlay =
+      document.getElementById("sidebarOverlay");
+
+
+    function openSidebar() {
+
+      if (!sidebar || !sidebarOverlay) return;
+
+      sidebar.classList.remove(
+        "-translate-x-full"
+      );
+
+      sidebarOverlay.classList.remove(
+        "hidden"
+      );
+
+      document.body.classList.add(
+        "overflow-hidden"
+      );
+
+    }
+
+
+    function closeSidebar() {
+
+      if (!sidebar || !sidebarOverlay) return;
+
+      sidebar.classList.add(
+        "-translate-x-full"
+      );
+
+      sidebarOverlay.classList.add(
+        "hidden"
+      );
+
+      document.body.classList.remove(
+        "overflow-hidden"
+      );
+
+    }
+
+
+    if (menuButton) {
+
+      menuButton.addEventListener(
+        "click",
+        openSidebar
+      );
+
+    }
+
+
+    if (sidebarOverlay) {
+
+      sidebarOverlay.addEventListener(
+        "click",
+        closeSidebar
+      );
+
+    }
+
+
+    document
+      .querySelectorAll("#sidebar a")
+      .forEach(link => {
+
+        link.addEventListener(
+          "click",
+          () => {
+
+            if (window.innerWidth < 1024) {
+              closeSidebar();
+            }
+
+          }
+        );
+
+      });
+
+  </script>
+
+
+  <!-- =========================================================
+     JAVASCRIPT DEL SISTEMA
+========================================================= -->
+
+  <script type="module" src="js/auth.js"></script>
+
+  <script type="module" src="js/historial.js"></script>
+
+  <script src="js/pwa.js"></script>
+
+
+</body>
+
+</html>

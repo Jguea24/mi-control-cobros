@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Mi Control de Cobros - Inicio de sesión"
+  >
+
+  <meta name="theme-color" content="#1d4ed8">
+
+  <title>Iniciar sesión | Mi Control de Cobros</title>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/icon.svg">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: "#eff6ff",
+              100: "#dbeafe",
+              200: "#bfdbfe",
+              300: "#93c5fd",
+              400: "#60a5fa",
+              500: "#3b82f6",
+              600: "#2563eb",
+              700: "#1d4ed8",
+              800: "#1e40af",
+              900: "#1e3a8a"
+            }
+          },
+          boxShadow: {
+            soft: "0 20px 50px rgba(15, 23, 42, 0.12)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(59, 130, 246, 0.10),
+          transparent 38%
+        ),
+        #f1f5f9;
+    }
+
+    input::placeholder {
+      color: #94a3b8;
+    }
+
+    .login-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 768px;
+      min-height: 605px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: white;
+      box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.14),
+        0 8px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .brand-panel {
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(37, 99, 235, 0.18),
+          transparent 35%
+        ),
+        linear-gradient(
+          145deg,
+          #020617 0%,
+          #020617 55%,
+          #06102a 100%
+        );
+    }
+
+    .form-panel {
+      background: #ffffff;
+    }
+
+    .login-input {
+      height: 44px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #dbe3ef;
+      background: #f8fafc;
+      padding: 0 14px 0 42px;
+      font-size: 14px;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .login-input:focus {
+      border-color: #60a5fa;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.10);
+    }
+
+    .login-button {
+      height: 44px;
+      border-radius: 8px;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+    }
+
+    .login-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.20);
+    }
+
+    .login-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .status-message {
+      display: none;
+    }
+
+    .status-message.show {
+      display: flex;
+    }
+
+    @media (max-width: 767px) {
+      .login-shell {
+        padding: 14px;
+      }
+
+      .login-card {
+        min-height: auto;
+        border-radius: 16px;
+      }
+
+      .brand-panel {
+        min-height: 280px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="login-shell">
+
+    <section
+      class="login-card grid md:grid-cols-2"
+      aria-label="Inicio de sesión"
+    >
+
+      <!-- =====================================================
+           PANEL IZQUIERDO
+      ====================================================== -->
+      <div
+        class="brand-panel flex flex-col justify-center p-8 text-white sm:p-10"
+      >
+
+        <!-- Logo -->
+        <div class="mb-6 flex items-center gap-3">
+
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-xl
+                   bg-primary-600 text-lg font-black text-white
+                   shadow-lg shadow-primary-600/30"
+          >
+            $
+          </div>
+
+          <div>
+            <h1 class="text-lg font-black tracking-tight">
+              Mi Control
+            </h1>
+
+            <p class="text-xs font-medium text-slate-400">
+              Gestión de cobros
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Badge -->
+        <div
+          class="mb-4 inline-flex w-fit items-center gap-2 rounded-full
+                 border border-white/10 bg-white/5 px-3 py-1.5
+                 text-[10px] font-bold text-slate-300"
+        >
+          <span
+            class="h-2 w-2 rounded-full bg-emerald-400"
+          ></span>
+
+          Sistema de gestión financiera
+        </div>
+
+        <!-- Título -->
+        <h2
+          class="max-w-sm text-4xl font-black leading-[1.02]
+                 tracking-tight sm:text-5xl"
+        >
+          Controla tus
+          <span class="text-primary-400">
+            cobros.
+          </span>
+        </h2>
+
+        <p
+          class="mt-4 max-w-md text-sm leading-6 text-slate-300"
+        >
+          Administra clientes, deudas, pagos, ahorros, gastos e historial
+          desde un solo lugar.
+        </p>
+
+        <!-- Características -->
+        <div class="mt-7 space-y-3">
+
+          <div class="flex items-center gap-3">
+
+            <span
+              class="flex h-7 w-7 items-center justify-center
+                     rounded-lg bg-white/10 text-emerald-400"
+            >
+              ✓
+            </span>
+
+            <span class="text-xs font-bold text-slate-200">
+              Control de clientes y deudas
+            </span>
+
+          </div>
+
+          <div class="flex items-center gap-3">
+
+            <span
+              class="flex h-7 w-7 items-center justify-center
+                     rounded-lg bg-white/10 text-emerald-400"
+            >
+              $
+            </span>
+
+            <span class="text-xs font-bold text-slate-200">
+              Registro de pagos y saldos
+            </span>
+
+          </div>
+
+          <div class="flex items-center gap-3">
+
+            <span
+              class="flex h-7 w-7 items-center justify-center
+                     rounded-lg bg-white/10 text-emerald-400"
+            >
+              ◷
+            </span>
+
+            <span class="text-xs font-bold text-slate-200">
+              Ahorros y gastos personales
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           PANEL DERECHO
+      ====================================================== -->
+      <div class="form-panel flex flex-col justify-between p-8 sm:p-10">
+
+        <div>
+
+          <!-- Icono -->
+          <div
+            class="mb-4 flex h-10 w-10 items-center justify-center
+                   rounded-xl bg-primary-50 text-primary-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5
+                   c4.477 0 8.268 2.943 9.542 7
+                   -1.274 4.057-5.065 7-9.542 7
+                   -4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+          </div>
+
+          <!-- Encabezado -->
+          <div>
+
+            <p
+              class="text-[10px] font-black uppercase tracking-[0.14em]
+                     text-primary-600"
+            >
+              Bienvenido
+            </p>
+
+            <h2
+              class="mt-1 text-2xl font-black tracking-tight
+                     text-slate-950"
+            >
+              Inicia sesión
+            </h2>
+
+            <p class="mt-2 text-sm text-slate-500">
+              Ingresa tus credenciales para acceder al sistema.
+            </p>
+
+          </div>
+
+
+          <!-- FORMULARIO -->
+          <form
+            id="loginForm"
+            class="mt-8 space-y-4"
+            novalidate
+          >
+
+            <!-- Correo -->
+            <div>
+
+              <label
+                for="email"
+                class="mb-2 block text-xs font-bold text-slate-700"
+              >
+                Correo electrónico
+              </label>
+
+              <div class="relative">
+
+                <span
+                  class="pointer-events-none absolute left-3 top-1/2
+                         -translate-y-1/2 text-slate-400"
+                >
+                  @
+                </span>
+
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  class="login-input"
+                  placeholder="correo@ejemplo.com"
+                >
+
+              </div>
+
+              <p
+                id="emailError"
+                class="mt-1 hidden text-xs font-medium text-red-600"
+              ></p>
+
+            </div>
+
+
+            <!-- Contraseña -->
+            <div>
+
+              <label
+                for="password"
+                class="mb-2 block text-xs font-bold text-slate-700"
+              >
+                Contraseña
+              </label>
+
+              <div class="relative">
+
+                <span
+                  class="pointer-events-none absolute left-3 top-1/2
+                         -translate-y-1/2 text-slate-400"
+                >
+                  🔒
+                </span>
+
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  required
+                  class="login-input pr-12"
+                  placeholder="Ingresa tu contraseña"
+                >
+
+                <button
+                  id="togglePassword"
+                  type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2
+                         text-xs font-bold text-slate-400
+                         hover:text-primary-600"
+                  aria-label="Mostrar contraseña"
+                >
+                  Ver
+                </button>
+
+              </div>
+
+              <p
+                id="passwordError"
+                class="mt-1 hidden text-xs font-medium text-red-600"
+              ></p>
+
+            </div>
+
+
+            <!-- Mensaje -->
+            <div
+              id="loginMessage"
+              class="status-message items-start gap-3 rounded-xl
+                     border px-3 py-3 text-xs"
+              role="alert"
+              aria-live="polite"
+            >
+
+              <div
+                id="loginMessageIcon"
+                class="flex h-7 w-7 shrink-0 items-center justify-center
+                       rounded-lg bg-emerald-50 text-emerald-600"
+              >
+                ✓
+              </div>
+
+              <div>
+
+                <p
+                  id="loginMessageTitle"
+                  class="font-black text-slate-700"
+                >
+                  Información
+                </p>
+
+                <p
+                  id="loginMessageText"
+                  class="mt-0.5 text-slate-500"
+                ></p>
+
+              </div>
+
+            </div>
+
+
+            <!-- Botón -->
+            <button
+              id="loginButton"
+              type="submit"
+              class="login-button flex w-full items-center justify-center
+                     gap-2 bg-primary-600 px-4 text-sm font-black text-white
+                     shadow-md shadow-primary-600/20
+                     hover:bg-primary-700
+                     focus:outline-none focus:ring-4
+                     focus:ring-primary-100"
+            >
+
+              <span id="loginButtonSpinner" class="hidden">
+                <svg
+                  class="h-4 w-4 animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              </span>
+
+              <span id="loginButtonText">
+                Ingresar al sistema
+              </span>
+
+              <span id="loginButtonArrow">
+                →
+              </span>
+
+            </button>
+
+          </form>
+
+        </div>
+
+
+        <!-- Pie -->
+        <footer
+          class="mt-8 flex items-center justify-between
+                 border-t border-slate-100 pt-4"
+        >
+
+          <p class="text-[10px] text-slate-400">
+            © 2026 Mi Control de Cobros
+          </p>
+
+          <div
+            class="flex items-center gap-1.5 text-[10px]
+                   font-medium text-slate-400"
+          >
+            <span
+              class="h-1.5 w-1.5 rounded-full bg-emerald-500"
+            ></span>
+
+            Sistema activo
+          </div>
+
+        </footer>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       FIREBASE / LOGIN
+  ========================================================== -->
+
+  <script type="module">
+
+    import {
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+    import {
+      auth
+    } from "./js/firebase-config.js";
+
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const emailInput =
+      document.getElementById("email");
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const emailError =
+      document.getElementById("emailError");
+
+    const passwordError =
+      document.getElementById("passwordError");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const loginButtonText =
+      document.getElementById("loginButtonText");
+
+    const loginButtonSpinner =
+      document.getElementById("loginButtonSpinner");
+
+    const loginButtonArrow =
+      document.getElementById("loginButtonArrow");
+
+    const togglePassword =
+      document.getElementById("togglePassword");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+    const loginMessageTitle =
+      document.getElementById("loginMessageTitle");
+
+    const loginMessageText =
+      document.getElementById("loginMessageText");
+
+    const loginMessageIcon =
+      document.getElementById("loginMessageIcon");
+
+
+    // =========================================================
+    // MOSTRAR / OCULTAR CONTRASEÑA
+    // =========================================================
+
+    togglePassword.addEventListener("click", () => {
+
+      const isPassword =
+        passwordInput.type === "password";
+
+      passwordInput.type =
+        isPassword ? "text" : "password";
+
+      togglePassword.textContent =
+        isPassword ? "Ocultar" : "Ver";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        isPassword
+          ? "Ocultar contraseña"
+          : "Mostrar contraseña"
+      );
+
+    });
+
+
+    // =========================================================
+    // MENSAJE
+    // =========================================================
+
+    function showMessage(
+      title,
+      text,
+      type = "error"
+    ) {
+
+      loginMessage.classList.add("show");
+
+      loginMessageTitle.textContent = title;
+      loginMessageText.textContent = text;
+
+      if (type === "success") {
+
+        loginMessage.className =
+          "status-message show items-start gap-3 rounded-xl " +
+          "border border-emerald-100 bg-emerald-50 px-3 py-3 text-xs";
+
+        loginMessageIcon.className =
+          "flex h-7 w-7 shrink-0 items-center justify-center " +
+          "rounded-lg bg-emerald-100 text-emerald-600";
+
+        loginMessageIcon.textContent = "✓";
+
+        loginMessageTitle.className =
+          "font-black text-emerald-700";
+
+        return;
+      }
+
+      loginMessage.className =
+        "status-message show items-start gap-3 rounded-xl " +
+        "border border-red-100 bg-red-50 px-3 py-3 text-xs";
+
+      loginMessageIcon.className =
+        "flex h-7 w-7 shrink-0 items-center justify-center " +
+        "rounded-lg bg-red-100 text-red-600";
+
+      loginMessageIcon.textContent = "!";
+
+      loginMessageTitle.className =
+        "font-black text-red-700";
+    }
+
+
+    function hideMessage() {
+
+      loginMessage.classList.remove("show");
+
+    }
+
+
+    // =========================================================
+    // LIMPIAR ERRORES
+    // =========================================================
+
+    function clearErrors() {
+
+      emailError.textContent = "";
+      passwordError.textContent = "";
+
+      emailError.classList.add("hidden");
+      passwordError.classList.add("hidden");
+
+      emailInput.classList.remove(
+        "border-red-300",
+        "bg-red-50"
+      );
+
+      passwordInput.classList.remove(
+        "border-red-300",
+        "bg-red-50"
+      );
+
+    }
+
+
+    // =========================================================
+    // LOADING
+    // =========================================================
+
+    function setLoading(loading) {
+
+      loginButton.disabled = loading;
+
+      if (loading) {
+
+        loginButtonSpinner.classList.remove("hidden");
+
+        loginButtonText.textContent =
+          "Verificando...";
+
+        loginButtonArrow.classList.add("hidden");
+
+        return;
+      }
+
+      loginButtonSpinner.classList.add("hidden");
+
+      loginButtonText.textContent =
+        "Ingresar al sistema";
+
+      loginButtonArrow.classList.remove("hidden");
+
+    }
+
+
+    // =========================================================
+    // ERRORES FIREBASE
+    // =========================================================
+
+    function getFirebaseErrorMessage(error) {
+
+      switch (error.code) {
+
+        case "auth/invalid-email":
+          return "El correo electrónico no es válido.";
+
+        case "auth/user-not-found":
+          return "No existe una cuenta con este correo.";
+
+        case "auth/wrong-password":
+          return "La contraseña es incorrecta.";
+
+        case "auth/invalid-credential":
+          return "El correo o la contraseña son incorrectos.";
+
+        case "auth/too-many-requests":
+          return "Demasiados intentos. Espera unos minutos y vuelve a intentarlo.";
+
+        case "auth/network-request-failed":
+          return "No se pudo conectar con Firebase. Revisa tu conexión.";
+
+        case "auth/user-disabled":
+          return "Esta cuenta está deshabilitada.";
+
+        default:
+          return "No fue posible iniciar sesión. Inténtalo nuevamente.";
+      }
+
+    }
+
+
+    // =========================================================
+    // LOGIN
+    // =========================================================
+
+    loginForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+      clearErrors();
+      hideMessage();
+
+      const email =
+        emailInput.value.trim();
+
+      const password =
+        passwordInput.value;
+
+
+      let valid = true;
+
+
+      if (!email) {
+
+        emailError.textContent =
+          "Ingresa tu correo electrónico.";
+
+        emailError.classList.remove("hidden");
+
+        emailInput.classList.add(
+          "border-red-300",
+          "bg-red-50"
+        );
+
+        valid = false;
+
+      }
+
+
+      if (!password) {
+
+        passwordError.textContent =
+          "Ingresa tu contraseña.";
+
+        passwordError.classList.remove("hidden");
+
+        passwordInput.classList.add(
+          "border-red-300",
+          "bg-red-50"
+        );
+
+        valid = false;
+
+      }
+
+
+      if (!valid) {
+        return;
+      }
+
+
+      setLoading(true);
+
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+
+        showMessage(
+          "Acceso correcto",
+          "Ingresando al sistema...",
+          "success"
+        );
+
+
+        setTimeout(() => {
+
+          window.location.href =
+            "index.html";
+
+        }, 500);
+
+
+      } catch (error) {
+
+        console.error(
+          "Error de autenticación:",
+          error
+        );
+
+        showMessage(
+          "No se pudo iniciar sesión",
+          getFirebaseErrorMessage(error),
+          "error"
+        );
+
+        setLoading(false);
+
+      }
+
+    });
+
+
+    // =========================================================
+    // SI YA ESTÁ AUTENTICADO
+    // =========================================================
+
+    onAuthStateChanged(
+      auth,
+      (user) => {
+
+        if (user) {
+
+          window.location.href =
+            "index.html";
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>

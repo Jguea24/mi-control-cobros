@@ -1,0 +1,200 @@
+/* ═══════════════════════════════════════════════
+   Dashboard Styles
+   ═══════════════════════════════════════════════ */
+
+/* ── Hero Section ────────────────────────────── */
+.dashboard-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 32px;
+  background: linear-gradient(135deg, #0F172A 0%, var(--color-primary-900) 40%, var(--color-primary-700) 100%);
+  border-radius: var(--radius-xl);
+  color: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(30,58,138,0.2);
+  animation: fadeSlideUp 0.4s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-hero::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  right: -10%;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.dashboard-hero h2 {
+  font-size: 30px;
+  font-weight: 800;
+  margin: 6px 0 10px;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-hero p {
+  color: #BFDBFE;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.eyebrow {
+  color: #93C5FD;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-date {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 16px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+/* ── Stats Grid ──────────────────────────────── */
+.stats-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 24px;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+  transition: all var(--transition-base);
+  animation: fadeSlideUp 0.4s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  border-radius: 0 3px 3px 0;
+  transition: height var(--transition-base);
+}
+
+.stat-card:nth-child(1)::after { background: var(--color-primary-600); }
+.stat-card:nth-child(2)::after { background: var(--color-success); }
+.stat-card:nth-child(3)::after { background: var(--color-warning); }
+.stat-card:nth-child(4)::after { background: var(--color-danger); }
+.stat-card:nth-child(5)::after { background: var(--color-primary-500); }
+
+.stat-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.stat-card p {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.stat-card strong {
+  color: var(--color-text);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.stat-card small {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.money-icon,
+.clients-icon {
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
+}
+
+.paid-icon {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.pending-icon {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.overdue-icon {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* ── Quick Actions ───────────────────────────── */
+.quick-actions {
+  margin-top: 24px;
+  animation: fadeSlideUp 0.4s ease 0.15s both;
+}
+
+.quick-actions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.quick-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-primary-600);
+  border-radius: var(--radius-md);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 18px;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(37,99,235,0.2);
+}
+
+.quick-action:hover {
+  background: var(--color-primary-700);
+  box-shadow: 0 6px 16px rgba(37,99,235,0.3);
+  transform: translateY(-1px);
+}
+
+/* ── Dashboard Tables ────────────────────────── */
+.dashboard-tables {
+  grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+  animation: fadeSlideUp 0.4s ease 0.2s both;
+}

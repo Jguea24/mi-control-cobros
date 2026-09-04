@@ -1,0 +1,1694 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="Mi Control de Cobros - Dashboard de gestión financiera">
+
+  <meta name="theme-color" content="#1d4ed8">
+
+  <title>Dashboard | Mi Control de Cobros</title>
+
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+
+  <link rel="apple-touch-icon" href="assets/icons/icon.svg">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Estilos existentes -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Chart.js para gráficos interactivos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a'
+            }
+          },
+
+          boxShadow: {
+            soft: '0 10px 30px rgba(15, 23, 42, 0.06)',
+            card: '0 4px 20px rgba(15, 23, 42, 0.06)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* =========================================================
+       TARJETAS DEL DASHBOARD
+       Tamaño uniforme y compacto
+    ========================================================== */
+
+    [aria-label="Resumen financiero"] {
+      align-items: stretch;
+    }
+
+    [aria-label="Resumen financiero"] > article {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 1536px) {
+      [aria-label="Resumen financiero"] {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      [aria-label="Resumen financiero"] > article {
+        min-height: 150px;
+        height: 150px;
+      }
+    }
+  </style>
+
+</head>
+
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+
+
+  <!-- =========================================================
+     APLICACIÓN
+========================================================= -->
+
+  <div class="min-h-screen lg:flex">
+
+
+    <!-- =======================================================
+       SIDEBAR
+  ======================================================== -->
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 flex w-72
+           flex-col border-r border-slate-200 bg-white
+           shadow-xl transition-transform duration-300
+           -translate-x-0">
+
+      <!-- Logo + botón del menú -->
+
+      <div class="relative flex h-20 items-center border-b border-slate-100 px-5">
+
+        <!-- Botón fijo que permite abrir/cerrar el menú incluso cuando está cerrado -->
+        <button
+          id="menuButton"
+          type="button"
+          aria-label="Cerrar menú"
+          aria-expanded="true"
+          aria-controls="sidebar"
+          class="fixed left-5 top-5 z-[60] flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-200 hover:bg-slate-50 hover:text-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-100"
+        >
+          <svg
+            id="menuIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 6l12 12M18 6L6 18"
+            />
+          </svg>
+        </button>
+
+        <!-- Nombre de la aplicación -->
+        <div class="ml-[3.75rem]">
+          <h1 class="text-base font-black tracking-tight text-slate-950">
+            Mi Control
+          </h1>
+        </div>
+
+      </div>
+
+
+      <!-- Navegación -->
+
+      <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-6" aria-label="Navegación principal">
+
+        <p class="mb-3 px-3 text-[10px] font-black uppercase
+               tracking-[0.18em] text-slate-400">
+          Principal
+        </p>
+
+
+        <!-- Dashboard -->
+
+        <a href="index.html" aria-current="page" class="group flex items-center gap-3 rounded-xl
+               bg-primary-50 px-3 py-3 text-sm font-bold
+               text-primary-700">
+
+          <span class="flex h-9 w-9 items-center justify-center
+                 rounded-lg bg-primary-600 text-white
+                 shadow-md shadow-primary-600/20">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10
+                 a1 1 0 001 1h3m10-11l2 2m-2-2v10
+                 a1 1 0 01-1 1h-3m-6 0a9 9 0 0118 0" />
+            </svg>
+
+          </span>
+
+          Dashboard
+
+        </a>
+
+
+        <!-- Clientes -->
+
+        <a href="clientes.html" class="group flex items-center gap-3 rounded-xl
+               px-3 py-3 text-sm font-semibold text-slate-600
+               transition hover:bg-slate-50 hover:text-primary-700">
+
+          <span class="flex h-9 w-9 items-center justify-center
+                 rounded-lg bg-slate-100 transition
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857
+                 M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857
+                 M7 20H2v-2a3 3 0 015.356-1.857
+                 M7 20v-2c0-.656.126-1.283.356-1.857
+                 m0 0a5.002 5.002 0 019.288 0
+                 M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+
+          </span>
+
+          Clientes
+
+        </a>
+
+
+        <!-- Deudas -->
+
+        <a href="deudas.html" class="group flex items-center gap-3 rounded-xl
+               px-3 py-3 text-sm font-semibold text-slate-600
+               transition hover:bg-slate-50 hover:text-primary-700">
+
+          <span class="flex h-9 w-9 items-center justify-center
+                 rounded-lg bg-slate-100 transition
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m2-3h3v3
+                 m-1-2l-9 9m9-9l-3 0
+                 M5 20h3a2 2 0 002-2v-3
+                 a2 2 0 00-2-2H5a2 2 0 00-2 2v3a2 2 0 002 2z" />
+            </svg>
+
+          </span>
+
+          Deudas
+
+        </a>
+
+
+        <!-- Pagos -->
+
+        <a href="pagos.html" class="group flex items-center gap-3 rounded-xl
+               px-3 py-3 text-sm font-semibold text-slate-600
+               transition hover:bg-slate-50 hover:text-primary-700">
+
+          <span class="flex h-9 w-9 items-center justify-center
+                 rounded-lg bg-slate-100 transition
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5
+                 a2 2 0 00-2 2v10a2 2 0 002 2h10
+                 a2 2 0 002-2v-2m4-4H9m0 0l3-3m-3 3l3 3" />
+            </svg>
+
+          </span>
+
+          Pagos
+
+        </a>
+
+
+        <!-- Ahorros -->
+
+        <a href="ahorros.html" class="group flex items-center gap-3 rounded-xl
+               px-3 py-3 text-sm font-semibold text-slate-600
+               transition hover:bg-slate-50 hover:text-primary-700">
+
+          <span class="flex h-9 w-9 items-center justify-center
+                 rounded-lg bg-slate-100 transition
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8
+                   c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m0 0
+                   c-1.11 0-2.08-.402-2.599-1M15 10V5.5A2.5 2.5 0 0012.5 3h-1A2.5 2.5 0 009 5.5V10
+                   m6 0v4.5a2.5 2.5 0 01-2.5 2.5h-1A2.5 2.5 0 019 14.5V10" />
+            </svg>
+
+          </span>
+
+          Ahorros
+
+        </a>
+
+
+        <!-- Gastos -->
+
+        <a href="gastos.html" class="group flex items-center gap-3 rounded-xl
+               px-3 py-3 text-sm font-semibold text-slate-600
+               transition hover:bg-slate-50 hover:text-primary-700">
+
+          <span class="flex h-9 w-9 items-center justify-center
+                 rounded-lg bg-slate-100 transition
+                 group-hover:bg-rose-50 group-hover:text-rose-600">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 14l2 2 4-4m5.5-1.5A8.5 8.5 0 1112 3.5a8.5 8.5 0 019 9z" />
+            </svg>
+
+          </span>
+
+          Gastos
+
+        </a>
+
+
+        <!-- Historial -->
+
+        <a href="historial.html" class="group flex items-center gap-3 rounded-xl
+               px-3 py-3 text-sm font-semibold text-slate-600
+               transition hover:bg-slate-50 hover:text-primary-700">
+
+          <span class="flex h-9 w-9 items-center justify-center
+                 rounded-lg bg-slate-100 transition
+                 group-hover:bg-primary-50">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0
+                 9 9 0 0118 0z" />
+            </svg>
+
+          </span>
+
+          Historial
+
+        </a>
+
+      </nav>
+
+
+      <!-- Logout -->
+
+      <div class="border-t border-slate-100 p-4">
+
+      </div>
+
+    </aside>
+
+
+    <!-- Overlay -->
+
+    <div id="sidebarOverlay" class="fixed inset-0 z-40 hidden
+           bg-slate-950/40 backdrop-blur-sm"></div>
+
+
+    <!-- =======================================================
+       CONTENIDO
+  ======================================================== -->
+
+    <div id="mainContent" class="flex min-h-screen min-w-0 flex-1 flex-col">
+
+
+      <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+      <header class="sticky top-0 z-30 flex h-20 items-center
+             justify-between border-b border-slate-200
+             bg-white/90 px-4 backdrop-blur-md
+             sm:px-6 lg:px-8">
+
+        <div class="flex items-center gap-4">
+
+          <div>
+
+            <div class="hidden items-center gap-2 text-xs
+                   font-semibold text-slate-400 sm:flex">
+
+              <span>
+                Mi Control de Cobros
+              </span>
+
+              <span>/</span>
+
+              <span class="text-primary-600">
+                Dashboard
+              </span>
+
+            </div>
+
+            <h2 class="text-lg font-black tracking-tight
+                   text-slate-950 sm:text-xl">
+              Panel principal
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <!-- Estado -->
+
+        <div class="flex items-center gap-3">
+
+          <div class="hidden rounded-xl bg-emerald-50 px-3 py-2
+                 text-xs font-bold text-emerald-700 sm:block">
+
+            <span class="mr-1 inline-block h-2 w-2 rounded-full
+                   bg-emerald-500"></span>
+
+            Sistema activo
+
+          </div>
+
+
+          <div class="flex h-10 w-10 items-center justify-center
+                 rounded-full bg-primary-100 text-sm
+                 font-black text-primary-700">
+            U
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+      <main class="w-full flex-1 px-4 py-6
+             sm:px-6 lg:px-8 lg:py-8">
+
+        <!-- =========================================================
+       ENCABEZADO SUPERIOR
+  ========================================================== -->
+
+        <header class="sticky top-0 z-40
+           border-b border-slate-200/80
+           bg-white/95
+           px-4 py-3
+           backdrop-blur
+           sm:px-6">
+
+          <div class="mx-auto flex max-w-7xl
+             items-center
+             justify-between
+             gap-4">
+
+            <!-- Identidad -->
+
+            <div class="min-w-0">
+
+              <p class="text-[10px]
+                 font-black
+                 uppercase
+                 tracking-[0.16em]
+                 text-blue-700">
+                Mi Control de Cobros
+              </p>
+
+              <h1 class="truncate
+                 text-lg
+                 font-black
+                 text-slate-950
+                 sm:text-xl">
+                Dashboard
+              </h1>
+
+            </div>
+
+
+            <!-- Área superior derecha -->
+
+            <div class="flex
+               items-center
+               gap-2
+               sm:gap-3">
+
+              <!-- Estado -->
+
+              <div class="hidden
+                 items-center
+                 gap-2
+                 rounded-full
+                 bg-emerald-50
+                 px-3
+                 py-2
+                 text-[11px]
+                 font-bold
+                 text-emerald-700
+                 sm:flex">
+
+                <span class="h-2
+                   w-2
+                   rounded-full
+                   bg-emerald-500"></span>
+
+                Sistema activo
+
+              </div>
+
+
+              <!-- Cerrar sesión -->
+
+              <button id="logoutButton" type="button" title="Cerrar sesión" aria-label="Cerrar sesión" class="group
+                 flex
+                 min-h-9
+                 items-center
+                 gap-2
+                 rounded-xl
+                 border
+                 border-slate-200
+                 bg-white
+                 px-3
+                 py-2
+                 text-xs
+                 font-bold
+                 text-slate-600
+                 shadow-sm
+                 transition
+                 hover:border-red-200
+                 hover:bg-red-50
+                 hover:text-red-600
+                 focus:outline-none
+                 focus:ring-4
+                 focus:ring-red-100">
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4
+                   transition-transform
+                   group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25
+                 A2.25 2.25 0 0013.5 3h-6
+                 A2.25 2.25 0 005.25 5.25v13.5
+                 A2.25 2.25 0 007.5 21h6
+                 a2.25 2.25 0 002.25-2.25V15" />
+
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M18 8l3 4m0 0l-3 4m3-4H9" />
+
+                </svg>
+
+                <span class="hidden sm:inline">
+                  Cerrar sesión
+                </span>
+
+              </button>
+
+
+              <!-- Usuario -->
+
+              <div class="flex
+                 h-9
+                 w-9
+                 shrink-0
+                 items-center
+                 justify-center
+                 rounded-full
+                 bg-blue-100
+                 text-sm
+                 font-black
+                 text-blue-700" title="Usuario" aria-label="Usuario">
+                U
+              </div>
+
+            </div>
+
+          </div>
+
+        </header>
+
+
+        <div class="mx-auto max-w-7xl">
+
+
+          <!-- =================================================
+             HERO
+        ================================================== -->
+
+          <section class="mb-8">
+
+            <div class="relative overflow-hidden rounded-3xl
+                   bg-slate-950 p-6 text-white
+                   shadow-soft sm:p-8">
+
+              <!-- Decoraciones -->
+
+              <div class="absolute -right-16 -top-20
+                     h-56 w-56 rounded-full
+                     bg-primary-600/20 blur-3xl"></div>
+
+              <div class="absolute -bottom-20 -left-10
+                     h-48 w-48 rounded-full
+                     bg-blue-500/10 blur-3xl"></div>
+
+
+              <div class="relative flex flex-col
+                     justify-between gap-6 md:flex-row
+                     md:items-center">
+
+                <div>
+
+                  <div class="mb-3 inline-flex items-center gap-2
+                         rounded-full bg-white/10 px-3 py-1.5
+                         text-xs font-bold text-blue-300">
+
+                    <span class="h-2 w-2 rounded-full bg-blue-400"></span>
+
+                    Panel principal
+
+                  </div>
+
+
+                  <h1 class="text-3xl font-black tracking-tight
+                         sm:text-4xl">
+                    Resumen de cobros
+                  </h1>
+
+
+                  <p class="mt-2 max-w-2xl text-sm
+                         leading-6 text-slate-300 sm:text-base">
+                    Consulta el estado de tus cobros, pagos,
+                    clientes, ahorros, gastos y deudas desde un solo lugar.
+                  </p>
+
+                </div>
+
+
+                <!-- Fecha -->
+
+                <div class="shrink-0 rounded-2xl border
+                       border-white/10 bg-white/5
+                       px-5 py-4 backdrop-blur-sm">
+
+                  <p class="text-[10px] font-bold uppercase
+                         tracking-wider text-slate-400">
+                    Hoy
+                  </p>
+
+                  <p id="dashboardDate" class="mt-1 text-sm font-bold text-white">
+                    Cargando...
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- =================================================
+             ESTADÍSTICAS
+        ================================================== -->
+
+          <section class="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" aria-label="Resumen financiero">
+
+
+            <!-- Total por cobrar -->
+
+            <article class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-blue-100/70 p-3.5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:shadow-soft hover:border-blue-200">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+
+              <div class="flex items-start justify-between">
+
+                <div class="flex h-9 w-9 items-center
+                       justify-center rounded-xl
+                       bg-blue-100 text-blue-700">
+
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2
+                       3 2 3 .895 3 2-1.343 2-3 2m0-8
+                       c1.11 0 2.08.402 2.599 1M12 8V7
+                       m0 1v8m0 0v1m0-1
+                       c-1.11 0-2.08-.402-2.599-1
+                       M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+
+                </div>
+
+                <span class="rounded-full bg-blue-100 px-2
+                       py-1 text-[10px] font-bold
+                       text-blue-600">
+                  COBROS
+                </span>
+
+              </div>
+
+
+              <p class="mt-3 text-[10px] font-bold uppercase
+                     tracking-wider text-slate-400">
+                Total por cobrar
+              </p>
+
+
+              <strong id="totalPorCobrar" class="mt-1 block text-xl
+                     font-black tracking-tight text-slate-950">
+                $0.00
+              </strong>
+
+
+              <small id="porCobrarDetalle" class="mt-1 block text-[11px] font-medium leading-4 text-slate-400">
+                0 deudas con saldo
+              </small>
+
+            </article>
+
+
+            <!-- Total cobrado -->
+
+            <article class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100/70 p-3.5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:shadow-soft hover:border-emerald-200">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+
+              <div class="flex items-start justify-between">
+
+                <div class="flex h-9 w-9 items-center
+                       justify-center rounded-xl
+                       bg-emerald-100 text-emerald-700">
+
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0
+                       9 9 0 0118 0z" />
+                  </svg>
+
+                </div>
+
+                <span class="rounded-full bg-emerald-100 px-2
+                       py-1 text-[10px] font-bold
+                       text-emerald-700">
+                  PAGADO
+                </span>
+
+              </div>
+
+
+              <p class="mt-3 text-[10px] font-bold uppercase
+                     tracking-wider text-slate-400">
+                Total cobrado
+              </p>
+
+
+              <strong id="totalCobrado" class="mt-1 block text-xl
+                     font-black tracking-tight text-slate-950">
+                $0.00
+              </strong>
+
+
+              <small id="cobradoDetalle" class="mt-1 block text-[11px] font-medium leading-4 text-slate-400">
+                0 pagos registrados
+              </small>
+
+            </article>
+
+
+            <!-- Pendientes -->
+
+            <article class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-amber-100/70 p-3.5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:shadow-soft hover:border-amber-200">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 to-orange-400"></div>
+
+              <div class="flex h-9 w-9 items-center
+                     justify-center rounded-xl
+                     bg-amber-100 text-amber-700">
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0
+                     9 9 0 0118 0z" />
+                </svg>
+
+              </div>
+
+
+              <p class="mt-3 text-[10px] font-bold uppercase
+                     tracking-wider text-slate-400">
+                Deudas pendientes
+              </p>
+
+
+              <strong id="deudasPendientes" class="mt-1 block text-xl
+                     font-black tracking-tight text-slate-950">
+                0
+              </strong>
+
+
+              <small class="mt-1 block text-[11px] font-medium leading-4 text-slate-400">
+                Por cobrar
+              </small>
+
+            </article>
+
+
+            <!-- Vencidas -->
+
+            <article class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl border border-red-100 bg-gradient-to-br from-red-50 via-white to-red-100/70 p-3.5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:shadow-soft hover:border-red-200">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-red-500 to-rose-400"></div>
+
+              <div class="flex h-9 w-9 items-center
+                     justify-center rounded-xl
+                     bg-red-100 text-red-700">
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01
+                     M10.29 3.86l-7.82 14a2 2 0 001.74 3h15.58
+                     a2 2 0 001.74-3l-7.82-14a2 2 0 00-3.48 0z" />
+                </svg>
+
+              </div>
+
+
+              <p class="mt-3 text-[10px] font-bold uppercase
+                     tracking-wider text-slate-400">
+                Deudas vencidas
+              </p>
+
+
+              <strong id="deudasVencidas" class="mt-1 block text-xl
+                     font-black tracking-tight text-red-600">
+                0
+              </strong>
+
+
+              <small class="mt-1 block text-[11px] font-medium leading-4 text-slate-400">
+                Requieren seguimiento
+              </small>
+
+            </article>
+
+             <!-- =================================================
+                  TOTAL AHORRADO
+             ================================================== -->
+
+             <article class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl border border-emerald-100
+                    bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-3.5 shadow-card
+                    transition duration-200 hover:-translate-y-0.5 hover:shadow-soft hover:border-emerald-200">
+
+               <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+
+               <div class="flex items-start justify-between gap-2">
+
+                 <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                     <path stroke-linecap="round" stroke-linejoin="round"
+                       d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2
+                          3 .895 3 2-1.343 2-3 2m0-8
+                          c1.11 0 2.08.402 2.599 1M12 8V6
+                          m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1" />
+                   </svg>
+
+                 </div>
+
+                 <span class="rounded-full bg-emerald-100 px-2 py-1 text-[8px] font-black text-emerald-700">
+                   AHORRO
+                 </span>
+
+               </div>
+
+               <p class="mt-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                 Total ahorrado
+               </p>
+
+               <strong
+                 id="dashboardTotalAhorrado"
+                 class="mt-1 block text-xl font-black tracking-tight text-emerald-600"
+               >
+                 $0,00
+               </strong>
+
+               <small
+                 id="dashboardAhorradoDetalle"
+                 class="mt-1 block text-[11px] font-medium leading-4 text-slate-400"
+               >
+                 0 ahorros registrados
+               </small>
+
+             </article>
+
+
+             <!-- =================================================
+                  SALDO DISPONIBLE
+             ================================================== -->
+
+             <article class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl border border-violet-100
+                    bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 p-3.5 shadow-card
+                    transition duration-200 hover:-translate-y-0.5 hover:shadow-soft hover:border-violet-200">
+
+               <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-400"></div>
+
+               <div class="flex items-start justify-between gap-2">
+
+                 <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-100 text-violet-700">
+
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                     <path stroke-linecap="round" stroke-linejoin="round"
+                       d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2
+                          3 .895 3 2-1.343 2-3 2m0-8
+                          c1.11 0 2.08.402 2.599 1M12 8V6
+                          m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1" />
+                   </svg>
+
+                 </div>
+
+                 <span class="rounded-full bg-violet-100 px-2 py-1 text-[8px] font-black text-violet-700">
+                   DISPONIBLE
+                 </span>
+
+               </div>
+
+               <p class="mt-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                 Saldo disponible
+               </p>
+
+               <strong
+                 id="dashboardSaldoDisponible"
+                 class="mt-1 block text-xl font-black tracking-tight text-violet-600"
+               >
+                 $0,00
+               </strong>
+
+               <small
+                 id="dashboardSaldoDetalle"
+                 class="mt-1 block text-[11px] font-medium leading-4 text-slate-400"
+               >
+                 Ganado − ahorrado − gastado
+               </small>
+
+             </article>
+
+
+<!-- Clientes -->
+
+            <article class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-violet-100/70 p-3.5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:shadow-soft hover:border-violet-200">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-500 to-fuchsia-400"></div>
+
+              <div class="flex h-9 w-9 items-center
+                     justify-center rounded-xl
+                     bg-violet-100 text-violet-700">
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857
+                     M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857
+                     M7 20H2v-2a3 3 0 015.356-1.857
+                     M7 20v-2c0-.656.126-1.283.356-1.857
+                     m0 0a5.002 5.002 0 019.288 0
+                     M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+
+              </div>
+
+
+              <p class="mt-3 text-[10px] font-bold uppercase
+                     tracking-wider text-slate-400">
+                Total de clientes
+              </p>
+
+
+              <strong id="totalClientes" class="mt-1 block text-xl
+                     font-black tracking-tight text-slate-950">
+                0
+              </strong>
+
+
+              <small id="clientesDetalle" class="mt-2 block text-xs
+                     font-medium text-slate-400">
+                0 activos
+              </small>
+
+            </article>
+
+                    <!-- =================================================
+               TOTAL GASTADO
+          ================================================== -->
+
+          <article
+            class="group relative flex h-[158px] min-h-[158px] flex-col overflow-hidden rounded-2xl
+                   border border-rose-100 bg-gradient-to-br from-rose-50 via-white to-orange-50
+                   p-3.5 shadow-card transition duration-200 hover:-translate-y-0.5
+                   hover:shadow-soft hover:border-rose-200">
+
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-500 to-orange-400"></div>
+
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 14l2 2 4-4m5.5-1.5A8.5 8.5 0 1112 3.5a8.5 8.5 0 019 9z" />
+                </svg>
+              </div>
+              <span class="rounded-full bg-rose-100 px-2 py-1 text-[8px] font-black text-rose-700">
+                GASTOS
+              </span>
+            </div>
+
+            <p class="mt-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Total gastado
+            </p>
+
+            <strong id="dashboardTotalGastado"
+                      class="mt-1 block text-xl font-black tracking-tight text-rose-600">
+              $0,00
+            </strong>
+
+            <small id="dashboardGastadoDetalle"
+                   class="mt-1 block text-[11px] font-medium leading-4 text-slate-400">
+              0 gastos registrados
+            </small>
+          </article>
+
+</section>
+<!-- =================================================
+             GRÁFICOS PRINCIPALES
+        ================================================== -->
+
+          <section class="mb-8" aria-label="Indicadores y gráficos principales">
+
+            <div class="mb-5 flex flex-col gap-1">
+              <h2 class="text-xl font-black tracking-tight text-slate-950">
+                Indicadores principales
+              </h2>
+              <p class="text-sm text-slate-500">
+                Visualiza la situación financiera y el estado de tus deudas en tiempo real.
+              </p>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-2">
+
+              <!-- SITUACIÓN FINANCIERA -->
+              <article class="overflow-hidden rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-6 shadow-soft">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <div class="mb-2 inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-blue-700">
+                      Finanzas
+                    </div>
+                    <h3 class="text-lg font-black text-slate-950">
+                      Situación financiera
+                    </h3>
+                    <p class="mt-1 text-sm text-slate-500">
+                      Comparación entre lo cobrado y lo que aún está pendiente.
+                    </p>
+                  </div>
+
+                  <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="mt-6 h-[300px]">
+                  <canvas id="finanzasChart"></canvas>
+                </div>
+
+                <div id="finanzasChartDetalle" class="mt-4 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 text-sm font-semibold text-slate-600">
+                  Cargando información financiera...
+                </div>
+              </article>
+
+
+              <!-- ESTADO DE DEUDAS -->
+              <article class="overflow-hidden rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-6 shadow-soft">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <div class="mb-2 inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-700">
+                      Cobranza
+                    </div>
+                    <h3 class="text-lg font-black text-slate-950">
+                      Estado de las deudas
+                    </h3>
+                    <p class="mt-1 text-sm text-slate-500">
+                      Identifica rápidamente pendientes, pagadas y vencidas.
+                    </p>
+                  </div>
+
+                  <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86l-7.82 14a2 2 0 001.74 3h15.58a2 2 0 001.74-3l-7.82-14a2 2 0 00-3.48 0z" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="mt-6 h-[300px]">
+                  <canvas id="deudasChart"></canvas>
+                </div>
+
+                <div id="deudasChartDetalle" class="mt-4 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 text-sm font-semibold text-slate-600">
+                  Cargando estado de deudas...
+                </div>
+              </article>
+
+            </div>
+          </section>
+
+
+          <!-- =================================================
+             TABLAS
+        ================================================== -->
+
+          <section class="space-y-6" aria-label="Actividad reciente">
+
+
+            <!-- =================================================
+               ÚLTIMAS DEUDAS
+          ================================================== -->
+
+            <section class="overflow-hidden rounded-3xl
+                   border border-slate-200 bg-white
+                   shadow-soft">
+
+              <div class="flex items-center justify-between
+                     border-b border-slate-100 px-6 py-5">
+
+                <div>
+
+                  <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center
+                           justify-center rounded-xl
+                           bg-amber-50 text-amber-600">
+
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01
+                           M10.29 3.86l-7.82 14a2 2 0 001.74 3h15.58
+                           a2 2 0 001.74-3l-7.82-14a2 2 0 00-3.48 0z" />
+                      </svg>
+
+                    </div>
+
+                    <div>
+
+                      <h3 class="font-black text-slate-950">
+                        Últimas deudas
+                      </h3>
+
+                      <p id="ultimasDeudasCount" class="text-xs text-slate-400">
+                        Cargando deudas...
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <a href="deudas.html" class="hidden rounded-xl bg-slate-50
+                       px-3 py-2 text-xs font-bold
+                       text-slate-600 transition
+                       hover:bg-primary-50
+                       hover:text-primary-700 sm:block">
+                  Ver todas
+                </a>
+
+              </div>
+
+
+              <div class="overflow-x-auto">
+
+                <table class="w-full min-w-[700px] text-left">
+
+                  <thead>
+
+                    <tr class="border-b border-slate-100
+                           bg-slate-50/70">
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Cliente
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Concepto
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Monto
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Saldo
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Fecha
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Estado
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+
+                  <tbody id="ultimasDeudasBody" class="divide-y divide-slate-100">
+
+                    <tr>
+
+                      <td colspan="6" class="px-5 py-12 text-center
+                             text-sm font-medium
+                             text-slate-400">
+                        Cargando deudas...
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+
+            <!-- =================================================
+               ÚLTIMOS PAGOS
+          ================================================== -->
+
+            <section class="overflow-hidden rounded-3xl
+                   border border-slate-200 bg-white
+                   shadow-soft">
+
+              <div class="flex items-center justify-between
+                     border-b border-slate-100 px-6 py-5">
+
+                <div>
+
+                  <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center
+                           justify-center rounded-xl
+                           bg-emerald-50 text-emerald-600">
+
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0
+                           9 9 0 0118 0z" />
+                      </svg>
+
+                    </div>
+
+                    <div>
+
+                      <h3 class="font-black text-slate-950">
+                        Últimos pagos
+                      </h3>
+
+                      <p id="ultimosPagosCount" class="text-xs text-slate-400">
+                        Cargando pagos...
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <a href="pagos.html" class="hidden rounded-xl bg-slate-50
+                       px-3 py-2 text-xs font-bold
+                       text-slate-600 transition
+                       hover:bg-primary-50
+                       hover:text-primary-700 sm:block">
+                  Ver todos
+                </a>
+
+              </div>
+
+
+              <div class="overflow-x-auto">
+
+                <table class="w-full min-w-[560px] text-left">
+
+                  <thead>
+
+                    <tr class="border-b border-slate-100
+                           bg-slate-50/70">
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Cliente
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Monto
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Fecha
+                      </th>
+
+                      <th class="px-5 py-3 text-[10px]
+                             font-black uppercase
+                             tracking-wider text-slate-400">
+                        Método
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+
+                  <tbody id="ultimosPagosBody" class="divide-y divide-slate-100">
+
+                    <tr>
+
+                      <td colspan="4" class="px-5 py-12 text-center
+                             text-sm font-medium
+                             text-slate-400">
+                        Cargando pagos...
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+          </section>
+
+
+        </div>
+
+      </main>
+
+
+      <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+      <footer class="border-t border-slate-200
+             bg-white px-6 py-5">
+
+        <div class="mx-auto flex max-w-7xl flex-col
+               justify-between gap-2 text-xs
+               text-slate-400 sm:flex-row">
+
+          <p>
+            © 2026 Mi Control de Cobros
+          </p>
+
+          <p>
+            Gestión de cobros segura y organizada
+          </p>
+
+        </div>
+
+      </footer>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+     MENÚ RESPONSIVE
+  ========================================================== -->
+
+  <style>
+    /* ==========================================================
+       MENÚ LATERAL
+       ========================================================== */
+
+    #sidebar {
+      width: 18rem;
+      transform: translateX(0);
+      transition: transform 300ms ease, width 300ms ease;
+    }
+
+    #mainContent {
+      margin-left: 18rem;
+      transition: margin-left 300ms ease;
+    }
+
+    /* PC: cerrar completamente el menú */
+    body.sidebar-closed #sidebar {
+      transform: translateX(-100%);
+    }
+
+    body.sidebar-closed #mainContent {
+      margin-left: 0;
+    }
+
+    /* Botón siempre visible para poder volver a abrir el menú */
+    #menuButton {
+      transition:
+        left 300ms ease,
+        transform 200ms ease,
+        background-color 200ms ease,
+        color 200ms ease;
+    }
+
+    body.sidebar-closed #menuButton {
+      left: 1.25rem;
+    }
+
+    /* ==========================================================
+       TABLET / CELULAR
+       ========================================================== */
+
+    @media (max-width: 1023px) {
+
+      #sidebar {
+        transform: translateX(-100%);
+        width: 18rem;
+      }
+
+      #mainContent {
+        margin-left: 0;
+      }
+
+      body.sidebar-open #sidebar {
+        transform: translateX(0);
+      }
+
+      body.sidebar-closed #sidebar {
+        transform: translateX(-100%);
+      }
+
+      body.sidebar-open #menuButton {
+        left: 1.25rem;
+      }
+
+      body.sidebar-closed #menuButton {
+        left: 1.25rem;
+      }
+    }
+
+    /* ==========================================================
+       ACCESIBILIDAD
+       ========================================================== */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      #sidebar,
+      #mainContent,
+      #menuButton {
+        transition: none;
+      }
+
+    }
+  </style>
+
+  <script>
+    (() => {
+
+      const menuButton =
+        document.getElementById("menuButton");
+
+      const sidebar =
+        document.getElementById("sidebar");
+
+      const sidebarOverlay =
+        document.getElementById("sidebarOverlay");
+
+      const menuIcon =
+        document.getElementById("menuIcon");
+
+      if (!menuButton || !sidebar) {
+        return;
+      }
+
+      const MOBILE_BREAKPOINT = 1024;
+
+      function isMobile() {
+        return window.innerWidth < MOBILE_BREAKPOINT;
+      }
+
+      function updateIcon(open) {
+
+        if (!menuIcon) {
+          return;
+        }
+
+        menuIcon.innerHTML = open
+          ? `
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 6l12 12M18 6L6 18">
+            </path>
+          `
+          : `
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16">
+            </path>
+          `;
+      }
+
+      function setMenuState(open) {
+
+        if (isMobile()) {
+
+          document.body.classList.toggle(
+            "sidebar-open",
+            open
+          );
+
+          document.body.classList.remove(
+            "sidebar-closed"
+          );
+
+          if (sidebarOverlay) {
+
+            sidebarOverlay.classList.toggle(
+              "hidden",
+              !open
+            );
+
+          }
+
+        } else {
+
+          document.body.classList.remove(
+            "sidebar-open"
+          );
+
+          document.body.classList.toggle(
+            "sidebar-closed",
+            !open
+          );
+
+          if (sidebarOverlay) {
+
+            sidebarOverlay.classList.add(
+              "hidden"
+            );
+
+          }
+
+        }
+
+        menuButton.setAttribute(
+          "aria-expanded",
+          String(open)
+        );
+
+        menuButton.setAttribute(
+          "aria-label",
+          open
+            ? "Cerrar menú"
+            : "Abrir menú"
+        );
+
+        updateIcon(open);
+      }
+
+      function getCurrentState() {
+
+        if (isMobile()) {
+
+          return document.body.classList.contains(
+            "sidebar-open"
+          );
+
+        }
+
+        return !document.body.classList.contains(
+          "sidebar-closed"
+        );
+      }
+
+      function toggleMenu() {
+
+        const currentState =
+          getCurrentState();
+
+        setMenuState(
+          !currentState
+        );
+      }
+
+      // Botón ☰ / ✕
+      menuButton.addEventListener(
+        "click",
+        toggleMenu
+      );
+
+      // Cerrar haciendo clic en el fondo
+      if (sidebarOverlay) {
+
+        sidebarOverlay.addEventListener(
+          "click",
+          () => {
+            setMenuState(false);
+          }
+        );
+
+      }
+
+      // Cerrar el menú al seleccionar una opción
+      sidebar
+        .querySelectorAll("a")
+        .forEach((link) => {
+
+          link.addEventListener(
+            "click",
+            () => {
+
+              if (isMobile()) {
+                setMenuState(false);
+              }
+
+            }
+          );
+
+        });
+
+      // Adaptar al cambiar tamaño de pantalla
+      window.addEventListener(
+        "resize",
+        () => {
+
+          if (isMobile()) {
+
+            // En móvil inicia cerrado al pasar desde PC
+            const shouldOpen =
+              document.body.classList.contains(
+                "sidebar-open"
+              );
+
+            setMenuState(shouldOpen);
+
+          } else {
+
+            // En PC conserva si estaba cerrado
+            const shouldOpen =
+              !document.body.classList.contains(
+                "sidebar-closed"
+              );
+
+            setMenuState(shouldOpen);
+
+          }
+
+        }
+      );
+
+      // Estado inicial:
+      // PC = abierto
+      // Móvil = cerrado
+      setMenuState(!isMobile());
+
+    })();
+  </script>
+
+
+  <!-- =========================================================
+     JAVASCRIPT DEL SISTEMA
+========================================================= -->
+
+
+
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/dashboard.js"></script>
+<script type="module" src="js/dashboard-ahorros.js"></script>
+<script src="js/pwa.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Registrar Ahorro | Mi Control de Cobros
+    </title>
+
+    <meta
+        name="description"
+        content="Registrar un nuevo ahorro personal en Mi Control de Cobros"
+    >
+
+    <meta
+        name="theme-color"
+        content="#2563eb"
+    >
+
+    <!-- =====================================================
+         TAILWIND CSS
+    ====================================================== -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- =====================================================
+         CONFIGURACIÓN TAILWIND
+    ====================================================== -->
+
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    colors: {
+
+                        primary: {
+
+                            50: "#eff6ff",
+                            100: "#dbeafe",
+                            200: "#bfdbfe",
+                            300: "#93c5fd",
+                            400: "#60a5fa",
+                            500: "#3b82f6",
+                            600: "#2563eb",
+                            700: "#1d4ed8",
+                            800: "#1e40af",
+                            900: "#1e3a8a"
+
+                        }
+
+                    },
+
+                    boxShadow: {
+
+                        card:
+                            "0 4px 20px rgba(15,23,42,.06)"
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+
+    <!-- =====================================================
+         CSS DEL PROYECTO
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/styles.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/responsive.css"
+    >
+
+    <!-- =====================================================
+         PWA
+    ====================================================== -->
+
+    <link
+        rel="manifest"
+        href="manifest.webmanifest"
+    >
+
+    <link
+        rel="icon"
+        href="assets/icons/icon.svg"
+        type="image/svg+xml"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        href="assets/icons/icon.svg"
+    >
+
+
+    <style>
+      /* =========================================================
+         FORMULARIO DE AHORRO — DISEÑO COMPACTO
+      ========================================================== */
+
+      #ahorroForm input,
+      #ahorroForm textarea {
+        box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.02);
+      }
+
+      #ahorroForm input:focus,
+      #ahorroForm textarea:focus {
+        transform: translateY(-1px);
+      }
+
+      #ahorroForm input.border-red-300,
+      #ahorroForm textarea.border-red-300 {
+        background-color: #fff7f7;
+      }
+
+      @media (max-width: 640px) {
+        #resumenMonto {
+          font-size: 1.35rem;
+        }
+      }
+    </style>
+
+</head>
+
+
+<body
+    class="min-h-screen bg-slate-50 text-slate-900"
+>
+
+    <!-- =====================================================
+         CONTENEDOR PRINCIPAL
+    ====================================================== -->
+
+    <div class="min-h-screen flex">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside
+            id="sidebar"
+            class="fixed inset-y-0 left-0 z-50 w-64
+                   -translate-x-full lg:translate-x-0
+                   bg-white border-r border-slate-200
+                   shadow-xl transition-transform duration-300"
+        >
+
+            <!-- =================================================
+                 CABECERA
+            ================================================== -->
+
+            <div
+                class="h-20 flex items-center px-5 border-b border-slate-100"
+            >
+
+                <div
+                    class="flex items-center gap-3"
+                >
+
+                    <div
+                        class="w-10 h-10 rounded-xl
+                               bg-blue-600 text-white
+                               flex items-center justify-center
+                               font-bold shadow-sm"
+                    >
+                        MC
+                    </div>
+
+                    <div>
+
+                        <h1
+                            class="font-black text-slate-950"
+                        >
+                            Mi Control
+                        </h1>
+
+                        <p
+                            class="text-[10px] uppercase
+                                   tracking-wider
+                                   font-semibold text-slate-400"
+                        >
+                            Control financiero
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MENÚ
+            ================================================== -->
+
+            <nav
+                class="p-4 space-y-1 overflow-y-auto"
+            >
+
+                <!-- Dashboard -->
+
+                <a
+                    href="index.html"
+                    class="flex items-center gap-3
+                           px-4 py-3 rounded-xl
+                           text-slate-600
+                           hover:bg-slate-50
+                           hover:text-blue-600
+                           transition"
+                >
+
+                    <span
+                        class="flex h-9 w-9 items-center
+                               justify-center rounded-lg
+                               bg-slate-100"
+                    >
+                        🏠
+                    </span>
+
+                    <span
+                        class="font-semibold"
+                    >
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- Clientes -->
+
+                <a
+                    href="clientes.html"
+                    class="flex items-center gap-3
+                           px-4 py-3 rounded-xl
+                           text-slate-600
+                           hover:bg-slate-50
+                           hover:text-blue-600
+                           transition"
+                >
+
+                    <span
+                        class="flex h-9 w-9 items-center
+                               justify-center rounded-lg
+                               bg-slate-100"
+                    >
+                        👥
+                    </span>
+
+                    <span
+                        class="font-semibold"
+                    >
+                        Clientes
+                    </span>
+
+                </a>
+
+
+                <!-- Deudas -->
+
+                <a
+                    href="deudas.html"
+                    class="flex items-center gap-3
+                           px-4 py-3 rounded-xl
+                           text-slate-600
+                           hover:bg-slate-50
+                           hover:text-blue-600
+                           transition"
+                >
+
+                    <span
+                        class="flex h-9 w-9 items-center
+                               justify-center rounded-lg
+                               bg-slate-100"
+                    >
+                        💳
+                    </span>
+
+                    <span
+                        class="font-semibold"
+                    >
+                        Deudas
+                    </span>
+
+                </a>
+
+
+                <!-- Pagos -->
+
+                <a
+                    href="pagos.html"
+                    class="flex items-center gap-3
+                           px-4 py-3 rounded-xl
+                           text-slate-600
+                           hover:bg-slate-50
+                           hover:text-blue-600
+                           transition"
+                >
+
+                    <span
+                        class="flex h-9 w-9 items-center
+                               justify-center rounded-lg
+                               bg-slate-100"
+                    >
+                        💰
+                    </span>
+
+                    <span
+                        class="font-semibold"
+                    >
+                        Pagos
+                    </span>
+
+                </a>
+
+
+                <!-- Ahorros -->
+
+                <a
+                    href="ahorros.html"
+                    aria-current="page"
+                    class="flex items-center gap-3
+                           px-4 py-3 rounded-xl
+                           bg-blue-50 text-blue-700
+                           ring-1 ring-blue-100"
+                >
+
+                    <span
+                        class="flex h-9 w-9 items-center
+                               justify-center rounded-lg
+                               bg-blue-600 text-white"
+                    >
+                        🐷
+                    </span>
+
+                    <span
+                        class="font-bold"
+                    >
+                        Ahorros
+                    </span>
+
+                </a>
+
+
+                <!-- Historial -->
+
+                <a
+                    href="historial.html"
+                    class="flex items-center gap-3
+                           px-4 py-3 rounded-xl
+                           text-slate-600
+                           hover:bg-slate-50
+                           hover:text-blue-600
+                           transition"
+                >
+
+                    <span
+                        class="flex h-9 w-9 items-center
+                               justify-center rounded-lg
+                               bg-slate-100"
+                    >
+                        📊
+                    </span>
+
+                    <span
+                        class="font-semibold"
+                    >
+                        Historial
+                    </span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- =================================================
+                 PIE SIDEBAR
+            ================================================== -->
+
+            <div
+                class="absolute bottom-0 left-0 right-0
+                       border-t border-slate-100
+                       p-4"
+            >
+
+                <div
+                    class="rounded-xl
+                           border border-slate-200
+                           bg-slate-50
+                           p-4"
+                >
+
+                    <p
+                        class="text-[10px]
+                               uppercase
+                               tracking-wider
+                               font-bold
+                               text-slate-400"
+                    >
+                        Módulo
+                    </p>
+
+                    <p
+                        class="mt-1
+                               text-sm
+                               font-bold
+                               text-slate-800"
+                    >
+                        Ahorro personal
+                    </p>
+
+                    <p
+                        class="mt-1
+                               text-xs
+                               text-slate-500"
+                    >
+                        Registra el dinero que decides guardar.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             OVERLAY MOBILE
+        ================================================== -->
+
+        <div
+            id="sidebarOverlay"
+            class="fixed inset-0 z-40
+                   hidden
+                   bg-slate-950/40
+                   backdrop-blur-sm
+                   lg:hidden"
+        ></div>
+
+
+        <!-- =================================================
+             CONTENIDO PRINCIPAL
+        ================================================== -->
+
+        <div
+            class="flex-1 min-w-0
+                   lg:ml-64"
+        >
+
+
+            <!-- =================================================
+                 HEADER
+            ================================================== -->
+
+            <header
+                class="sticky top-0 z-30
+                       bg-white/95
+                       backdrop-blur
+                       border-b border-slate-200"
+            >
+
+                <div
+                    class="h-20 px-4
+                           sm:px-6
+                           lg:px-8
+                           flex items-center
+                           justify-between"
+                >
+
+                    <div
+                        class="flex items-center gap-3"
+                    >
+
+                        <button
+                            id="menuButton"
+                            type="button"
+                            aria-label="Abrir menú"
+                            class="lg:hidden
+                                   w-10 h-10
+                                   rounded-xl
+                                   border border-slate-200
+                                   bg-white
+                                   hover:bg-slate-50
+                                   flex items-center
+                                   justify-center"
+                        >
+                            ☰
+                        </button>
+
+
+                        <div>
+
+                            <p
+                                class="hidden sm:block
+                                       text-[10px]
+                                       uppercase
+                                       tracking-[0.18em]
+                                       font-bold
+                                       text-blue-600"
+                            >
+                                Mi Control de Cobros
+                            </p>
+
+                            <h2
+                                class="text-xl
+                                       sm:text-2xl
+                                       font-black
+                                       text-slate-950"
+                            >
+                                Registrar ahorro
+                            </h2>
+
+                            <p
+                                class="text-xs
+                                       sm:text-sm
+                                       text-slate-500"
+                            >
+                                Separa una parte de tus ingresos.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="hidden sm:flex
+                               items-center gap-2
+                               rounded-full
+                               bg-emerald-50
+                               px-3 py-2
+                               text-sm
+                               font-semibold
+                               text-emerald-700"
+                    >
+
+                        🐷 Ahorro personal
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =================================================
+                 MAIN
+            ================================================== -->
+
+            <main
+                class="p-4
+                       sm:p-6
+                       lg:p-8"
+            >
+
+                <div
+                    class="max-w-5xl
+                           mx-auto"
+                >
+<!-- =================================================
+                         MENSAJE
+                    ================================================== -->
+
+                    <div
+                        id="formMessage"
+                        class="hidden mb-6
+                               border rounded-xl
+                               p-4"
+                        role="alert"
+                        aria-live="polite"
+                    >
+
+                        <div
+                            class="flex items-start
+                                   gap-3"
+                        >
+
+                            <div
+                                id="formMessageIcon"
+                                class="w-8 h-8
+                                       flex-shrink-0
+                                       rounded-full
+                                       flex items-center
+                                       justify-center
+                                       font-bold"
+                            ></div>
+
+                            <div>
+
+                                <h3
+                                    id="formMessageTitle"
+                                    class="font-bold"
+                                ></h3>
+
+                                <p
+                                    id="formMessageText"
+                                    class="text-sm
+                                           mt-1"
+                                ></p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- =================================================
+                         FORMULARIO DE AHORRO
+                    ================================================== -->
+
+                    <section
+                        class="overflow-hidden rounded-2xl border border-slate-200
+                               bg-white shadow-soft"
+                    >
+
+                        <!-- ENCABEZADO COMPACTO -->
+
+                        <div
+                            class="border-b border-slate-100
+                                   bg-gradient-to-r from-emerald-50
+                                   via-white to-blue-50
+                                   px-5 py-4 sm:px-6"
+                        >
+
+                            <div class="flex items-center justify-between gap-4">
+
+                                <div class="flex items-center gap-3">
+
+                                    <div
+                                        class="flex h-10 w-10 shrink-0
+                                               items-center justify-center
+                                               rounded-xl bg-emerald-100
+                                               text-lg"
+                                    >
+                                        🐷
+                                    </div>
+
+                                    <div>
+                                        <h3
+                                            class="text-base font-black text-slate-950
+                                                   sm:text-lg"
+                                        >
+                                            Registrar ahorro
+                                        </h3>
+
+                                        <p class="text-xs text-slate-500">
+                                            Completa los datos principales.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="hidden rounded-full bg-emerald-100
+                                           px-3 py-1.5 text-[10px]
+                                           font-black uppercase tracking-wider
+                                           text-emerald-700 sm:inline-flex"
+                                >
+                                    Ahorro personal
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FORMULARIO -->
+
+                        <form
+                            id="ahorroForm"
+                            class="p-5 sm:p-6"
+                            novalidate
+                        >
+
+                            <!-- CAMPOS PRINCIPALES -->
+
+                            <div class="grid gap-4 md:grid-cols-2">
+
+                                <!-- FECHA -->
+
+                                <div>
+
+                                    <label
+                                        for="fecha"
+                                        class="mb-1.5 block text-xs
+                                               font-black uppercase tracking-wider
+                                               text-slate-700"
+                                    >
+                                        Fecha
+                                        <span class="text-red-500">*</span>
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        id="fecha"
+                                        name="fecha"
+                                        required
+                                        class="w-full rounded-xl border
+                                               border-slate-200 bg-slate-50
+                                               px-3.5 py-2.5 text-sm
+                                               font-semibold text-slate-800
+                                               outline-none transition
+                                               focus:border-blue-500
+                                               focus:bg-white focus:ring-4
+                                               focus:ring-blue-100"
+                                    >
+
+                                    <p
+                                        id="fechaError"
+                                        class="mt-1.5 hidden text-xs
+                                               font-semibold text-red-600"
+                                    ></p>
+
+                                </div>
+
+
+                                <!-- MONTO -->
+
+                                <div>
+
+                                    <label
+                                        for="monto"
+                                        class="mb-1.5 block text-xs
+                                               font-black uppercase tracking-wider
+                                               text-slate-700"
+                                    >
+                                        Monto a ahorrar
+                                        <span class="text-red-500">*</span>
+                                    </label>
+
+                                    <div class="relative">
+
+                                        <span
+                                            class="pointer-events-none absolute
+                                                   left-3.5 top-1/2 -translate-y-1/2
+                                                   text-sm font-black text-slate-400"
+                                        >
+                                            $
+                                        </span>
+
+                                        <input
+                                            type="number"
+                                            id="monto"
+                                            name="monto"
+                                            min="0.01"
+                                            step="0.01"
+                                            inputmode="decimal"
+                                            placeholder="0,00"
+                                            required
+                                            autocomplete="off"
+                                            class="w-full rounded-xl border
+                                                   border-slate-200 bg-slate-50
+                                                   py-2.5 pl-8 pr-3.5 text-sm
+                                                   font-semibold text-slate-800
+                                                   outline-none transition
+                                                   focus:border-blue-500
+                                                   focus:bg-white focus:ring-4
+                                                   focus:ring-blue-100"
+                                        >
+
+                                    </div>
+
+                                    <p
+                                        id="montoError"
+                                        class="mt-1.5 hidden text-xs
+                                               font-semibold text-red-600"
+                                    ></p>
+
+                                </div>
+
+
+                                <!-- CONCEPTO -->
+
+                                <div class="md:col-span-2">
+
+                                    <label
+                                        for="concepto"
+                                        class="mb-1.5 block text-xs
+                                               font-black uppercase tracking-wider
+                                               text-slate-700"
+                                    >
+                                        Concepto
+                                        <span class="text-red-500">*</span>
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="concepto"
+                                        name="concepto"
+                                        maxlength="100"
+                                        required
+                                        autocomplete="off"
+                                        placeholder="Ej.: Ahorro de trabajo"
+                                        class="w-full rounded-xl border
+                                               border-slate-200 bg-slate-50
+                                               px-3.5 py-2.5 text-sm
+                                               font-semibold text-slate-800
+                                               outline-none transition
+                                               focus:border-blue-500
+                                               focus:bg-white focus:ring-4
+                                               focus:ring-blue-100"
+                                    >
+
+                                    <p
+                                        id="conceptoError"
+                                        class="mt-1.5 hidden text-xs
+                                               font-semibold text-red-600"
+                                    ></p>
+
+                                </div>
+
+
+                                <!-- OBSERVACIÓN -->
+
+                                <div class="md:col-span-2">
+
+                                    <label
+                                        for="observacion"
+                                        class="mb-1.5 block text-xs
+                                               font-black uppercase tracking-wider
+                                               text-slate-700"
+                                    >
+                                        Observación
+                                        <span class="font-normal text-slate-400">
+                                            (opcional)
+                                        </span>
+                                    </label>
+
+                                    <textarea
+                                        id="observacion"
+                                        name="observacion"
+                                        rows="2"
+                                        maxlength="500"
+                                        placeholder="Ej.: Dinero separado de mis trabajos."
+                                        class="w-full resize-none rounded-xl
+                                               border border-slate-200 bg-slate-50
+                                               px-3.5 py-2.5 text-sm
+                                               font-medium text-slate-800
+                                               outline-none transition
+                                               focus:border-blue-500
+                                               focus:bg-white focus:ring-4
+                                               focus:ring-blue-100"
+                                    ></textarea>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- RESUMEN DINÁMICO -->
+
+                            <div
+                                class="mt-5 flex items-center justify-between
+                                       gap-4 rounded-2xl border border-blue-100
+                                       bg-gradient-to-r from-blue-50 to-cyan-50
+                                       px-4 py-3.5"
+                            >
+
+                                <div class="min-w-0">
+
+                                    <p
+                                        class="text-[10px] font-black uppercase
+                                               tracking-wider text-blue-700"
+                                    >
+                                        Total a guardar
+                                    </p>
+
+                                    <p
+                                        class="mt-0.5 truncate text-xs
+                                               text-slate-500"
+                                    >
+                                        Se sumará a tu ahorro.
+                                    </p>
+
+                                </div>
+
+                                <div
+                                    id="resumenMonto"
+                                    class="shrink-0 text-2xl
+                                           font-black tracking-tight
+                                           text-blue-700"
+                                >
+                                    $0,00
+                                </div>
+
+                            </div>
+
+
+                            <!-- BOTONES -->
+
+                            <div
+                                class="mt-5 flex flex-col-reverse gap-2.5
+                                       sm:flex-row sm:justify-end"
+                            >
+
+                                <a
+                                    href="ahorros.html"
+                                    class="inline-flex items-center justify-center
+                                           gap-2 rounded-xl border border-slate-200
+                                           bg-white px-4 py-2.5 text-sm
+                                           font-bold text-slate-700 transition
+                                           hover:bg-slate-50"
+                                >
+                                    Cancelar
+                                </a>
+
+
+                                <button
+                                    id="guardarAhorroButton"
+                                    type="submit"
+                                    disabled
+                                    class="inline-flex items-center justify-center
+                                           gap-2 rounded-xl bg-blue-600
+                                           px-5 py-2.5 text-sm font-black text-white
+                                           shadow-sm transition hover:bg-blue-700
+                                           focus:outline-none focus:ring-4
+                                           focus:ring-blue-100 disabled:cursor-not-allowed
+                                           disabled:opacity-50"
+                                >
+
+                                    <span
+                                        id="guardarAhorroIcon"
+                                        aria-hidden="true"
+                                    >
+                                        💾
+                                    </span>
+
+                                    <span
+                                        id="guardarAhorroSpinner"
+                                        class="hidden"
+                                        aria-hidden="true"
+                                    >
+                                        ⏳
+                                    </span>
+
+                                    <span id="guardarAhorroText">
+                                        Guardar ahorro
+                                    </span>
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </section>
+
+
+</div>
+
+            </main>
+
+
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
+
+            <footer
+                class="border-t
+                       border-slate-200
+                       bg-white
+                       px-6 py-5"
+            >
+
+                <div
+                    class="mx-auto
+                           max-w-5xl
+                           flex
+                           flex-col
+                           sm:flex-row
+                           justify-between
+                           gap-2
+                           text-xs
+                           text-slate-400"
+                >
+
+                    <p>
+                        © 2026 Mi Control de Cobros
+                    </p>
+
+                    <p>
+                        Gestión financiera segura y organizada
+                    </p>
+
+                </div>
+
+            </footer>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MENÚ RESPONSIVE
+    ====================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const menuButton =
+                    document.getElementById(
+                        "menuButton"
+                    );
+
+                const sidebar =
+                    document.getElementById(
+                        "sidebar"
+                    );
+
+                const sidebarOverlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                function abrirSidebar() {
+
+                    if (!sidebar) {
+                        return;
+                    }
+
+                    sidebar.classList.remove(
+                        "-translate-x-full"
+                    );
+
+                    sidebarOverlay?.classList.remove(
+                        "hidden"
+                    );
+
+                    document.body.classList.add(
+                        "overflow-hidden"
+                    );
+                }
+
+
+                function cerrarSidebar() {
+
+                    if (!sidebar) {
+                        return;
+                    }
+
+                    if (
+                        window.innerWidth <
+                        1024
+                    ) {
+
+                        sidebar.classList.add(
+                            "-translate-x-full"
+                        );
+                    }
+
+                    sidebarOverlay?.classList.add(
+                        "hidden"
+                    );
+
+                    document.body.classList.remove(
+                        "overflow-hidden"
+                    );
+                }
+
+
+                menuButton?.addEventListener(
+                    "click",
+                    () => {
+
+                        const abierto =
+                            sidebar &&
+                            !sidebar.classList.contains(
+                                "-translate-x-full"
+                            );
+
+                        if (abierto) {
+
+                            cerrarSidebar();
+
+                        } else {
+
+                            abrirSidebar();
+
+                        }
+
+                    }
+                );
+
+
+                sidebarOverlay?.addEventListener(
+                    "click",
+                    cerrarSidebar
+                );
+
+
+                sidebar
+                    ?.querySelectorAll("a")
+                    .forEach(
+                        (link) => {
+
+                            link.addEventListener(
+                                "click",
+                                () => {
+
+                                    if (
+                                        window.innerWidth <
+                                        1024
+                                    ) {
+
+                                        cerrarSidebar();
+                                    }
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+                window.addEventListener(
+                    "resize",
+                    () => {
+
+                        if (
+                            window.innerWidth >=
+                            1024
+                        ) {
+
+                            sidebar?.classList.remove(
+                                "-translate-x-full"
+                            );
+
+                            sidebarOverlay?.classList.add(
+                                "hidden"
+                            );
+
+                            document.body.classList.remove(
+                                "overflow-hidden"
+                            );
+
+                        } else {
+
+                            sidebar?.classList.add(
+                                "-translate-x-full"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+    <!-- =====================================================
+         JAVASCRIPT DEL FORMULARIO
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="js/ahorros-nuevo.js"
+    ></script>
+
+
+    <!-- =====================================================
+         PWA
+    ====================================================== -->
+
+    <script
+        src="js/pwa.js"
+    ></script>
+
+</body>
+</html>

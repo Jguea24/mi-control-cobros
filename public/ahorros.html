@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Ahorros personales - Mi Control de Cobros"
+  >
+
+  <meta
+    name="theme-color"
+    content="#2563eb"
+  >
+
+  <title>Ahorros | Mi Control de Cobros</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: "#eff6ff",
+              100: "#dbeafe",
+              200: "#bfdbfe",
+              300: "#93c5fd",
+              400: "#60a5fa",
+              500: "#3b82f6",
+              600: "#2563eb",
+              700: "#1d4ed8",
+              800: "#1e40af",
+              900: "#1e3a8a"
+            }
+          },
+          boxShadow: {
+            soft: "0 10px 30px rgba(15,23,42,.06)",
+            card: "0 4px 18px rgba(15,23,42,.06)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Estilos del proyecto -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/icon.svg">
+
+  <style>
+    /* =========================================================
+       TABLA: TEXTO OSCURO Y ALTO CONTRASTE
+    ========================================================== */
+
+    #resumenMensualBody td {
+      color: #0f172a !important;
+      font-weight: 700;
+    }
+
+    #resumenMensualBody td:nth-child(2) {
+      color: #0f172a !important;
+      font-weight: 800;
+    }
+
+    #resumenMensualBody td:nth-child(3) {
+      color: #0f172a !important;
+      font-weight: 800;
+    }
+
+    #resumenMensualBody td:nth-child(4) {
+      color: #0f172a !important;
+      font-weight: 800;
+    }
+
+    table thead th {
+      color: #0f172a !important;
+      font-weight: 900 !important;
+      background-color: #f1f5f9 !important;
+    }
+
+    table tbody tr {
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* Mantener los valores de resumen con contraste */
+    #resumenMensualTotalGanado,
+    #resumenMensualTotalAhorrado,
+    #resumenMensualSaldo {
+      font-weight: 900;
+    }
+  </style>
+
+
+  <style>
+    /* =========================================================
+       TABLA RESUMEN MENSUAL
+    ========================================================== */
+
+    #resumenMensualBody tr {
+      transition: background-color 0.2s ease;
+    }
+
+    #resumenMensualBody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    #resumenMensualBody td {
+      color: #0f172a !important;
+      font-weight: 700;
+    }
+
+    #resumenMensualBody td:first-child {
+      font-weight: 800;
+    }
+
+    #resumenMensualBody td:nth-child(2),
+    #resumenMensualBody td:nth-child(3),
+    #resumenMensualBody td:nth-child(4) {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    #resumenMensualBody td:nth-child(2) {
+      color: #2563eb !important;
+    }
+
+    #resumenMensualBody td:nth-child(3) {
+      color: #059669 !important;
+    }
+
+    #resumenMensualBody td:nth-child(4) {
+      color: #7c3aed !important;
+    }
+  </style>
+
+</head>
+
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+
+  <div class="min-h-screen lg:flex">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-50 flex w-72
+             -translate-x-full flex-col border-r border-slate-200
+             bg-white shadow-xl transition-transform duration-300
+             lg:translate-x-0"
+    >
+
+      <div class="relative flex h-20 items-center border-b border-slate-100 px-5">
+
+        <button
+          id="menuButton"
+          type="button"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="sidebar"
+          class="fixed left-5 top-5 z-[60] flex h-10 w-10
+                 items-center justify-center rounded-xl
+                 border border-slate-200 bg-white text-slate-600
+                 shadow-sm transition hover:bg-slate-50
+                 hover:text-primary-600 focus:outline-none
+                 focus:ring-4 focus:ring-primary-100"
+        >
+          <svg
+            id="menuIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+
+        <div class="ml-[3.75rem]">
+          <h1 class="text-base font-black tracking-tight text-slate-950">
+            Mi Control
+          </h1>
+
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            Control financiero
+          </p>
+        </div>
+
+      </div>
+
+
+      <nav
+        class="flex-1 space-y-1 overflow-y-auto px-4 py-6"
+        aria-label="Navegación principal"
+      >
+
+        <a
+          href="index.html"
+          class="flex items-center gap-3 rounded-xl px-4 py-3
+                 text-slate-600 transition hover:bg-slate-50
+                 hover:text-primary-600"
+        >
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
+            🏠
+          </span>
+          <span class="font-semibold">Dashboard</span>
+        </a>
+
+
+        <a
+          href="clientes.html"
+          class="flex items-center gap-3 rounded-xl px-4 py-3
+                 text-slate-600 transition hover:bg-slate-50
+                 hover:text-primary-600"
+        >
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
+            👥
+          </span>
+          <span class="font-semibold">Clientes</span>
+        </a>
+
+
+        <a
+          href="deudas.html"
+          class="flex items-center gap-3 rounded-xl px-4 py-3
+                 text-slate-600 transition hover:bg-slate-50
+                 hover:text-primary-600"
+        >
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
+            💳
+          </span>
+          <span class="font-semibold">Deudas</span>
+        </a>
+
+
+        <a
+          href="pagos.html"
+          class="flex items-center gap-3 rounded-xl px-4 py-3
+                 text-slate-600 transition hover:bg-slate-50
+                 hover:text-primary-600"
+        >
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
+            💰
+          </span>
+          <span class="font-semibold">Pagos</span>
+        </a>
+
+
+        <a
+          href="ahorros.html"
+          aria-current="page"
+          class="flex items-center gap-3 rounded-xl bg-primary-50
+                 px-4 py-3 text-primary-700 ring-1 ring-primary-100"
+        >
+          <span
+            class="flex h-9 w-9 items-center justify-center rounded-lg
+                   bg-primary-600 text-white shadow-sm"
+          >
+            🐷
+          </span>
+          <span class="font-bold">Ahorros</span>
+        </a>
+
+
+        <a
+          href="historial.html"
+          class="flex items-center gap-3 rounded-xl px-4 py-3
+                 text-slate-600 transition hover:bg-slate-50
+                 hover:text-primary-600"
+        >
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
+            🕒
+          </span>
+          <span class="font-semibold">Historial</span>
+        </a>
+
+      </nav>
+
+
+      <div class="border-t border-slate-100 p-4">
+        <div class="rounded-xl bg-slate-50 p-4">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Módulo
+          </p>
+
+          <p class="mt-1 text-sm font-bold text-slate-800">
+            Ahorro personal
+          </p>
+        </div>
+      </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         OVERLAY
+    ====================================================== -->
+
+    <div
+      id="sidebarOverlay"
+      class="fixed inset-0 z-40 hidden bg-slate-950/40 backdrop-blur-sm lg:hidden"
+    ></div>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <div class="min-w-0 flex-1 lg:ml-72">
+
+      <!-- HEADER -->
+
+      <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+
+        <div class="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+
+          <div>
+            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-primary-600">
+              Mi Control de Cobros
+            </p>
+
+            <h2 class="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
+              Ahorros
+            </h2>
+          </div>
+
+
+          <div class="flex items-center gap-3">
+
+            <a
+              href="ahorros-nuevo.html"
+              class="inline-flex items-center gap-2 rounded-xl
+                     bg-primary-600 px-4 py-2.5 text-sm font-bold
+                     text-white shadow-sm transition
+                     hover:bg-primary-700 focus:outline-none
+                     focus:ring-4 focus:ring-primary-100"
+            >
+              <span class="text-lg leading-none">＋</span>
+              Nuevo ahorro
+            </a>
+
+            <div
+              class="hidden h-10 w-10 items-center justify-center
+                     rounded-full bg-primary-100 font-black
+                     text-primary-700 sm:flex"
+            >
+              U
+            </div>
+
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <!-- MAIN -->
+
+      <main class="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+
+        <div class="mx-auto max-w-7xl">
+
+          <!-- =================================================
+               TÍTULO
+          ================================================== -->
+
+          <section class="mb-6">
+
+            <div
+              class="relative overflow-hidden rounded-3xl
+                     bg-slate-950 px-6 py-7 text-white
+                     shadow-soft sm:px-8"
+            >
+
+              <div
+                class="absolute -right-16 -top-20 h-48 w-48
+                       rounded-full bg-primary-600/20 blur-3xl"
+              ></div>
+
+              <div
+                class="absolute -bottom-20 -left-10 h-44 w-44
+                       rounded-full bg-emerald-500/10 blur-3xl"
+              ></div>
+
+              <div class="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+                <div>
+                  <div
+                    class="mb-3 inline-flex items-center gap-2 rounded-full
+                           bg-white/10 px-3 py-1.5 text-[10px]
+                           font-black uppercase tracking-wider text-emerald-300"
+                  >
+                    <span>🐷</span>
+                    Ahorro personal
+                  </div>
+
+                  <h1 class="text-2xl font-black tracking-tight sm:text-3xl">
+                    Control de ahorros
+                  </h1>
+
+                  <p class="mt-1 text-sm text-slate-300">
+                    Registra y revisa lo que has separado de tus ingresos.
+                  </p>
+                </div>
+
+                <a
+                  href="ahorros-nuevo.html"
+                  class="inline-flex shrink-0 items-center justify-center
+                         gap-2 rounded-xl bg-white px-4 py-2.5
+                         text-sm font-black text-slate-950
+                         transition hover:bg-slate-100"
+                >
+                  <span class="text-lg leading-none">＋</span>
+                  Registrar ahorro
+                </a>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- =================================================
+               FILTROS
+          ================================================== -->
+
+          <section class="mb-6">
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
+
+              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+
+                <div>
+                  <label
+                    for="periodoFiltro"
+                    class="mb-1.5 block text-[11px] font-black uppercase
+                           tracking-wider text-slate-400"
+                  >
+                    Período
+                  </label>
+
+                  <select
+                    id="periodoFiltro"
+                    class="w-full rounded-xl border border-slate-200
+                           bg-white px-3.5 py-2.5 text-sm font-semibold
+                           text-slate-700 outline-none transition
+                           focus:border-primary-500 focus:ring-4
+                           focus:ring-primary-100"
+                  >
+                    <option value="hoy">Hoy</option>
+                    <option value="semana">Esta semana</option>
+                    <option value="mes" selected>Este mes</option>
+                    <option value="personalizado">Personalizado</option>
+                  </select>
+                </div>
+
+
+                <div id="fechaInicialContainer" class="hidden">
+                  <label
+                    for="fechaInicial"
+                    class="mb-1.5 block text-[11px] font-black uppercase
+                           tracking-wider text-slate-400"
+                  >
+                    Desde
+                  </label>
+
+                  <input
+                    type="date"
+                    id="fechaInicial"
+                    class="w-full rounded-xl border border-slate-200
+                           bg-white px-3.5 py-2.5 text-sm font-semibold
+                           text-slate-700 outline-none transition
+                           focus:border-primary-500 focus:ring-4
+                           focus:ring-primary-100"
+                  >
+                </div>
+
+
+                <div id="fechaFinalContainer" class="hidden">
+                  <label
+                    for="fechaFinal"
+                    class="mb-1.5 block text-[11px] font-black uppercase
+                           tracking-wider text-slate-400"
+                  >
+                    Hasta
+                  </label>
+
+                  <input
+                    type="date"
+                    id="fechaFinal"
+                    class="w-full rounded-xl border border-slate-200
+                           bg-white px-3.5 py-2.5 text-sm font-semibold
+                           text-slate-700 outline-none transition
+                           focus:border-primary-500 focus:ring-4
+                           focus:ring-primary-100"
+                  >
+                </div>
+
+
+                <div class="flex items-end">
+                  <button
+                    id="actualizarAhorroButton"
+                    type="button"
+                    class="flex w-full items-center justify-center
+                           gap-2 rounded-xl bg-slate-100 px-4 py-2.5
+                           text-sm font-bold text-slate-700 transition
+                           hover:bg-slate-200 focus:outline-none
+                           focus:ring-4 focus:ring-primary-100"
+                  >
+                    <span>↻</span>
+                    Actualizar
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+          <!-- =================================================
+               RESUMEN FINANCIERO
+          ================================================== -->
+
+          <section
+            class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            aria-label="Resumen financiero"
+          >
+
+            <!-- SALDO TOTAL GANADO -->
+
+            <article
+              class="relative overflow-hidden rounded-2xl border border-blue-100
+                     bg-gradient-to-br from-blue-50 via-white to-cyan-50
+                     p-4 shadow-card transition duration-200
+                     hover:-translate-y-0.5 hover:shadow-soft"
+            >
+              <div
+                class="absolute inset-x-0 top-0 h-1
+                       bg-gradient-to-r from-blue-500 to-cyan-400"
+              ></div>
+
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="flex h-10 w-10 items-center justify-center
+                         rounded-xl bg-blue-100 text-blue-700"
+                >
+                  💰
+                </div>
+
+                <span
+                  class="rounded-full bg-blue-100 px-2 py-1
+                         text-[9px] font-black text-blue-700"
+                >
+                  INGRESOS
+                </span>
+              </div>
+
+              <p
+                class="mt-3 text-[10px] font-black uppercase
+                       tracking-wider text-slate-400"
+              >
+                Saldo total ganado
+              </p>
+
+              <strong
+                id="ahorroGanadoAcumulado"
+                class="mt-1 block text-2xl font-black
+                       tracking-tight text-blue-600"
+              >
+                $0,00
+              </strong>
+
+              <small
+                id="ahorroGanadoAcumuladoDetalle"
+                class="mt-1 block text-[11px] font-medium
+                       text-slate-400"
+              >
+                0 pagos registrados
+              </small>
+            </article>
+
+
+            <!-- TOTAL AHORRADO -->
+
+            <article
+              class="relative overflow-hidden rounded-2xl border border-emerald-100
+                     bg-gradient-to-br from-emerald-50 via-white to-teal-50
+                     p-4 shadow-card transition duration-200
+                     hover:-translate-y-0.5 hover:shadow-soft"
+            >
+              <div
+                class="absolute inset-x-0 top-0 h-1
+                       bg-gradient-to-r from-emerald-500 to-teal-400"
+              ></div>
+
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="flex h-10 w-10 items-center justify-center
+                         rounded-xl bg-emerald-100 text-emerald-700"
+                >
+                  🐷
+                </div>
+
+                <span
+                  class="rounded-full bg-emerald-100 px-2 py-1
+                         text-[9px] font-black text-emerald-700"
+                >
+                  AHORRO
+                </span>
+              </div>
+
+              <p
+                class="mt-3 text-[10px] font-black uppercase
+                       tracking-wider text-slate-400"
+              >
+                Total ahorrado
+              </p>
+
+              <strong
+                id="ahorroTotalAcumulado"
+                class="mt-1 block text-2xl font-black
+                       tracking-tight text-emerald-600"
+              >
+                $0,00
+              </strong>
+
+              <small
+                class="mt-1 block text-[11px] font-medium
+                       text-slate-400"
+              >
+                Dinero separado
+              </small>
+            </article>
+
+
+            <!-- SALDO DISPONIBLE -->
+
+            <article
+              class="relative overflow-hidden rounded-2xl border border-violet-100
+                     bg-gradient-to-br from-violet-50 via-white to-fuchsia-50
+                     p-4 shadow-card transition duration-200
+                     hover:-translate-y-0.5 hover:shadow-soft"
+            >
+              <div
+                class="absolute inset-x-0 top-0 h-1
+                       bg-gradient-to-r from-violet-500 to-fuchsia-400"
+              ></div>
+
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="flex h-10 w-10 items-center justify-center
+                         rounded-xl bg-violet-100 text-violet-700"
+                >
+                  💵
+                </div>
+
+                <span
+                  class="rounded-full bg-violet-100 px-2 py-1
+                         text-[9px] font-black text-violet-700"
+                >
+                  DISPONIBLE
+                </span>
+              </div>
+
+              <p
+                class="mt-3 text-[10px] font-black uppercase
+                       tracking-wider text-slate-400"
+              >
+                Saldo disponible
+              </p>
+
+              <strong
+                id="ahorroSaldoTotal"
+                class="mt-1 block text-2xl font-black
+                       tracking-tight text-violet-600"
+              >
+                $0,00
+              </strong>
+
+              <small
+                id="ahorroSaldoTotalDetalle"
+                class="mt-1 block text-[11px] font-medium
+                       text-slate-400"
+              >
+                $0,00 ganado − $0,00 ahorrado
+              </small>
+            </article>
+
+
+            <!-- PORCENTAJE DE AHORRO -->
+
+            <article
+              class="relative overflow-hidden rounded-2xl border border-amber-100
+                     bg-gradient-to-br from-amber-50 via-white to-yellow-50
+                     p-4 shadow-card transition duration-200
+                     hover:-translate-y-0.5 hover:shadow-soft"
+            >
+              <div
+                class="absolute inset-x-0 top-0 h-1
+                       bg-gradient-to-r from-amber-400 to-orange-400"
+              ></div>
+
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="flex h-10 w-10 items-center justify-center
+                         rounded-xl bg-amber-100 text-amber-700
+                         text-lg font-black"
+                >
+                  %
+                </div>
+
+                <span
+                  class="rounded-full bg-amber-100 px-2 py-1
+                         text-[9px] font-black text-amber-700"
+                >
+                  META
+                </span>
+              </div>
+
+              <p
+                class="mt-3 text-[10px] font-black uppercase
+                       tracking-wider text-slate-400"
+              >
+                Porcentaje de ahorro
+              </p>
+
+              <strong
+                id="ahorroPorcentaje"
+                class="mt-1 block text-2xl font-black
+                       tracking-tight text-amber-600"
+              >
+                0,00%
+              </strong>
+
+              <small
+                id="ahorroPorcentajeDetalle"
+                class="mt-1 block text-[11px] font-medium
+                       text-slate-400"
+              >
+                Del período seleccionado
+              </small>
+            </article>
+
+          </section>
+
+
+
+<!-- =================================================
+               RESUMEN POR MES
+          ================================================== -->
+
+          <section
+            class="mb-6 overflow-hidden rounded-2xl
+                   border border-slate-200 bg-white shadow-card"
+          >
+
+            <div
+              class="flex items-center justify-between gap-4
+                     border-b border-slate-100 px-5 py-4"
+            >
+              <div>
+                <h2 class="text-base font-black text-slate-950">
+                  Resumen mensual
+                </h2>
+
+                <p class="mt-0.5 text-xs text-slate-400">
+                  Ganado, ahorrado y saldo disponible.
+                </p>
+              </div>
+
+              <span
+                class="rounded-full bg-blue-50 px-3 py-1.5
+                       text-[10px] font-black text-blue-700"
+              >
+                📊 Histórico
+              </span>
+            </div>
+
+
+            <div class="overflow-x-auto">
+
+              <table class="min-w-full">
+
+                <thead class="border-b border-slate-200 bg-slate-100">
+                  <tr>
+                    <th class="px-5 py-3 text-left text-[10px] font-black uppercase tracking-wider text-slate-950">
+                      Mes
+                    </th>
+
+                    <th class="px-5 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-950">
+                      Ganado
+                    </th>
+
+                    <th class="px-5 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-950">
+                      Ahorrado
+                    </th>
+
+                    <th class="px-5 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-950">
+                      Disponible
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody
+                  id="resumenMensualBody"
+                  class="divide-y divide-slate-100"
+                ></tbody>
+
+              </table>
+
+            </div>
+<div
+              id="resumenMensualEmpty"
+              class="hidden px-6 py-10 text-center"
+            >
+              <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xl">
+                📊
+              </div>
+
+              <p class="mt-2 text-sm font-semibold text-slate-500">
+                Sin movimientos mensuales.
+              </p>
+            </div>
+
+          </section>
+</div>
+
+      </main>
+
+
+      <!-- FOOTER -->
+
+      <footer class="border-t border-slate-200 bg-white px-6 py-4">
+
+        <div
+          class="mx-auto flex max-w-7xl flex-col justify-between
+                 gap-1 text-[11px] text-slate-400 sm:flex-row"
+        >
+          <p>© 2026 Mi Control de Cobros</p>
+          <p>Gestión financiera segura y organizada</p>
+        </div>
+
+      </footer>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MENÚ RESPONSIVE
+  ====================================================== -->
+
+  <script>
+    (() => {
+
+      const menuButton =
+        document.getElementById("menuButton");
+
+      const sidebar =
+        document.getElementById("sidebar");
+
+      const sidebarOverlay =
+        document.getElementById("sidebarOverlay");
+
+      const menuIcon =
+        document.getElementById("menuIcon");
+
+      const MOBILE_BREAKPOINT = 1024;
+
+
+      function isMobile() {
+        return window.innerWidth < MOBILE_BREAKPOINT;
+      }
+
+
+      function updateIcon(open) {
+
+        if (!menuIcon) {
+          return;
+        }
+
+        menuIcon.innerHTML = open
+          ? `
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 6l12 12M18 6L6 18"
+              />
+            `
+          : `
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            `;
+      }
+
+
+      function setMenuState(open) {
+
+        if (!sidebar) {
+          return;
+        }
+
+        if (isMobile()) {
+
+          sidebar.classList.toggle(
+            "-translate-x-full",
+            !open
+          );
+
+          sidebarOverlay?.classList.toggle(
+            "hidden",
+            !open
+          );
+
+          document.body.classList.toggle(
+            "overflow-hidden",
+            open
+          );
+
+        } else {
+
+          sidebar.classList.remove(
+            "-translate-x-full"
+          );
+
+          sidebarOverlay?.classList.add(
+            "hidden"
+          );
+
+          document.body.classList.remove(
+            "overflow-hidden"
+          );
+        }
+
+        menuButton?.setAttribute(
+          "aria-expanded",
+          String(open)
+        );
+
+        menuButton?.setAttribute(
+          "aria-label",
+          open
+            ? "Cerrar menú"
+            : "Abrir menú"
+        );
+
+        updateIcon(open);
+      }
+
+
+      function getCurrentState() {
+
+        if (isMobile()) {
+
+          return !sidebar?.classList.contains(
+            "-translate-x-full"
+          );
+        }
+
+        return true;
+      }
+
+
+      menuButton?.addEventListener(
+        "click",
+        () => {
+          setMenuState(
+            !getCurrentState()
+          );
+        }
+      );
+
+
+      sidebarOverlay?.addEventListener(
+        "click",
+        () => {
+          setMenuState(false);
+        }
+      );
+
+
+      sidebar?.querySelectorAll("a")
+        .forEach((link) => {
+
+          link.addEventListener(
+            "click",
+            () => {
+
+              if (isMobile()) {
+                setMenuState(false);
+              }
+
+            }
+          );
+
+        });
+
+
+      window.addEventListener(
+        "resize",
+        () => {
+
+          setMenuState(
+            !isMobile()
+          );
+
+        }
+      );
+
+
+      setMenuState(false);
+
+    })();
+  </script>
+
+
+  <!-- =====================================================
+       JAVASCRIPT DE AHORROS
+  ====================================================== -->
+
+  <script
+    type="module"
+    src="js/ahorros.js"
+  ></script>
+
+
+  <!-- PWA -->
+
+  <script src="js/pwa.js"></script>
+
+</body>
+</html>

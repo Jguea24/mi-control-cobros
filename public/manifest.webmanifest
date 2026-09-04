@@ -1,0 +1,19 @@
+{
+  "name": "Mi Control de Cobros",
+  "short_name": "Cobros",
+  "description": "Sistema personal para controlar clientes, deudas, pagos y saldos pendientes.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

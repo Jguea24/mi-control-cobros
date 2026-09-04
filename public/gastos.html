@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Control de gastos personales - Mi Control de Cobros"
+  >
+
+  <meta name="theme-color" content="#e11d48">
+
+  <title>Gastos | Mi Control de Cobros</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: "#eff6ff",
+              100: "#dbeafe",
+              200: "#bfdbfe",
+              300: "#93c5fd",
+              400: "#60a5fa",
+              500: "#3b82f6",
+              600: "#2563eb",
+              700: "#1d4ed8",
+              800: "#1e40af",
+              900: "#1e3a8a"
+            }
+          },
+          boxShadow: {
+            card: "0 4px 18px rgba(15,23,42,.06)",
+            soft: "0 12px 35px rgba(15,23,42,.07)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/icon.svg">
+
+  <style>
+    #gastosTableBody tr,
+    #resumenCategoriasBody tr {
+      transition: background-color .2s ease;
+    }
+
+    #gastosTableBody td,
+    #resumenCategoriasBody td {
+      color: #0f172a;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+
+  <div class="min-h-screen lg:flex">
+
+    <!-- SIDEBAR -->
+
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full
+             flex-col border-r border-slate-200 bg-white shadow-xl
+             transition-transform duration-300 lg:translate-x-0"
+    >
+
+      <div class="flex h-20 items-center gap-3 border-b border-slate-100 px-5">
+
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-sm font-black text-white">
+          MC
+        </div>
+
+        <div>
+          <h1 class="font-black text-slate-950">Mi Control</h1>
+          <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            Control financiero
+          </p>
+        </div>
+
+      </div>
+
+      <nav class="flex-1 space-y-1 overflow-y-auto p-4" aria-label="Navegación principal">
+
+        <a href="index.html" class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 transition hover:bg-slate-50 hover:text-blue-600">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">🏠</span>
+          <span class="font-semibold">Dashboard</span>
+        </a>
+
+        <a href="clientes.html" class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 transition hover:bg-slate-50 hover:text-blue-600">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">👥</span>
+          <span class="font-semibold">Clientes</span>
+        </a>
+
+        <a href="deudas.html" class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 transition hover:bg-slate-50 hover:text-blue-600">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">💳</span>
+          <span class="font-semibold">Deudas</span>
+        </a>
+
+        <a href="pagos.html" class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 transition hover:bg-slate-50 hover:text-blue-600">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">💰</span>
+          <span class="font-semibold">Pagos</span>
+        </a>
+
+        <a href="ahorros.html" class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 transition hover:bg-slate-50 hover:text-blue-600">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">🐷</span>
+          <span class="font-semibold">Ahorros</span>
+        </a>
+
+        <a href="gastos.html" aria-current="page" class="flex items-center gap-3 rounded-xl bg-rose-50 px-4 py-3 text-rose-700 ring-1 ring-rose-100">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-500 text-white">💸</span>
+          <span class="font-bold">Gastos</span>
+        </a>
+
+        <a href="historial.html" class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-600 transition hover:bg-slate-50 hover:text-blue-600">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">🕒</span>
+          <span class="font-semibold">Historial</span>
+        </a>
+
+      </nav>
+
+    </aside>
+
+    <div id="sidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-950/40 backdrop-blur-sm lg:hidden"></div>
+
+
+    <!-- CONTENIDO -->
+
+    <div class="min-w-0 flex-1 lg:ml-64">
+
+      <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+
+        <div class="flex h-20 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+
+          <div class="flex items-center gap-3">
+
+            <button
+              id="menuButton"
+              type="button"
+              aria-label="Abrir menú"
+              class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white lg:hidden"
+            >
+              ☰
+            </button>
+
+            <div>
+              <p class="hidden text-[10px] font-black uppercase tracking-[0.18em] text-blue-600 sm:block">
+                Mi Control de Cobros
+              </p>
+
+              <h2 class="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
+                Gastos
+              </h2>
+            </div>
+
+          </div>
+
+          <a
+            href="gastos-nuevo.html"
+            class="inline-flex items-center gap-2 rounded-xl bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-rose-600 focus:outline-none focus:ring-4 focus:ring-rose-100"
+          >
+            <span class="text-lg leading-none">＋</span>
+            Nuevo gasto
+          </a>
+
+        </div>
+
+      </header>
+
+
+      <main class="px-4 py-6 sm:px-6 lg:px-8 lg:py-7">
+
+        <div class="mx-auto max-w-7xl">
+
+          <!-- ENCABEZADO -->
+
+          <section class="mb-5">
+
+            <div class="relative overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-soft sm:p-7">
+
+              <div class="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-rose-500/20 blur-3xl"></div>
+              <div class="absolute -bottom-20 -left-10 h-44 w-44 rounded-full bg-orange-500/10 blur-3xl"></div>
+
+              <div class="relative flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+
+                <div>
+                  <div class="mb-2 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-rose-300">
+                    <span>💸</span>
+                    Control de gastos
+                  </div>
+
+                  <h1 class="text-2xl font-black tracking-tight sm:text-3xl">
+                    Tus gastos
+                  </h1>
+
+                  <p class="mt-1 text-sm text-slate-300">
+                    Controla cuánto gastas y en qué.
+                  </p>
+                </div>
+
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Período
+                  </p>
+                  <p id="gastoPeriodoDetalle" class="mt-1 text-sm font-black text-white">
+                    Este mes
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- FILTROS -->
+
+          <section class="mb-5">
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
+
+              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+
+                <div>
+
+                  <label
+                    for="periodoFiltro"
+                    class="mb-1.5 block text-[10px] font-black uppercase tracking-wider text-slate-400"
+                  >
+                    Período
+                  </label>
+
+                  <select
+                    id="periodoFiltro"
+                    class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  >
+                    <option value="hoy">Hoy</option>
+                    <option value="semana">Esta semana</option>
+                    <option value="mes" selected>Este mes</option>
+                    <option value="personalizado">Personalizado</option>
+                  </select>
+
+                </div>
+
+
+                <div id="fechaInicialContainer" class="hidden">
+
+                  <label
+                    for="fechaInicial"
+                    class="mb-1.5 block text-[10px] font-black uppercase tracking-wider text-slate-400"
+                  >
+                    Desde
+                  </label>
+
+                  <input
+                    type="date"
+                    id="fechaInicial"
+                    class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  >
+
+                </div>
+
+
+                <div id="fechaFinalContainer" class="hidden">
+
+                  <label
+                    for="fechaFinal"
+                    class="mb-1.5 block text-[10px] font-black uppercase tracking-wider text-slate-400"
+                  >
+                    Hasta
+                  </label>
+
+                  <input
+                    type="date"
+                    id="fechaFinal"
+                    class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  >
+
+                </div>
+
+
+                <div class="flex items-end">
+
+                  <button
+                    id="actualizarGastosButton"
+                    type="button"
+                    class="w-full rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-black text-slate-700 transition hover:bg-slate-200"
+                  >
+                    ↻ Actualizar
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- KPIs -->
+
+          <section class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+
+            <article class="relative overflow-hidden rounded-2xl border border-rose-100 bg-gradient-to-br from-rose-50 via-white to-orange-50 p-4 shadow-card">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-500 to-orange-400"></div>
+
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                Total gastado
+              </p>
+
+              <strong
+                id="gastoTotalPeriodo"
+                class="mt-1 block text-2xl font-black tracking-tight text-rose-600"
+              >
+                $0,00
+              </strong>
+
+              <small class="mt-1 block text-[11px] text-slate-400">
+                <span id="gastoPeriodoDetalle">Este mes</span>
+              </small>
+
+            </article>
+
+
+            <article class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-slate-900"></div>
+
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                Gasto acumulado
+              </p>
+
+              <strong
+                id="gastoTotalAcumulado"
+                class="mt-1 block text-2xl font-black tracking-tight text-slate-950"
+              >
+                $0,00
+              </strong>
+
+              <small
+                id="gastoAcumuladoDetalle"
+                class="mt-1 block text-[11px] text-slate-400"
+              >
+                0 registros
+              </small>
+
+            </article>
+
+
+            <article class="relative overflow-hidden rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-yellow-50 p-4 shadow-card">
+
+              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 to-orange-400"></div>
+
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                Movimientos
+              </p>
+
+              <strong
+                id="gastoRegistros"
+                class="mt-1 block text-2xl font-black tracking-tight text-slate-950"
+              >
+                0
+              </strong>
+
+              <small class="mt-1 block text-[11px] text-slate-400">
+                registros del período
+              </small>
+
+            </article>
+
+          </section>
+
+
+          <!-- CATEGORÍAS -->
+
+          <section class="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
+
+            <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+
+              <div>
+                <h2 class="text-base font-black text-slate-950">
+                  Gastos por categoría
+                </h2>
+
+                <p class="mt-0.5 text-xs text-slate-400">
+                  Distribución del período seleccionado.
+                </p>
+              </div>
+
+              <span class="rounded-full bg-rose-50 px-3 py-1.5 text-[10px] font-black text-rose-700">
+                💸 Resumen
+              </span>
+
+            </div>
+
+
+            <div class="overflow-x-auto">
+
+              <table class="min-w-full">
+
+                <thead class="border-b border-slate-100 bg-slate-50">
+
+                  <tr>
+
+                    <th class="px-4 py-3 text-left text-[10px] font-black uppercase tracking-wider text-slate-900">
+                      Categoría
+                    </th>
+
+                    <th class="px-4 py-3 text-left text-[10px] font-black uppercase tracking-wider text-slate-900">
+                      Distribución
+                    </th>
+
+                    <th class="px-4 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-900">
+                      Total
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody id="resumenCategoriasBody" class="divide-y divide-slate-100"></tbody>
+
+              </table>
+
+            </div>
+
+
+            <div
+              id="resumenCategoriasEmpty"
+              class="hidden px-6 py-10 text-center"
+            >
+              <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xl">
+                💸
+              </div>
+
+              <p class="mt-2 text-sm font-semibold text-slate-500">
+                No hay gastos en este período.
+              </p>
+            </div>
+
+          </section>
+
+
+          <!-- HISTORIAL -->
+
+          <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
+
+            <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+
+              <div>
+                <h2 class="text-base font-black text-slate-950">
+                  Gastos registrados
+                </h2>
+
+                <p class="mt-0.5 text-xs text-slate-400">
+                  Movimientos del período seleccionado.
+                </p>
+              </div>
+
+              <span class="rounded-full bg-slate-100 px-3 py-1.5 text-[10px] font-black text-slate-600">
+                Registros:
+                <span id="gastosCount">0</span>
+              </span>
+
+            </div>
+
+
+            <div class="overflow-x-auto">
+
+              <table class="min-w-full">
+
+                <thead class="border-b border-slate-100 bg-slate-50">
+
+                  <tr>
+
+                    <th class="px-4 py-3 text-left text-[10px] font-black uppercase tracking-wider text-slate-900">
+                      Fecha
+                    </th>
+
+                    <th class="px-4 py-3 text-left text-[10px] font-black uppercase tracking-wider text-slate-900">
+                      Categoría
+                    </th>
+
+                    <th class="px-4 py-3 text-left text-[10px] font-black uppercase tracking-wider text-slate-900">
+                      Descripción
+                    </th>
+
+                    <th class="px-4 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-900">
+                      Monto
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody id="gastosTableBody" class="divide-y divide-slate-100"></tbody>
+
+              </table>
+
+            </div>
+
+
+            <div
+              id="gastosEmptyState"
+              class="hidden min-h-[220px] flex-col items-center justify-center px-6 py-10 text-center"
+            >
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 text-2xl">
+                💸
+              </div>
+
+              <h3 class="mt-3 text-base font-black text-slate-950">
+                No hay gastos registrados
+              </h3>
+
+              <p class="mt-1 text-xs text-slate-500">
+                Registra tu primer gasto para comenzar.
+              </p>
+
+              <a
+                href="gastos-nuevo.html"
+                class="mt-4 inline-flex items-center gap-2 rounded-xl bg-rose-500 px-4 py-2.5 text-sm font-black text-white transition hover:bg-rose-600"
+              >
+                ＋ Registrar gasto
+              </a>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </main>
+
+
+      <footer class="border-t border-slate-200 bg-white px-6 py-4">
+
+        <div class="mx-auto flex max-w-7xl flex-col justify-between gap-1 text-[11px] text-slate-400 sm:flex-row">
+          <p>© 2026 Mi Control de Cobros</p>
+          <p>Control financiero personal</p>
+        </div>
+
+      </footer>
+
+    </div>
+
+  </div>
+
+
+  <script>
+    (() => {
+
+      const button = document.getElementById("menuButton");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+
+      if (!button || !sidebar) return;
+
+      button.addEventListener("click", () => {
+        sidebar.classList.toggle("-translate-x-full");
+        overlay?.classList.toggle("hidden");
+      });
+
+      overlay?.addEventListener("click", () => {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+      });
+
+    })();
+  </script>
+
+
+  <script
+    type="module"
+    src="js/gastos.js"
+  ></script>
+
+  <script src="js/pwa.js"></script>
+
+</body>
+</html>
