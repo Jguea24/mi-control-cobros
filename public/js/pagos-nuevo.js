@@ -38,52 +38,52 @@ const pagosCollection =
 // ============================================================
 
 const pagoForm =
-  document.querySelector("#pagoForm");
+  document.getElementById("pagoForm");
 
 const clienteSelect =
-  document.querySelector("#clienteId");
+  document.getElementById("clienteId");
 
 const deudaSelect =
-  document.querySelector("#deudaId");
+  document.getElementById("deudaId");
 
 const saldoActual =
-  document.querySelector("#saldoActual");
+  document.getElementById("saldoActual");
 
 const deudaEstado =
-  document.querySelector("#deudaEstado");
+  document.getElementById("deudaEstado");
 
 const montoInput =
-  document.querySelector("#monto");
+  document.getElementById("monto");
 
 const fechaInput =
-  document.querySelector("#fecha");
+  document.getElementById("fecha");
 
 const metodoPagoInput =
-  document.querySelector("#metodoPago");
+  document.getElementById("metodoPago");
 
 const observacionInput =
-  document.querySelector("#observacion");
+  document.getElementById("observacion");
 
 const savePagoButton =
-  document.querySelector("#savePagoButton");
+  document.getElementById("savePagoButton");
 
 const pagoMessage =
-  document.querySelector("#pagoMessage");
+  document.getElementById("pagoMessage");
 
 const saldoAnterior =
-  document.querySelector("#saldoAnterior");
+  document.getElementById("saldoAnterior");
 
 const pagoPreview =
-  document.querySelector("#pagoPreview");
+  document.getElementById("pagoPreview");
 
 const nuevoSaldo =
-  document.querySelector("#nuevoSaldo");
+  document.getElementById("nuevoSaldo");
 
 const nuevoEstado =
-  document.querySelector("#nuevoEstado");
+  document.getElementById("nuevoEstado");
 
 const montoAyuda =
-  document.querySelector("#montoAyuda");
+  document.getElementById("montoAyuda");
 
 // ============================================================
 // ESTADO
@@ -98,7 +98,7 @@ let deudasUnsubscribe = null;
 let deudaSeleccionada = null;
 
 // ============================================================
-// FECHA
+// FECHA INICIAL
 // ============================================================
 
 if (fechaInput) {
@@ -107,7 +107,7 @@ if (fechaInput) {
 }
 
 // ============================================================
-// UTILIDADES
+// SALDO DE LA DEUDA
 // ============================================================
 
 function getSaldoDeuda(deuda) {
@@ -119,11 +119,12 @@ function getSaldoDeuda(deuda) {
   const saldo =
     Number(deuda.saldo);
 
-  if (
-    Number.isFinite(saldo)
-  ) {
+  if (Number.isFinite(saldo)) {
+
     return Math.max(
-      saldo,
+      Number(
+        saldo.toFixed(2)
+      ),
       0
     );
   }
@@ -139,41 +140,71 @@ function getSaldoDeuda(deuda) {
     );
 
   return Math.max(
-    monto - pagado,
+    Number(
+      (
+        monto - pagado
+      ).toFixed(2)
+    ),
     0
   );
 }
 
+// ============================================================
+// FECHA ACTUAL
+// ============================================================
+
 function getTodayKey() {
+
   return getTodayInputValue();
 }
+
+// ============================================================
+// ESTADO DESPUÉS DEL PAGO
+// ============================================================
 
 function getDebtStatusAfterPayment(
   saldo,
   fechaVencimiento
 ) {
 
-  // Deuda pagada
-  if (
-    saldo <= 0.009
-  ) {
-    return "PAGADA";
+  // ==========================================================
+  // DEUDA COMPLETAMENTE PAGADA
+  // ==========================================================
+
+  if (saldo <= 0.009) {
+
+    return "PAGADO";
   }
 
-  // Fecha actual
+  // ==========================================================
+  // FECHA ACTUAL
+  // ==========================================================
+
   const today =
     getTodayKey();
 
-  // Deuda vencida
+  // ==========================================================
+  // DEUDA VENCIDA
+  // ==========================================================
+
   if (
     fechaVencimiento &&
     fechaVencimiento < today
   ) {
+
     return "VENCIDA";
   }
 
+  // ==========================================================
+  // DEUDA PENDIENTE
+  // ==========================================================
+
   return "PENDIENTE";
 }
+
+// ============================================================
+// FECHA PARA MOSTRAR
+// ============================================================
 
 function formatDateForMessage(
   dateString
@@ -193,6 +224,7 @@ function formatDateForMessage(
       date.getTime()
     )
   ) {
+
     return dateString;
   }
 
@@ -242,7 +274,7 @@ function showMessage(
 }
 
 // ============================================================
-// ERRORES FIRESTORE
+// MENSAJE DE ERROR FIRESTORE
 // ============================================================
 
 function getFirestoreErrorMessage(
@@ -250,39 +282,55 @@ function getFirestoreErrorMessage(
 ) {
 
   console.error(
-    "Error de Firestore:",
+    "❌ Error Firestore:",
     error
   );
 
-  const messages = {
+  if (
+    error?.code ===
+    "permission-denied"
+  ) {
 
-    "permission-denied":
-      "Firestore rechazó la operación. Verifica las reglas de Firestore.",
+    return (
+      "Firestore rechazó la operación. " +
+      "Verifica las reglas y que pagos-nuevo.js " +
+      "esté actualizado."
+    );
+  }
 
-    unauthenticated:
-      "Tu sesión no está activa. Vuelve a iniciar sesión.",
+  if (
+    error?.code ===
+    "invalid-payment"
+  ) {
 
-    unavailable:
-      "Firestore no está disponible en este momento. Intenta nuevamente.",
+    return (
+      "El pago no puede superar el saldo pendiente."
+    );
+  }
 
-    "not-found":
-      "La deuda seleccionada ya no existe.",
+  if (
+    error?.code ===
+    "not-found"
+  ) {
 
-    "invalid-payment":
-      "El pago supera el saldo pendiente.",
+    return (
+      "La deuda seleccionada ya no existe."
+    );
+  }
 
-    "failed-precondition":
-      "No se pudo completar la operación. Verifica la configuración de Firestore."
-  };
+  if (
+    error?.code ===
+    "unauthenticated"
+  ) {
+
+    return (
+      "Tu sesión no está activa. Inicia sesión nuevamente."
+    );
+  }
 
   return (
-    messages[
-      error?.code
-    ] ||
-    `No se pudo registrar el pago. ${
-      error?.message ||
-      "Error desconocido."
-    }`
+    error?.message ||
+    "No se pudo registrar el pago."
   );
 }
 
@@ -304,6 +352,7 @@ function setSavingState(
       !savePagoButton.dataset
         .originalHtml
     ) {
+
       savePagoButton.dataset.originalHtml =
         savePagoButton.innerHTML;
     }
@@ -317,7 +366,11 @@ function setSavingState(
     );
 
     savePagoButton.innerHTML = `
-      <span class="inline-flex h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+      <span
+        class="inline-flex h-5 w-5 animate-spin
+               rounded-full border-2 border-white/40
+               border-t-white">
+      </span>
       Registrando...
     `;
 
@@ -360,7 +413,7 @@ function renderClientes() {
   clienteSelect.innerHTML =
     "";
 
-  const activeClientes =
+  const activos =
     clientes.filter(
       (cliente) =>
         cliente.activo !== false
@@ -375,7 +428,7 @@ function renderClientes() {
     "";
 
   placeholder.textContent =
-    activeClientes.length
+    activos.length
       ? "Selecciona un cliente"
       : "No hay clientes activos";
 
@@ -383,7 +436,7 @@ function renderClientes() {
     placeholder
   );
 
-  activeClientes.forEach(
+  activos.forEach(
     (cliente) => {
 
       const option =
@@ -405,11 +458,9 @@ function renderClientes() {
   );
 
   clienteSelect.disabled =
-    activeClientes.length === 0;
+    activos.length === 0;
 
-  if (
-    activeClientes.length === 0
-  ) {
+  if (!activos.length) {
 
     resetDebtSelection(
       "No hay clientes activos"
@@ -418,7 +469,7 @@ function renderClientes() {
 }
 
 // ============================================================
-// DEUDAS DEL CLIENTE
+// DEUDAS PENDIENTES
 // ============================================================
 
 function getClientPendingDebts(
@@ -427,12 +478,22 @@ function getClientPendingDebts(
 
   return deudas
     .filter(
-      (deuda) =>
-        deuda.clienteId ===
-          clienteId &&
-        getSaldoDeuda(
-          deuda
-        ) > 0.009
+      (deuda) => {
+
+        const mismoCliente =
+          deuda.clienteId ===
+          clienteId;
+
+        const saldo =
+          getSaldoDeuda(
+            deuda
+          );
+
+        return (
+          mismoCliente &&
+          saldo > 0.009
+        );
+      }
     )
     .sort(
       (a, b) =>
@@ -445,6 +506,10 @@ function getClientPendingDebts(
         )
     );
 }
+
+// ============================================================
+// CARGAR DEUDAS DEL CLIENTE
+// ============================================================
 
 function renderDeudasForClient(
   clienteId
@@ -556,6 +621,7 @@ function selectDebt(
   if (!deudaSeleccionada) {
 
     resetDebtPreview();
+
     return;
   }
 
@@ -588,6 +654,7 @@ function selectDebt(
   );
 
   if (montoInput) {
+
     montoInput.max =
       saldo.toFixed(2);
   }
@@ -601,6 +668,7 @@ function selectDebt(
   }
 
   if (savePagoButton) {
+
     savePagoButton.disabled =
       saldo <= 0.009;
   }
@@ -609,7 +677,7 @@ function selectDebt(
 }
 
 // ============================================================
-// REINICIAR PREVISUALIZACIÓN
+// RESET
 // ============================================================
 
 function resetDebtPreview() {
@@ -708,7 +776,12 @@ function updatePreview() {
   const saldoNuevo =
     pagoValido
       ? Math.max(
-          saldo - monto,
+          Number(
+            (
+              saldo -
+              monto
+            ).toFixed(2)
+          ),
           0
         )
       : saldo;
@@ -756,13 +829,13 @@ function getFormData() {
     clienteId:
       String(
         clienteSelect?.value ||
-          ""
+        ""
       ).trim(),
 
     deudaId:
       String(
         deudaSelect?.value ||
-          ""
+        ""
       ).trim(),
 
     monto:
@@ -773,19 +846,19 @@ function getFormData() {
     fecha:
       String(
         fechaInput?.value ||
-          ""
+        ""
       ).trim(),
 
     metodoPago:
       String(
         metodoPagoInput?.value ||
-          ""
+        ""
       ).trim(),
 
     observacion:
       String(
         observacionInput?.value ||
-          ""
+        ""
       ).trim()
   };
 }
@@ -848,6 +921,14 @@ function validateForm(
     return "La deuda seleccionada ya no está disponible.";
   }
 
+  if (
+    deuda.clienteId !==
+    data.clienteId
+  ) {
+
+    return "La deuda no pertenece al cliente seleccionado.";
+  }
+
   const saldo =
     getSaldoDeuda(
       deuda
@@ -875,6 +956,8 @@ pagoForm?.addEventListener(
   async (event) => {
 
     event.preventDefault();
+
+    showMessage("");
 
     const data =
       getFormData();
@@ -904,6 +987,10 @@ pagoForm?.addEventListener(
 
     try {
 
+      // ======================================================
+      // REFERENCIA DE LA DEUDA
+      // ======================================================
+
       const deudaRef =
         doc(
           db,
@@ -911,18 +998,26 @@ pagoForm?.addEventListener(
           data.deudaId
         );
 
+      // ======================================================
+      // REFERENCIA DEL NUEVO PAGO
+      // ======================================================
+
       const pagoRef =
         doc(
           pagosCollection
         );
 
+      // ======================================================
+      // TRANSACCIÓN ATÓMICA
+      // ======================================================
+
       await runTransaction(
         db,
         async (transaction) => {
 
-          // ================================================
-          // OBTENER DEUDA ACTUAL
-          // ================================================
+          // --------------------------------------------------
+          // LEER LA DEUDA MÁS RECIENTE
+          // --------------------------------------------------
 
           const deudaSnapshot =
             await transaction.get(
@@ -947,19 +1042,43 @@ pagoForm?.addEventListener(
           const deudaActual =
             deudaSnapshot.data();
 
-          const saldoAnteriorActual =
+          // --------------------------------------------------
+          // VALIDAR CLIENTE
+          // --------------------------------------------------
+
+          if (
+            deudaActual.clienteId !==
+            data.clienteId
+          ) {
+
+            throw Object.assign(
+              new Error(
+                "La deuda no pertenece al cliente seleccionado."
+              ),
+              {
+                code:
+                  "invalid-payment"
+              }
+            );
+          }
+
+          // --------------------------------------------------
+          // OBTENER SALDO REAL
+          // --------------------------------------------------
+
+          const saldoAnteriorReal =
             getSaldoDeuda(
               deudaActual
             );
 
-          // ================================================
-          // VALIDAR MONTO
-          // ================================================
+          // --------------------------------------------------
+          // VALIDAR MONTO CONTRA FIRESTORE
+          // --------------------------------------------------
 
           if (
             data.monto >
-            saldoAnteriorActual +
-              0.009
+            saldoAnteriorReal +
+            0.009
           ) {
 
             throw Object.assign(
@@ -973,74 +1092,80 @@ pagoForm?.addEventListener(
             );
           }
 
-          // ================================================
-          // NUEVOS VALORES
-          // ================================================
+          // --------------------------------------------------
+          // MONTO PAGADO ANTERIOR
+          // --------------------------------------------------
 
-          const montoPagadoActual =
+          const montoPagadoAnterior =
             Number(
               deudaActual.montoPagado ||
-                0
+              0
             );
+
+          // --------------------------------------------------
+          // NUEVO MONTO PAGADO
+          // --------------------------------------------------
 
           const nuevoMontoPagado =
             Number(
               (
-                montoPagadoActual +
+                montoPagadoAnterior +
                 data.monto
               ).toFixed(2)
             );
 
-          const nuevoSaldoValue =
+          // --------------------------------------------------
+          // NUEVO SALDO
+          // --------------------------------------------------
+
+          const nuevoSaldo =
             Number(
               (
-                saldoAnteriorActual -
+                saldoAnteriorReal -
                 data.monto
               ).toFixed(2)
             );
+
+          // --------------------------------------------------
+          // NUEVO ESTADO
+          // --------------------------------------------------
 
           const nuevoEstado =
             getDebtStatusAfterPayment(
-              nuevoSaldoValue,
+              nuevoSaldo,
               deudaActual.fechaVencimiento
             );
 
-          // ================================================
+          // --------------------------------------------------
           // ACTUALIZAR DEUDA
-          // IMPORTANTE:
-          // SOLO campos permitidos por Firestore
-          // ================================================
+          // --------------------------------------------------
 
           transaction.update(
             deudaRef,
             {
-
               montoPagado:
                 nuevoMontoPagado,
 
               saldo:
-                nuevoSaldoValue,
+                nuevoSaldo,
 
               estado:
                 nuevoEstado
             }
           );
 
-          // ================================================
-          // CREAR PAGO
-          // IMPORTANTE:
-          // SOLO campos permitidos por Firestore
-          // ================================================
+          // --------------------------------------------------
+          // REGISTRAR PAGO
+          // --------------------------------------------------
 
           transaction.set(
             pagoRef,
             {
+              deudaId:
+                data.deudaId,
 
               clienteId:
                 data.clienteId,
-
-              deudaId:
-                data.deudaId,
 
               monto:
                 Number(
@@ -1061,12 +1186,12 @@ pagoForm?.addEventListener(
         }
       );
 
-      // ================================================
+      // ======================================================
       // ÉXITO
-      // ================================================
+      // ======================================================
 
       showMessage(
-        "Pago registrado correctamente. Redirigiendo al historial...",
+        "Pago registrado correctamente.",
         "success"
       );
 
@@ -1077,10 +1202,15 @@ pagoForm?.addEventListener(
             "pagos.html";
 
         },
-        900
+        800
       );
 
     } catch (error) {
+
+      console.error(
+        "❌ No se pudo registrar el pago:",
+        error
+      );
 
       showMessage(
         getFirestoreErrorMessage(
@@ -1092,6 +1222,7 @@ pagoForm?.addEventListener(
         false
       );
     }
+
   }
 );
 
@@ -1136,9 +1267,9 @@ function startListeners() {
   clientesUnsubscribe?.();
   deudasUnsubscribe?.();
 
-  // ========================================================
+  // ==========================================================
   // CLIENTES
-  // ========================================================
+  // ==========================================================
 
   clientesUnsubscribe =
     onSnapshot(
@@ -1149,12 +1280,10 @@ function startListeners() {
         clientes =
           snapshot.docs.map(
             (docSnapshot) => ({
-
               id:
                 docSnapshot.id,
 
               ...docSnapshot.data()
-
             })
           );
 
@@ -1164,7 +1293,7 @@ function startListeners() {
       (error) => {
 
         console.error(
-          "Error al cargar clientes:",
+          "❌ Error clientes:",
           error
         );
 
@@ -1181,21 +1310,15 @@ function startListeners() {
             true;
         }
 
-        if (savePagoButton) {
-
-          savePagoButton.disabled =
-            true;
-        }
-
         showMessage(
-          "No se pudieron cargar los clientes. Revisa los permisos de Firestore."
+          "No se pudieron cargar los clientes."
         );
       }
     );
 
-  // ========================================================
+  // ==========================================================
   // DEUDAS
-  // ========================================================
+  // ==========================================================
 
   deudasUnsubscribe =
     onSnapshot(
@@ -1206,12 +1329,10 @@ function startListeners() {
         deudas =
           snapshot.docs.map(
             (docSnapshot) => ({
-
               id:
                 docSnapshot.id,
 
               ...docSnapshot.data()
-
             })
           );
 
@@ -1230,7 +1351,7 @@ function startListeners() {
       (error) => {
 
         console.error(
-          "Error al cargar deudas:",
+          "❌ Error deudas:",
           error
         );
 
@@ -1239,7 +1360,7 @@ function startListeners() {
         );
 
         showMessage(
-          "No se pudieron cargar las deudas. Revisa los permisos de Firestore."
+          "No se pudieron cargar las deudas."
         );
       }
     );
@@ -1264,6 +1385,9 @@ onAuthStateChanged(
 
       deudasUnsubscribe =
         null;
+
+      window.location.href =
+        "login.html";
 
       return;
     }

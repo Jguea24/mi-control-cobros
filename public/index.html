@@ -9,7 +9,7 @@
 
   <meta name="theme-color" content="#1d4ed8">
 
-  <title>Dashboard | Mi Control de Cobros</title>
+  <title>Dashboard</title>
 
   <link rel="manifest" href="manifest.webmanifest">
 
@@ -112,32 +112,6 @@
 
       <div class="relative flex h-20 items-center border-b border-slate-100 px-5">
 
-        <!-- Botón fijo que permite abrir/cerrar el menú incluso cuando está cerrado -->
-        <button
-          id="menuButton"
-          type="button"
-          aria-label="Cerrar menú"
-          aria-expanded="true"
-          aria-controls="sidebar"
-          class="fixed left-5 top-5 z-[60] flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-200 hover:bg-slate-50 hover:text-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-100"
-        >
-          <svg
-            id="menuIcon"
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 6l12 12M18 6L6 18"
-            />
-          </svg>
-        </button>
 
         <!-- Nombre de la aplicación -->
         <div class="ml-[3.75rem]">
@@ -155,7 +129,7 @@
 
         <p class="mb-3 px-3 text-[10px] font-black uppercase
                tracking-[0.18em] text-slate-400">
-          Principal
+          
         </p>
 
 
@@ -178,7 +152,7 @@
 
           </span>
 
-          Dashboard
+          
 
         </a>
 
@@ -333,16 +307,183 @@
       </nav>
 
 
-      <!-- Logout -->
+        <!-- =======================================================
+             SALIR
+        ======================================================== -->
+        <div class="border-t border-slate-100 p-4">
 
-      <div class="border-t border-slate-100 p-4">
+          <button
+            id="logoutConfirmButton"
+            type="button"
+            class="group flex w-full items-center gap-3 rounded-xl
+                   px-3 py-3 text-sm font-semibold text-slate-600
+                   transition hover:bg-red-50 hover:text-red-600
+                   focus:outline-none focus:ring-4 focus:ring-red-100"
+          >
+            <span
+              class="flex h-9 w-9 items-center justify-center rounded-lg
+                     bg-slate-100 text-slate-500 transition
+                     group-hover:bg-red-100 group-hover:text-red-600"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 9V5.25
+                     A2.25 2.25 0 0013.5 3h-6
+                     A2.25 2.25 0 005.25 5.25v13.5
+                     A2.25 2.25 0 007.5 21h6
+                     a2.25 2.25 0 002.25-2.25V15"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M18 8l3 4m0 0l-3 4m3-4H9"
+                />
+              </svg>
+            </span>
 
-      </div>
+            <span>Salir</span>
+          </button>
+
+        </div>
 
     </aside>
 
+    <!-- =========================================================
+         BOTÓN DEL MENÚ RESPONSIVE
+    ========================================================== -->
+    <button
+      id="menuButton"
+      type="button"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="sidebar"
+      class="fixed left-4 top-4 z-[100] flex h-11 w-11
+             items-center justify-center rounded-xl
+             border border-slate-200 bg-white
+             text-slate-700 shadow-lg
+             transition-all duration-200
+             hover:bg-slate-50 hover:text-primary-600
+             focus:outline-none focus:ring-4 focus:ring-primary-100
+             lg:left-5 lg:top-5"
+    >
+      <svg
+        id="menuIcon"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button>
+
+
 
     <!-- Overlay -->
+
+    
+    <!-- =========================================================
+         MODAL DE CONFIRMACIÓN DE SALIDA
+    ========================================================== -->
+    <div
+      id="logoutModal"
+      class="fixed inset-0 z-[200] hidden items-center justify-center
+             bg-slate-950/60 p-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="logoutModalTitle"
+      aria-describedby="logoutModalText"
+    >
+      <div
+        class="w-full max-w-sm overflow-hidden rounded-2xl border
+               border-slate-200 bg-white shadow-2xl"
+      >
+
+        <div class="p-6">
+
+          <div
+            class="mx-auto flex h-12 w-12 items-center justify-center
+                   rounded-full bg-red-50 text-red-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v2m0 4h.01M10.29 3.86l-7.82 14
+                   a2 2 0 001.74 3h15.58
+                   a2 2 0 001.74-3l-7.82-14a2 2 0 00-3.48 0z"
+              />
+            </svg>
+          </div>
+
+          <h2
+            id="logoutModalTitle"
+            class="mt-4 text-center text-lg font-black text-slate-950"
+          >
+            ¿Quieres cerrar sesión?
+          </h2>
+
+          <p
+            id="logoutModalText"
+            class="mt-2 text-center text-sm leading-5 text-slate-500"
+          >
+            Tu sesión se cerrará y volverás a la pantalla de inicio de sesión.
+          </p>
+
+          <div class="mt-6 grid grid-cols-2 gap-3">
+
+            <button
+              id="cancelLogoutButton"
+              type="button"
+              class="min-h-11 rounded-xl border border-slate-200
+                     bg-white px-4 text-sm font-bold text-slate-700
+                     transition hover:bg-slate-50
+                     focus:outline-none focus:ring-4 focus:ring-slate-100"
+            >
+              No, quedarme
+            </button>
+
+            <button
+              id="confirmLogoutButton"
+              type="button"
+              class="min-h-11 rounded-xl bg-red-600 px-4
+                     text-sm font-black text-white shadow-md
+                     shadow-red-600/20 transition hover:bg-red-700
+                     focus:outline-none focus:ring-4 focus:ring-red-100"
+            >
+              <span id="confirmLogoutText">Sí, salir</span>
+            </button>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <div id="sidebarOverlay" class="fixed inset-0 z-40 hidden
            bg-slate-950/40 backdrop-blur-sm"></div>
@@ -430,139 +571,7 @@
        ENCABEZADO SUPERIOR
   ========================================================== -->
 
-        <header class="sticky top-0 z-40
-           border-b border-slate-200/80
-           bg-white/95
-           px-4 py-3
-           backdrop-blur
-           sm:px-6">
-
-          <div class="mx-auto flex max-w-7xl
-             items-center
-             justify-between
-             gap-4">
-
-            <!-- Identidad -->
-
-            <div class="min-w-0">
-
-              <p class="text-[10px]
-                 font-black
-                 uppercase
-                 tracking-[0.16em]
-                 text-blue-700">
-                Mi Control de Cobros
-              </p>
-
-              <h1 class="truncate
-                 text-lg
-                 font-black
-                 text-slate-950
-                 sm:text-xl">
-                Dashboard
-              </h1>
-
-            </div>
-
-
-            <!-- Área superior derecha -->
-
-            <div class="flex
-               items-center
-               gap-2
-               sm:gap-3">
-
-              <!-- Estado -->
-
-              <div class="hidden
-                 items-center
-                 gap-2
-                 rounded-full
-                 bg-emerald-50
-                 px-3
-                 py-2
-                 text-[11px]
-                 font-bold
-                 text-emerald-700
-                 sm:flex">
-
-                <span class="h-2
-                   w-2
-                   rounded-full
-                   bg-emerald-500"></span>
-
-                Sistema activo
-
-              </div>
-
-
-              <!-- Cerrar sesión -->
-
-              <button id="logoutButton" type="button" title="Cerrar sesión" aria-label="Cerrar sesión" class="group
-                 flex
-                 min-h-9
-                 items-center
-                 gap-2
-                 rounded-xl
-                 border
-                 border-slate-200
-                 bg-white
-                 px-3
-                 py-2
-                 text-xs
-                 font-bold
-                 text-slate-600
-                 shadow-sm
-                 transition
-                 hover:border-red-200
-                 hover:bg-red-50
-                 hover:text-red-600
-                 focus:outline-none
-                 focus:ring-4
-                 focus:ring-red-100">
-
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4
-                   transition-transform
-                   group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25
-                 A2.25 2.25 0 0013.5 3h-6
-                 A2.25 2.25 0 005.25 5.25v13.5
-                 A2.25 2.25 0 007.5 21h6
-                 a2.25 2.25 0 002.25-2.25V15" />
-
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M18 8l3 4m0 0l-3 4m3-4H9" />
-
-                </svg>
-
-                <span class="hidden sm:inline">
-                  Cerrar sesión
-                </span>
-
-              </button>
-
-
-              <!-- Usuario -->
-
-              <div class="flex
-                 h-9
-                 w-9
-                 shrink-0
-                 items-center
-                 justify-center
-                 rounded-full
-                 bg-blue-100
-                 text-sm
-                 font-black
-                 text-blue-700" title="Usuario" aria-label="Usuario">
-                U
-              </div>
-
-            </div>
-
-          </div>
-
-        </header>
+        
 
 
         <div class="mx-auto max-w-7xl">
@@ -1389,7 +1398,7 @@
   <style>
     /* ==========================================================
        MENÚ LATERAL
-       ========================================================== */
+    ========================================================== */
 
     #sidebar {
       width: 18rem;
@@ -1402,7 +1411,19 @@
       transition: margin-left 300ms ease;
     }
 
-    /* PC: cerrar completamente el menú */
+    /* ==========================================================
+       BOTÓN DEL MENÚ
+    ========================================================== */
+
+    #menuButton {
+      position: fixed;
+      z-index: 100;
+      left: 1rem;
+      top: 1rem;
+      display: flex;
+    }
+
+    /* PC */
     body.sidebar-closed #sidebar {
       transform: translateX(-100%);
     }
@@ -1411,28 +1432,15 @@
       margin-left: 0;
     }
 
-    /* Botón siempre visible para poder volver a abrir el menú */
-    #menuButton {
-      transition:
-        left 300ms ease,
-        transform 200ms ease,
-        background-color 200ms ease,
-        color 200ms ease;
-    }
-
-    body.sidebar-closed #menuButton {
-      left: 1.25rem;
-    }
-
     /* ==========================================================
        TABLET / CELULAR
-       ========================================================== */
+    ========================================================== */
 
     @media (max-width: 1023px) {
 
       #sidebar {
-        transform: translateX(-100%);
         width: 18rem;
+        transform: translateX(-100%);
       }
 
       #mainContent {
@@ -1447,18 +1455,19 @@
         transform: translateX(-100%);
       }
 
-      body.sidebar-open #menuButton {
-        left: 1.25rem;
-      }
-
-      body.sidebar-closed #menuButton {
-        left: 1.25rem;
+      #menuButton {
+        left: 1rem;
+        top: 1rem;
       }
     }
 
-    /* ==========================================================
-       ACCESIBILIDAD
-       ========================================================== */
+    @media (min-width: 1024px) {
+
+      #menuButton {
+        left: 1.25rem;
+        top: 1.25rem;
+      }
+    }
 
     @media (prefers-reduced-motion: reduce) {
 
@@ -1467,24 +1476,146 @@
       #menuButton {
         transition: none;
       }
-
     }
   </style>
+
+<script type="module">
+    import { signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import { auth } from "./js/firebase-config.js";
+
+    (() => {
+
+      const openButton =
+        document.getElementById("logoutConfirmButton");
+
+      const modal =
+        document.getElementById("logoutModal");
+
+      const cancelButton =
+        document.getElementById("cancelLogoutButton");
+
+      const confirmButton =
+        document.getElementById("confirmLogoutButton");
+
+      const confirmText =
+        document.getElementById("confirmLogoutText");
+
+      if (
+        !openButton ||
+        !modal ||
+        !cancelButton ||
+        !confirmButton
+      ) {
+        return;
+      }
+
+      function openModal() {
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+
+        document.body.classList.add("overflow-hidden");
+
+        setTimeout(() => {
+          cancelButton.focus();
+        }, 50);
+      }
+
+      function closeModal() {
+
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+
+        document.body.classList.remove("overflow-hidden");
+
+        openButton.focus();
+      }
+
+      openButton.addEventListener(
+        "click",
+        openModal
+      );
+
+      cancelButton.addEventListener(
+        "click",
+        closeModal
+      );
+
+      modal.addEventListener(
+        "click",
+        (event) => {
+
+          if (event.target === modal) {
+            closeModal();
+          }
+
+        }
+      );
+
+      document.addEventListener(
+        "keydown",
+        (event) => {
+
+          if (
+            event.key === "Escape" &&
+            !modal.classList.contains("hidden")
+          ) {
+            closeModal();
+          }
+
+        }
+      );
+
+      confirmButton.addEventListener(
+        "click",
+        async () => {
+
+          confirmButton.disabled = true;
+
+          if (confirmText) {
+            confirmText.textContent =
+              "Saliendo...";
+          }
+
+          try {
+
+            await signOut(auth);
+
+            window.location.href =
+              "login.html";
+
+          } catch (error) {
+
+            console.error(
+              "Error al cerrar sesión:",
+              error
+            );
+
+            confirmButton.disabled = false;
+
+            if (confirmText) {
+              confirmText.textContent =
+                "Sí, salir";
+            }
+
+            alert(
+              "No se pudo cerrar la sesión. Inténtalo nuevamente."
+            );
+          }
+
+        }
+      );
+
+    })();
+  </script>
 
   <script>
     (() => {
 
-      const menuButton =
-        document.getElementById("menuButton");
-
-      const sidebar =
-        document.getElementById("sidebar");
-
-      const sidebarOverlay =
-        document.getElementById("sidebarOverlay");
-
-      const menuIcon =
-        document.getElementById("menuIcon");
+      const menuButton = document.getElementById("menuButton");
+      const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.getElementById("sidebarOverlay");
+      const menuIcon = document.getElementById("menuIcon");
 
       if (!menuButton || !sidebar) {
         return;
@@ -1523,55 +1654,27 @@
 
         if (isMobile()) {
 
-          document.body.classList.toggle(
-            "sidebar-open",
-            open
-          );
-
-          document.body.classList.remove(
-            "sidebar-closed"
-          );
+          document.body.classList.remove("sidebar-closed");
+          document.body.classList.toggle("sidebar-open", open);
 
           if (sidebarOverlay) {
-
-            sidebarOverlay.classList.toggle(
-              "hidden",
-              !open
-            );
-
+            sidebarOverlay.classList.toggle("hidden", !open);
           }
 
         } else {
 
-          document.body.classList.remove(
-            "sidebar-open"
-          );
-
-          document.body.classList.toggle(
-            "sidebar-closed",
-            !open
-          );
+          document.body.classList.remove("sidebar-open");
+          document.body.classList.toggle("sidebar-closed", !open);
 
           if (sidebarOverlay) {
-
-            sidebarOverlay.classList.add(
-              "hidden"
-            );
-
+            sidebarOverlay.classList.add("hidden");
           }
-
         }
 
-        menuButton.setAttribute(
-          "aria-expanded",
-          String(open)
-        );
-
+        menuButton.setAttribute("aria-expanded", String(open));
         menuButton.setAttribute(
           "aria-label",
-          open
-            ? "Cerrar menú"
-            : "Abrir menú"
+          open ? "Cerrar menú" : "Abrir menú"
         );
 
         updateIcon(open);
@@ -1580,97 +1683,47 @@
       function getCurrentState() {
 
         if (isMobile()) {
-
-          return document.body.classList.contains(
-            "sidebar-open"
-          );
-
+          return document.body.classList.contains("sidebar-open");
         }
 
-        return !document.body.classList.contains(
-          "sidebar-closed"
-        );
+        return !document.body.classList.contains("sidebar-closed");
       }
 
       function toggleMenu() {
-
-        const currentState =
-          getCurrentState();
-
-        setMenuState(
-          !currentState
-        );
+        setMenuState(!getCurrentState());
       }
 
-      // Botón ☰ / ✕
-      menuButton.addEventListener(
-        "click",
-        toggleMenu
-      );
+      menuButton.addEventListener("click", toggleMenu);
 
-      // Cerrar haciendo clic en el fondo
       if (sidebarOverlay) {
+        sidebarOverlay.addEventListener("click", () => {
+          setMenuState(false);
+        });
+      }
 
-        sidebarOverlay.addEventListener(
-          "click",
-          () => {
+      sidebar.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (isMobile()) {
             setMenuState(false);
           }
-        );
-
-      }
-
-      // Cerrar el menú al seleccionar una opción
-      sidebar
-        .querySelectorAll("a")
-        .forEach((link) => {
-
-          link.addEventListener(
-            "click",
-            () => {
-
-              if (isMobile()) {
-                setMenuState(false);
-              }
-
-            }
-          );
-
         });
+      });
 
-      // Adaptar al cambiar tamaño de pantalla
-      window.addEventListener(
-        "resize",
-        () => {
+      window.addEventListener("resize", () => {
 
-          if (isMobile()) {
+        if (isMobile()) {
 
-            // En móvil inicia cerrado al pasar desde PC
-            const shouldOpen =
-              document.body.classList.contains(
-                "sidebar-open"
-              );
+          const open =
+            document.body.classList.contains("sidebar-open");
 
-            setMenuState(shouldOpen);
+          setMenuState(open);
 
-          } else {
+        } else {
 
-            // En PC conserva si estaba cerrado
-            const shouldOpen =
-              !document.body.classList.contains(
-                "sidebar-closed"
-              );
-
-            setMenuState(shouldOpen);
-
-          }
-
+          setMenuState(true);
         }
-      );
+      });
 
-      // Estado inicial:
-      // PC = abierto
-      // Móvil = cerrado
       setMenuState(!isMobile());
 
     })();
@@ -1686,6 +1739,7 @@
 <script type="module" src="js/auth.js"></script>
 <script type="module" src="js/dashboard.js"></script>
 <script type="module" src="js/dashboard-ahorros.js"></script>
+  <script type="module" src="js/dashboard-gastos.js"></script>
 <script src="js/pwa.js"></script>
 
 

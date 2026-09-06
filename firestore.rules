@@ -155,7 +155,9 @@ service cloud.firestore {
     }
 
     function isValidDeudaPaymentUpdate() {
-      return isValidDeuda()
+      return isAuthenticated()
+
+        // Solo se pueden modificar estos tres campos
         && request.resource.data.diff(resource.data)
           .affectedKeys()
           .hasOnly([
@@ -163,6 +165,8 @@ service cloud.firestore {
             "saldo",
             "estado"
           ])
+
+        // Los datos principales de la deuda no pueden cambiar
         && request.resource.data.clienteId
            == resource.data.clienteId
         && request.resource.data.concepto
@@ -177,10 +181,35 @@ service cloud.firestore {
            == resource.data.fechaVencimiento
         && request.resource.data.notas
            == resource.data.notas
+
+        // Tipos correctos
+        && request.resource.data.montoPagado
+           is number
+        && request.resource.data.saldo
+           is number
+
+        // Nunca puede existir saldo negativo
+        && request.resource.data.saldo >= 0
+
+        // No se puede pagar más que el monto total
+        && request.resource.data.montoPagado
+           <= request.resource.data.monto
+
+        // El monto pagado no puede disminuir
         && request.resource.data.montoPagado
            >= resource.data.montoPagado
+
+        // El saldo no puede aumentar
         && request.resource.data.saldo
-           <= resource.data.saldo;
+           <= resource.data.saldo
+
+        // Estado válido
+        && request.resource.data.estado
+           in [
+             "PENDIENTE",
+             "PAGADO",
+             "VENCIDA"
+           ];
     }
 
 
