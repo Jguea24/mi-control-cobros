@@ -1,26 +1,60 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <meta name="description" content="Mi Control de Cobros - Gestión de clientes">
+
   <meta name="theme-color" content="#1d4ed8">
+
   <title>Clientes | Mi Control de Cobros</title>
 
-  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+
+  <!-- ICONO -->
+
+  <link
+    rel="icon"
+    href="assets/icons/icon.svg"
+    type="image/svg+xml"
+  >
+
+
+  <!-- CSS -->
+
   <link rel="stylesheet" href="css/styles.css">
+
   <link rel="stylesheet" href="css/responsive.css">
 
+
+  <!-- TAILWIND -->
+
   <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <!-- CONFIGURACIÓN TAILWIND -->
+
   <script>
+
     tailwind.config = {
+
       theme: {
+
         extend: {
+
           fontFamily: {
+
             sans: ['Inter', 'sans-serif']
+
           },
+
+
           colors: {
+
             primary: {
+
               50: '#eff6ff',
               100: '#dbeafe',
               200: '#bfdbfe',
@@ -31,276 +65,1327 @@
               700: '#1d4ed8',
               800: '#1e40af',
               900: '#1e3a8a'
+
             }
+
           },
+
+
           boxShadow: {
-            soft: '0 10px 30px rgba(15, 23, 42, 0.06)'
+
+            soft: '0 10px 30px rgba(15, 23, 42, 0.06)',
+
+            card: '0 4px 20px rgba(15, 23, 42, 0.06)'
+
           }
+
         }
+
       }
+
     };
+
   </script>
+
+
+  <!-- FUENTE -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  #clientesTableBody td:nth-child(5),
-  #clientesTableBody td:nth-child(6) {
-    white-space: nowrap;
-  }
 
-  #clientesTableBody td:nth-child(5) {
-    text-align: center;
-  }
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
-  #clientesTableBody td:nth-child(6) > div {
-    justify-content: center;
-    flex-wrap: nowrap;
-  }
-</style>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+
+  <!-- ESTILOS -->
+
+  <style>
+
+    /* ==========================================
+       TABLA DE CLIENTES
+    ========================================== */
+
+    #clientesTableBody td:nth-child(5),
+    #clientesTableBody td:nth-child(6) {
+
+      white-space: nowrap;
+
+    }
+
+
+    #clientesTableBody td:nth-child(5) {
+
+      text-align: center;
+
+    }
+
+
+    #clientesTableBody td:nth-child(6) > div {
+
+      justify-content: center;
+
+      flex-wrap: nowrap;
+
+    }
+
+
+    /* ==========================================
+       SIDEBAR
+    ========================================== */
+
+    #sidebar {
+
+      width: 18rem;
+
+      flex-shrink: 0;
+
+      transition:
+        width 0.3s ease,
+        transform 0.3s ease,
+        opacity 0.3s ease;
+
+    }
+
+
+    /* ==========================================
+       SIDEBAR CERRADO EN ESCRITORIO
+    ========================================== */
+
+    @media (min-width: 1024px) {
+
+      #sidebar.sidebar-desktop-hidden {
+
+        width: 0;
+
+        min-width: 0;
+
+        padding: 0;
+
+        border-width: 0;
+
+        overflow: hidden;
+
+        opacity: 0;
+
+        transform: translateX(-100%);
+
+      }
+
+    }
+
+
+    /* ==========================================
+       MÓVIL Y TABLET
+    ========================================== */
+
+    @media (max-width: 1023px) {
+
+      #sidebar {
+
+        position: fixed;
+
+        top: 0;
+
+        bottom: 0;
+
+        left: 0;
+
+        z-index: 50;
+
+        width: min(18rem, 85vw);
+
+        transform: translateX(-100%);
+
+      }
+
+
+      #sidebar.sidebar-mobile-open {
+
+        transform: translateX(0);
+
+      }
+
+    }
+
+
+    /* ==========================================
+       ESCRITORIO
+    ========================================== */
+
+    @media (min-width: 1024px) {
+
+      #sidebar {
+
+        position: relative;
+
+        transform: translateX(0);
+
+      }
+
+    }
+
+  </style>
+
 </head>
 
+
 <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
-  <div class="min-h-screen lg:flex">
 
-    <!-- ========================= SIDEBAR ========================= -->
-    <aside id="sidebar"
-      class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-slate-200/80 bg-white/95 backdrop-blur-sm transition-transform duration-300 lg:static lg:translate-x-0">
 
-      <div class="flex h-20 items-center border-b border-slate-100 px-6">
-        <div class="flex items-center gap-3">
-          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-lg shadow-primary-600/25">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  <!-- ==========================================
+       APLICACIÓN
+  ========================================== -->
+
+  <div
+    id="appShell"
+    class="flex min-h-screen"
+  >
+
+
+    <!-- ==========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside
+      id="sidebar"
+      class="flex min-h-screen flex-col border-r border-slate-200/80 bg-white/95 backdrop-blur-sm"
+    >
+
+
+      <!-- ========================================
+           LOGO
+      ======================================== -->
+
+      <div
+        class="flex h-20 items-center justify-between border-b border-slate-100 px-5"
+      >
+
+
+        <!-- LOGO + NOMBRE -->
+
+        <div class="flex min-w-0 items-center gap-3">
+
+
+          <!-- ICONO -->
+
+          <div
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-lg shadow-primary-600/25"
+          >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2
+                3 .895 3 2-1.343 2-3 2m0-8
+                c1.11 0 2.08.402 2.599 1
+                M12 8V7m0 1v8m0 0v1
+                m0-1c-1.11 0-2.08-.402-2.599-1
+                M21 12a9 9 0 11-18 0
+                9 9 0 0118 0z"
+              />
+
             </svg>
+
           </div>
-          <div>
-            <h1 class="text-base font-black tracking-tight text-slate-950">Mi Control</h1>
-            <p class="text-xs font-medium text-slate-400">Gestión de cobros</p>
+
+
+          <!-- TEXTO -->
+
+          <div class="min-w-0">
+
+            <h1
+              class="truncate text-base font-black tracking-tight text-slate-950"
+            >
+
+              Mi Control
+
+            </h1>
+
+
+            <p
+              class="truncate text-xs font-medium text-slate-400"
+            >
+
+              Gestión de cobros
+
+            </p>
+
           </div>
+
         </div>
+
+
+        <!-- ======================================
+             BOTÓN ✕ CERRAR
+        ======================================= -->
+
+        <button
+          id="closeMenuButton"
+          type="button"
+          aria-label="Cerrar menú"
+          title="Cerrar menú"
+
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-xl font-bold text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-95"
+        >
+
+          ✕
+
+        </button>
+
       </div>
 
-      <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-6" aria-label="Navegación principal">
-        <p class="mb-3 px-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Principal</p>
 
-        <a href="index.html" class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700">
-          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 group-hover:bg-primary-50">⌂</span>
+      <!-- ========================================
+           NAVEGACIÓN
+      ======================================== -->
+
+      <nav
+        class="flex-1 space-y-1 overflow-y-auto px-4 py-6"
+        aria-label="Navegación principal"
+      >
+
+
+        <p
+          class="mb-3 px-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400"
+        >
+
+          Principal
+
+        </p>
+
+
+        <!-- DASHBOARD -->
+
+        <a
+          href="index.html"
+
+          class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700"
+        >
+
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 transition group-hover:bg-primary-50"
+          >
+
+            ⌂
+
+          </span>
+
           Dashboard
+
         </a>
 
-        <a href="clientes.html" aria-current="page" class="group flex items-center gap-3 rounded-xl bg-primary-50 px-3 py-3 text-sm font-bold text-primary-700">
-          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-600 text-white shadow-md shadow-primary-600/30">👥</span>
+
+        <!-- CLIENTES -->
+
+        <a
+          href="clientes.html"
+          aria-current="page"
+
+          class="group flex items-center gap-3 rounded-xl bg-primary-50 px-3 py-3 text-sm font-bold text-primary-700"
+        >
+
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-white shadow-md shadow-primary-600/30"
+          >
+
+            👥
+
+          </span>
+
           Clientes
+
         </a>
 
-        <a href="deudas.html" class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700">
-          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 group-hover:bg-primary-50">$</span>
+
+        <!-- DEUDAS -->
+
+        <a
+          href="deudas.html"
+
+          class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700"
+        >
+
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 transition group-hover:bg-primary-50"
+          >
+
+            💳
+
+          </span>
+
           Deudas
+
         </a>
 
-        <a href="pagos.html" class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700">
-          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 group-hover:bg-primary-50">↔</span>
+
+        <!-- PAGOS -->
+
+        <a
+          href="pagos.html"
+
+          class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700"
+        >
+
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 transition group-hover:bg-primary-50"
+          >
+
+            ↪
+
+          </span>
+
           Pagos
+
         </a>
 
-        <a href="historial.html" class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700">
-          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 group-hover:bg-primary-50">◷</span>
+
+        <!-- HISTORIAL -->
+
+        <a
+          href="historial.html"
+
+          class="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-primary-700"
+        >
+
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 transition group-hover:bg-primary-50"
+          >
+
+            ◷
+
+          </span>
+
           Historial
+
         </a>
+
       </nav>
 
+
+      <!-- ========================================
+           CERRAR SESIÓN
+      ======================================== -->
+
       <div class="border-t border-slate-100 p-4">
-        <button id="logoutButton" type="button" class="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-red-50">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 group-hover:bg-red-100 group-hover:text-red-600">↪</span>
-          <span>
-            <span class="block text-sm font-bold text-slate-700">Cerrar sesión</span>
-            <span class="block text-xs text-slate-400">Salir del sistema</span>
+
+
+        <button
+          id="logoutButton"
+          type="button"
+
+          class="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-red-50"
+        >
+
+
+          <span
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition group-hover:bg-red-100 group-hover:text-red-600"
+          >
+
+            ↪
+
           </span>
+
+
+          <span>
+
+            <span
+              class="block text-sm font-bold text-slate-700"
+            >
+
+              Cerrar sesión
+
+            </span>
+
+
+            <span
+              class="block text-xs text-slate-400"
+            >
+
+              Salir del sistema
+
+            </span>
+
+          </span>
+
+
         </button>
+
       </div>
+
     </aside>
 
-    <div id="sidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-950/40 backdrop-blur-sm lg:hidden"></div>
 
-    <!-- ========================= CONTENIDO ========================= -->
-    <div class="flex min-h-screen min-w-0 flex-1 flex-col">
+    <!-- ==========================================
+         OVERLAY PARA MÓVIL
+    ========================================== -->
 
-      <header class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur-md sm:px-6 lg:px-8">
-        <div class="flex items-center gap-4">
-          <button id="menuButton" type="button" aria-label="Abrir menú" class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 lg:hidden">☰</button>
-          <div>
-            <div class="hidden items-center gap-2 text-xs font-semibold text-slate-400 sm:flex">
+    <div
+      id="sidebarOverlay"
+
+      class="fixed inset-0 z-40 hidden bg-slate-950/40 backdrop-blur-sm"
+    ></div>
+
+
+    <!-- ==========================================
+         CONTENIDO PRINCIPAL
+    ========================================== -->
+
+    <div
+      class="flex min-h-screen min-w-0 flex-1 flex-col"
+    >
+
+
+      <!-- ========================================
+           HEADER
+      ======================================== -->
+
+      <header
+        class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur-md sm:px-6 lg:px-8"
+      >
+
+
+        <!-- IZQUIERDA -->
+
+        <div class="flex min-w-0 items-center gap-4">
+
+
+          <!-- ====================================
+               BOTÓN ☰ ABRIR MENÚ
+          ===================================== -->
+
+          <button
+            id="menuButton"
+            type="button"
+            aria-label="Abrir menú"
+            title="Abrir menú"
+
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-2xl font-bold text-slate-600 shadow-sm transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-600 active:scale-95"
+          >
+
+            ☰
+
+          </button>
+
+
+          <!-- TÍTULO -->
+
+          <div class="min-w-0">
+
+
+            <div
+              class="hidden items-center gap-2 text-xs font-semibold text-slate-400 sm:flex"
+            >
+
               <span>Mi Control de Cobros</span>
+
               <span>/</span>
-              <span class="text-primary-600">Clientes</span>
+
+              <span class="text-primary-600">
+
+                Clientes
+
+              </span>
+
             </div>
-            <h2 class="text-lg font-black tracking-tight text-slate-950 sm:text-xl">Gestión de clientes</h2>
+
+
+            <h2
+              class="truncate text-lg font-black tracking-tight text-slate-950 sm:text-xl"
+            >
+
+              Gestión de clientes
+
+            </h2>
+
+
           </div>
+
         </div>
 
-        <div class="flex items-center gap-3">
-          <div class="hidden rounded-xl bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 sm:block">
-            <span class="mr-1 inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500"></span>
+
+        <!-- DERECHA -->
+
+        <div class="flex shrink-0 items-center gap-3">
+
+
+          <div
+            class="hidden rounded-xl bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 sm:block"
+          >
+
+            <span
+              class="mr-1 inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500"
+            ></span>
+
             Sistema activo
+
           </div>
-          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-sm font-black text-primary-700">U</div>
+
+
+          <!-- USUARIO -->
+
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-sm font-black text-primary-700"
+          >
+
+            U
+
+          </div>
+
+
         </div>
+
       </header>
 
-      <main class="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+
+      <!-- ========================================
+           MAIN
+      ======================================== -->
+
+      <main
+        class="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8"
+      >
+
+
         <div class="mx-auto max-w-7xl">
 
-          <!-- ========================= ENCABEZADO ========================= -->
+
+          <!-- =====================================
+               ENCABEZADO
+          ====================================== -->
+
           <section class="mb-8">
-            <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+
+
+            <div
+              class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
+            >
+
+
               <div>
-                <div class="mb-2 inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-bold text-primary-700">
+
+
+                <div
+                  class="mb-2 inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-bold text-primary-700"
+                >
+
                   👥 Módulo de clientes
+
                 </div>
-                <h1 class="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Clientes</h1>
-                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-                  Administra, consulta y actualiza la información de tus clientes desde un solo lugar.
+
+
+                <h1
+                  class="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl"
+                >
+
+                  Clientes
+
+                </h1>
+
+
+                <p
+                  class="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base"
+                >
+
+                  Administra, consulta y actualiza la información de tus
+                  clientes desde un solo lugar.
+
                 </p>
+
+
               </div>
 
-              <a href="clientes-nuevo.html"
-                class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-primary-600/25 transition hover:-translate-y-0.5 hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-200">
-                <span class="text-lg leading-none">+</span>
+
+              <!-- NUEVO CLIENTE -->
+
+              <a
+                href="clientes-nuevo.html"
+
+                class="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-primary-600/25 transition hover:-translate-y-0.5 hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-200 sm:w-auto"
+              >
+
+                <span class="text-lg leading-none">
+
+                  +
+
+                </span>
+
                 Nuevo cliente
+
               </a>
+
+
             </div>
+
           </section>
 
-          <!-- ========================= TABLA ========================= -->
-           <!-- TABLA: 6 columnas = Cliente | Teléfono | Correo | Estado | Registro | Acciones -->
-          <section class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft" aria-labelledby="listadoClientesTitulo">
 
-            <div class="border-b border-slate-100/80 px-6 py-6 sm:px-8">
-              <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                <div class="flex items-center gap-3">
-                  <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600">☷</div>
-                  <div>
-                    <h2 id="listadoClientesTitulo" class="text-base font-black text-slate-950 sm:text-lg">Listado de clientes</h2>
-                    <p id="clientesCount" class="mt-0.5 text-xs font-medium text-slate-400">Cargando clientes...</p>
+          <!-- =====================================
+               TABLA CLIENTES
+          ====================================== -->
+
+          <section
+            class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft"
+            aria-labelledby="listadoClientesTitulo"
+          >
+
+
+            <!-- ENCABEZADO TABLA -->
+
+            <div
+              class="border-b border-slate-100/80 px-6 py-6 sm:px-8"
+            >
+
+
+              <div
+                class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
+              >
+
+
+                <!-- TÍTULO -->
+
+                <div
+                  class="flex items-center gap-3"
+                >
+
+
+                  <div
+                    class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600"
+                  >
+
+                    ☷
+
                   </div>
+
+
+                  <div>
+
+
+                    <h2
+                      id="listadoClientesTitulo"
+                      class="text-base font-black text-slate-950 sm:text-lg"
+                    >
+
+                      Listado de clientes
+
+                    </h2>
+
+
+                    <p
+                      id="clientesCount"
+                      class="mt-0.5 text-xs font-medium text-slate-400"
+                    >
+
+                      Cargando clientes...
+
+                    </p>
+
+
+                  </div>
+
                 </div>
 
-                <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-                  <label class="relative block w-full sm:w-96" for="buscarCliente">
-                    <span class="sr-only">Buscar cliente</span>
-                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">⌕</span>
+
+                <!-- BUSCADOR -->
+
+                <div
+                  class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto"
+                >
+
+
+                  <label
+                    class="relative block w-full sm:w-96"
+                    for="buscarCliente"
+                  >
+
+
+                    <span class="sr-only">
+
+                      Buscar cliente
+
+                    </span>
+
+
+                    <span
+                      class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"
+                    >
+
+                      ⌕
+
+                    </span>
+
+
                     <input
                       id="buscarCliente"
                       name="buscarCliente"
                       type="search"
                       autocomplete="off"
+
                       placeholder="Buscar por nombre, correo o teléfono"
-                      class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pl-11 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-100/50">
+
+                      class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pl-11 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-100/50"
+                    >
+
+
                   </label>
 
-                  <a href="clientes-nuevo.html" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700">
+
+                  <!-- AGREGAR -->
+
+                  <a
+                    href="clientes-nuevo.html"
+
+                    class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700"
+                  >
+
                     + Agregar
+
                   </a>
+
+
                 </div>
+
               </div>
+
             </div>
+
+
+            <!-- ===================================
+                 TABLA RESPONSIVE
+            ==================================== -->
 
             <div class="overflow-x-auto">
-              <table class="w-full min-w-[1200px] table-fixed text-left">
-                <caption class="sr-only">Listado de clientes registrados</caption>
+
+
+              <table
+                class="w-full min-w-[1200px] table-fixed text-left"
+              >
+
+
+                <caption class="sr-only">
+
+                  Listado de clientes registrados
+
+                </caption>
+
+
                 <colgroup>
+
                   <col class="w-[26%]">
+
                   <col class="w-[13%]">
+
                   <col class="w-[23%]">
+
                   <col class="w-[10%]">
+
                   <col class="w-[12%]">
+
                   <col class="w-[16%]">
+
                 </colgroup>
 
+
                 <thead>
-                  <tr class="border-b border-slate-100 bg-slate-50/80">
-                    <th scope="col" class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500">Cliente</th>
-                    <th scope="col" class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500">Teléfono</th>
-                    <th scope="col" class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500">Correo</th>
-                    <th scope="col" class="px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500">Estado</th>
-                    <th scope="col" class="whitespace-nowrap px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500">Registro</th>
-                    <th scope="col" class="whitespace-nowrap px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500">Acciones</th>
+
+
+                  <tr
+                    class="border-b border-slate-100 bg-slate-50/80"
+                  >
+
+
+                    <th
+                      scope="col"
+                      class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500"
+                    >
+
+                      Cliente
+
+                    </th>
+
+
+                    <th
+                      scope="col"
+                      class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500"
+                    >
+
+                      Teléfono
+
+                    </th>
+
+
+                    <th
+                      scope="col"
+                      class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500"
+                    >
+
+                      Correo
+
+                    </th>
+
+
+                    <th
+                      scope="col"
+                      class="px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500"
+                    >
+
+                      Estado
+
+                    </th>
+
+
+                    <th
+                      scope="col"
+                      class="whitespace-nowrap px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500"
+                    >
+
+                      Registro
+
+                    </th>
+
+
+                    <th
+                      scope="col"
+                      class="whitespace-nowrap px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500"
+                    >
+
+                      Acciones
+
+                    </th>
+
+
                   </tr>
+
                 </thead>
 
-                <tbody id="clientesTableBody" class="divide-y divide-slate-100">
+
+                <!-- DATOS GENERADOS POR JS -->
+
+                <tbody
+                  id="clientesTableBody"
+                  class="divide-y divide-slate-100"
+                >
+
+
                   <tr id="clientesLoadingRow">
-                    <td colspan="6" class="px-6 py-14 text-center text-sm font-medium text-slate-400">
-                      <div class="flex flex-col items-center gap-3">
-                        <div class="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-primary-600"></div>
-                        <span>Cargando clientes...</span>
+
+
+                    <td
+                      colspan="6"
+                      class="px-6 py-14 text-center text-sm font-medium text-slate-400"
+                    >
+
+
+                      <div
+                        class="flex flex-col items-center gap-3"
+                      >
+
+
+                        <div
+                          class="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-primary-600"
+                        ></div>
+
+
+                        <span>
+
+                          Cargando clientes...
+
+                        </span>
+
+
                       </div>
+
+
                     </td>
+
+
                   </tr>
+
+
                 </tbody>
+
+
               </table>
+
+
             </div>
 
-            <div id="clientesEmptyState" class="hidden border-t border-slate-100 px-6 py-16 text-center">
-              <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-2xl text-slate-400">👤</div>
-              <h3 class="mt-4 text-lg font-black text-slate-800">No hay clientes registrados</h3>
-              <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-400">
-                Registra tu primer cliente para comenzar a gestionar sus datos y su historial.
+
+            <!-- ESTADO VACÍO -->
+
+            <div
+              id="clientesEmptyState"
+              class="hidden border-t border-slate-100 px-6 py-16 text-center"
+            >
+
+
+              <div
+                class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-2xl text-slate-400"
+              >
+
+                👤
+
+              </div>
+
+
+              <h3
+                class="mt-4 text-lg font-black text-slate-800"
+              >
+
+                No hay clientes registrados
+
+              </h3>
+
+
+              <p
+                class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-400"
+              >
+
+                Registra tu primer cliente para comenzar a gestionar sus
+                datos y su historial.
+
               </p>
-              <a href="clientes-nuevo.html" class="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-3 text-sm font-black text-white hover:bg-primary-700">
+
+
+              <a
+                href="clientes-nuevo.html"
+
+                class="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-3 text-sm font-black text-white hover:bg-primary-700"
+              >
+
                 + Agregar primer cliente
+
               </a>
+
+
             </div>
 
-            <div class="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p class="text-xs font-medium text-slate-400">Gestiona los clientes y accede rápidamente a su historial.</p>
-              <span id="tablaResumen" class="text-xs font-bold text-slate-500">—</span>
+
+            <!-- FOOTER TABLA -->
+
+            <div
+              class="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+
+
+              <p
+                class="text-xs font-medium text-slate-400"
+              >
+
+                Gestiona los clientes y accede rápidamente a su historial.
+
+              </p>
+
+
+              <span
+                id="tablaResumen"
+                class="text-xs font-bold text-slate-500"
+              >
+
+                —
+
+              </span>
+
+
             </div>
+
+
           </section>
+
+
         </div>
+
       </main>
 
-      <footer class="border-t border-slate-200/80 bg-white px-6 py-5">
-        <div class="mx-auto flex max-w-7xl flex-col justify-between gap-2 text-xs text-slate-400 sm:flex-row">
-          <p>© 2026 Mi Control de Cobros</p>
-          <p>Gestión de clientes segura y organizada</p>
+
+      <!-- ========================================
+           FOOTER
+      ======================================== -->
+
+      <footer
+        class="border-t border-slate-200/80 bg-white px-6 py-5"
+      >
+
+
+        <div
+          class="mx-auto flex max-w-7xl flex-col justify-between gap-2 text-xs text-slate-400 sm:flex-row"
+        >
+
+
+          <p>
+
+            © 2026 Mi Control de Cobros
+
+          </p>
+
+
+          <p>
+
+            Gestión de clientes segura y organizada
+
+          </p>
+
+
         </div>
+
       </footer>
+
+
     </div>
+
   </div>
 
-  <!-- ========================= SCRIPTS ========================= -->
+
+  <!-- ==========================================
+       JAVASCRIPT DEL SIDEBAR
+  ========================================== -->
+
   <script>
-    const menuButton = document.getElementById('menuButton');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    /* ==========================================
+       ELEMENTOS
+    ========================================== */
+
+    const menuButton =
+      document.getElementById('menuButton');
+
+    const closeMenuButton =
+      document.getElementById('closeMenuButton');
+
+    const sidebar =
+      document.getElementById('sidebar');
+
+    const sidebarOverlay =
+      document.getElementById('sidebarOverlay');
+
+
+    /* ==========================================
+       DETECTAR ESCRITORIO
+    ========================================== */
+
+    function isDesktop() {
+
+      return window.innerWidth >= 1024;
+
+    }
+
+
+    /* ==========================================
+       ABRIR SIDEBAR
+    ========================================== */
 
     function openSidebar() {
-      sidebar?.classList.remove('-translate-x-full');
-      sidebarOverlay?.classList.remove('hidden');
-      document.body.classList.add('overflow-hidden');
+
+      if (!sidebar) return;
+
+
+      /* COMPUTADORA 💻 */
+
+      if (isDesktop()) {
+
+        sidebar.classList.remove(
+          'sidebar-desktop-hidden'
+        );
+
+        return;
+
+      }
+
+
+      /* MÓVIL 📱 */
+
+      sidebar.classList.add(
+        'sidebar-mobile-open'
+      );
+
+      sidebarOverlay?.classList.remove(
+        'hidden'
+      );
+
+      document.body.classList.add(
+        'overflow-hidden'
+      );
+
     }
+
+
+    /* ==========================================
+       CERRAR SIDEBAR
+    ========================================== */
 
     function closeSidebar() {
-      sidebar?.classList.add('-translate-x-full');
-      sidebarOverlay?.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
+
+      if (!sidebar) return;
+
+
+      /* COMPUTADORA 💻 */
+
+      if (isDesktop()) {
+
+        sidebar.classList.add(
+          'sidebar-desktop-hidden'
+        );
+
+        return;
+
+      }
+
+
+      /* MÓVIL 📱 */
+
+      sidebar.classList.remove(
+        'sidebar-mobile-open'
+      );
+
+      sidebarOverlay?.classList.add(
+        'hidden'
+      );
+
+      document.body.classList.remove(
+        'overflow-hidden'
+      );
+
     }
 
-    menuButton?.addEventListener('click', openSidebar);
-    sidebarOverlay?.addEventListener('click', closeSidebar);
 
-    document.querySelectorAll('#sidebar a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth < 1024) closeSidebar();
+    /* ==========================================
+       BOTÓN ☰ ABRIR
+    ========================================== */
+
+    menuButton?.addEventListener(
+      'click',
+      openSidebar
+    );
+
+
+    /* ==========================================
+       BOTÓN ✕ CERRAR
+    ========================================== */
+
+    closeMenuButton?.addEventListener(
+      'click',
+      closeSidebar
+    );
+
+
+    /* ==========================================
+       CLICK FUERA DEL MENÚ
+    ========================================== */
+
+    sidebarOverlay?.addEventListener(
+      'click',
+      closeSidebar
+    );
+
+
+    /* ==========================================
+       TECLA ESC
+    ========================================== */
+
+    document.addEventListener(
+      'keydown',
+      function (event) {
+
+        if (event.key === 'Escape') {
+
+          closeSidebar();
+
+        }
+
+      }
+    );
+
+
+    /* ==========================================
+       CERRAR MENÚ AL NAVEGAR EN MÓVIL
+    ========================================== */
+
+    document
+      .querySelectorAll('#sidebar a')
+      .forEach(function (link) {
+
+        link.addEventListener(
+          'click',
+          function () {
+
+            if (!isDesktop()) {
+
+              closeSidebar();
+
+            }
+
+          }
+        );
+
       });
-    });
+
+
+    /* ==========================================
+       AJUSTE AL CAMBIAR TAMAÑO
+    ========================================== */
+
+    window.addEventListener(
+      'resize',
+      function () {
+
+        if (isDesktop()) {
+
+          sidebar?.classList.remove(
+            'sidebar-mobile-open'
+          );
+
+          sidebarOverlay?.classList.add(
+            'hidden'
+          );
+
+          document.body.classList.remove(
+            'overflow-hidden'
+          );
+
+        }
+
+      }
+    );
+
   </script>
 
-  <!-- Mantiene la lógica actual de autenticación, clientes y PWA -->
-  <script type="module" src="js/auth.js"></script>
-  <script type="module" src="js/clientes.js"></script>
-  <script src="js/pwa.js"></script>
+
+  <!-- ==========================================
+       JAVASCRIPT DEL SISTEMA
+  ========================================== -->
+
+  <script
+    type="module"
+    src="js/auth.js"
+  ></script>
+
+
+  <script
+    type="module"
+    src="js/clientes.js"
+  ></script>
+
+
+  <script
+    src="js/pwa.js"
+  ></script>
+
+
 </body>
+
 </html>

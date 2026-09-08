@@ -3,7 +3,10 @@ export function formatDate(value) {
     return "-";
   }
 
-  const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
+  const date =
+    typeof value.toDate === "function"
+      ? value.toDate()
+      : new Date(value);
 
   if (Number.isNaN(date.getTime())) {
     return "-";
@@ -28,26 +31,40 @@ export function formatCurrency(value) {
 
 export function getTodayInputValue() {
   const today = new Date();
-  const offsetDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
 
-  return offsetDate.toISOString().slice(0, 10);
+  const offsetDate = new Date(
+    today.getTime() -
+    today.getTimezoneOffset() * 60000
+  );
+
+  return offsetDate
+    .toISOString()
+    .slice(0, 10);
 }
 
 export function getDebtStatus(deuda) {
-  const saldo = Number(deuda.saldo || 0);
+  const saldo =
+    Number(deuda.saldo || 0);
 
-  if (saldo <= 0) {
-    return "PAGADA";
+  // DEUDA PAGADA
+  if (saldo <= 0.009) {
+    return "PAGADO";
   }
 
+  // DEUDA VENCIDA
   if (deuda.fechaVencimiento) {
-    const today = getTodayInputValue();
+    const today =
+      getTodayInputValue();
 
-    if (deuda.fechaVencimiento < today) {
+    if (
+      deuda.fechaVencimiento <
+      today
+    ) {
       return "VENCIDA";
     }
   }
 
+  // DEUDA PENDIENTE
   return "PENDIENTE";
 }
 
@@ -61,6 +78,7 @@ export function normalizeText(value) {
 
 export function setText(element, value) {
   if (element) {
-    element.textContent = value;
+    element.textContent =
+      value;
   }
 }

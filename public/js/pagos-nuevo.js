@@ -20,6 +20,10 @@ import {
   setText
 } from "./utils.js";
 
+import {
+  enviarComprobantePago
+} from "./email-service.js";
+
 // ============================================================
 // COLECCIONES
 // ============================================================
@@ -98,10 +102,46 @@ let deudasUnsubscribe = null;
 let deudaSeleccionada = null;
 
 // ============================================================
+// CLIENTE
+// ============================================================
+
+function getCliente(clienteId) {
+
+  return clientes.find(
+    (item) =>
+      item.id === clienteId
+  ) || null;
+}
+
+function getClienteName(clienteId) {
+
+  const cliente =
+    getCliente(clienteId);
+
+  return (
+    cliente?.nombre ||
+    "Cliente"
+  );
+}
+
+function getClienteEmail(clienteId) {
+
+  const cliente =
+    getCliente(clienteId);
+
+  return String(
+    cliente?.correo ||
+    cliente?.email ||
+    ""
+  ).trim();
+}
+
+// ============================================================
 // FECHA INICIAL
 // ============================================================
 
 if (fechaInput) {
+
   fechaInput.value =
     getTodayInputValue();
 }
@@ -142,7 +182,8 @@ function getSaldoDeuda(deuda) {
   return Math.max(
     Number(
       (
-        monto - pagado
+        monto -
+        pagado
       ).toFixed(2)
     ),
     0
@@ -167,26 +208,17 @@ function getDebtStatusAfterPayment(
   fechaVencimiento
 ) {
 
-  // ==========================================================
   // DEUDA COMPLETAMENTE PAGADA
-  // ==========================================================
-
   if (saldo <= 0.009) {
 
     return "PAGADO";
   }
 
-  // ==========================================================
   // FECHA ACTUAL
-  // ==========================================================
-
   const today =
     getTodayKey();
 
-  // ==========================================================
   // DEUDA VENCIDA
-  // ==========================================================
-
   if (
     fechaVencimiento &&
     fechaVencimiento < today
@@ -195,10 +227,7 @@ function getDebtStatusAfterPayment(
     return "VENCIDA";
   }
 
-  // ==========================================================
   // DEUDA PENDIENTE
-  // ==========================================================
-
   return "PENDIENTE";
 }
 
@@ -274,7 +303,7 @@ function showMessage(
 }
 
 // ============================================================
-// MENSAJE DE ERROR FIRESTORE
+// ERROR FIRESTORE
 // ============================================================
 
 function getFirestoreErrorMessage(
@@ -324,7 +353,8 @@ function getFirestoreErrorMessage(
   ) {
 
     return (
-      "Tu sesión no está activa. Inicia sesión nuevamente."
+      "Tu sesión no está activa. " +
+      "Inicia sesión nuevamente."
     );
   }
 
@@ -1011,187 +1041,301 @@ pagoForm?.addEventListener(
       // TRANSACCIÓN ATÓMICA
       // ======================================================
 
-      await runTransaction(
-        db,
-        async (transaction) => {
+      const transactionResult =
+        await runTransaction(
+          db,
+          async (transaction) => {
 
-          // --------------------------------------------------
-          // LEER LA DEUDA MÁS RECIENTE
-          // --------------------------------------------------
+            // ------------------------------------------------
+            // LEER DEUDA MÁS RECIENTE
+            // ------------------------------------------------
 
-          const deudaSnapshot =
-            await transaction.get(
-              deudaRef
-            );
+            const deudaSnapshot =
+              await transaction.get(
+                deudaRef
+              );
 
-          if (
-            !deudaSnapshot.exists()
-          ) {
+            if (
+              !deudaSnapshot.exists()
+            ) {
 
-            throw Object.assign(
-              new Error(
-                "La deuda ya no existe."
-              ),
-              {
-                code:
-                  "not-found"
-              }
-            );
-          }
-
-          const deudaActual =
-            deudaSnapshot.data();
-
-          // --------------------------------------------------
-          // VALIDAR CLIENTE
-          // --------------------------------------------------
-
-          if (
-            deudaActual.clienteId !==
-            data.clienteId
-          ) {
-
-            throw Object.assign(
-              new Error(
-                "La deuda no pertenece al cliente seleccionado."
-              ),
-              {
-                code:
-                  "invalid-payment"
-              }
-            );
-          }
-
-          // --------------------------------------------------
-          // OBTENER SALDO REAL
-          // --------------------------------------------------
-
-          const saldoAnteriorReal =
-            getSaldoDeuda(
-              deudaActual
-            );
-
-          // --------------------------------------------------
-          // VALIDAR MONTO CONTRA FIRESTORE
-          // --------------------------------------------------
-
-          if (
-            data.monto >
-            saldoAnteriorReal +
-            0.009
-          ) {
-
-            throw Object.assign(
-              new Error(
-                "El pago supera el saldo disponible."
-              ),
-              {
-                code:
-                  "invalid-payment"
-              }
-            );
-          }
-
-          // --------------------------------------------------
-          // MONTO PAGADO ANTERIOR
-          // --------------------------------------------------
-
-          const montoPagadoAnterior =
-            Number(
-              deudaActual.montoPagado ||
-              0
-            );
-
-          // --------------------------------------------------
-          // NUEVO MONTO PAGADO
-          // --------------------------------------------------
-
-          const nuevoMontoPagado =
-            Number(
-              (
-                montoPagadoAnterior +
-                data.monto
-              ).toFixed(2)
-            );
-
-          // --------------------------------------------------
-          // NUEVO SALDO
-          // --------------------------------------------------
-
-          const nuevoSaldo =
-            Number(
-              (
-                saldoAnteriorReal -
-                data.monto
-              ).toFixed(2)
-            );
-
-          // --------------------------------------------------
-          // NUEVO ESTADO
-          // --------------------------------------------------
-
-          const nuevoEstado =
-            getDebtStatusAfterPayment(
-              nuevoSaldo,
-              deudaActual.fechaVencimiento
-            );
-
-          // --------------------------------------------------
-          // ACTUALIZAR DEUDA
-          // --------------------------------------------------
-
-          transaction.update(
-            deudaRef,
-            {
-              montoPagado:
-                nuevoMontoPagado,
-
-              saldo:
-                nuevoSaldo,
-
-              estado:
-                nuevoEstado
+              throw Object.assign(
+                new Error(
+                  "La deuda ya no existe."
+                ),
+                {
+                  code:
+                    "not-found"
+                }
+              );
             }
-          );
 
-          // --------------------------------------------------
-          // REGISTRAR PAGO
-          // --------------------------------------------------
+            const deudaActual =
+              deudaSnapshot.data();
 
-          transaction.set(
-            pagoRef,
-            {
-              deudaId:
-                data.deudaId,
+            // ------------------------------------------------
+            // VALIDAR CLIENTE
+            // ------------------------------------------------
 
-              clienteId:
-                data.clienteId,
+            if (
+              deudaActual.clienteId !==
+              data.clienteId
+            ) {
 
-              monto:
+              throw Object.assign(
+                new Error(
+                  "La deuda no pertenece al cliente seleccionado."
+                ),
+                {
+                  code:
+                    "invalid-payment"
+                }
+              );
+            }
+
+            // ------------------------------------------------
+            // SALDO REAL
+            // ------------------------------------------------
+
+            const saldoAnteriorReal =
+              getSaldoDeuda(
+                deudaActual
+              );
+
+            // ------------------------------------------------
+            // VALIDAR MONTO
+            // ------------------------------------------------
+
+            if (
+              data.monto >
+              saldoAnteriorReal +
+              0.009
+            ) {
+
+              throw Object.assign(
+                new Error(
+                  "El pago supera el saldo disponible."
+                ),
+                {
+                  code:
+                    "invalid-payment"
+                }
+              );
+            }
+
+            // ------------------------------------------------
+            // MONTO PAGADO ANTERIOR
+            // ------------------------------------------------
+
+            const montoPagadoAnterior =
+              Number(
+                deudaActual.montoPagado ||
+                0
+              );
+
+            // ------------------------------------------------
+            // NUEVO MONTO PAGADO
+            // ------------------------------------------------
+
+            const nuevoMontoPagado =
+              Number(
+                (
+                  montoPagadoAnterior +
+                  data.monto
+                ).toFixed(2)
+              );
+
+            // ------------------------------------------------
+            // NUEVO SALDO
+            // ------------------------------------------------
+
+            const nuevoSaldo =
+              Number(
+                (
+                  saldoAnteriorReal -
+                  data.monto
+                ).toFixed(2)
+              );
+
+            // ------------------------------------------------
+            // NUEVO ESTADO
+            // ------------------------------------------------
+
+            const nuevoEstado =
+              getDebtStatusAfterPayment(
+                nuevoSaldo,
+                deudaActual.fechaVencimiento
+              );
+
+            // ------------------------------------------------
+            // ACTUALIZAR DEUDA
+            // IMPORTANTE:
+            // SOLO CAMPOS PERMITIDOS POR FIRESTORE
+            // ------------------------------------------------
+
+            transaction.update(
+              deudaRef,
+              {
+                montoPagado:
+                  nuevoMontoPagado,
+
+                saldo:
+                  nuevoSaldo,
+
+                estado:
+                  nuevoEstado
+              }
+            );
+
+            // ------------------------------------------------
+            // REGISTRAR PAGO
+            // IMPORTANTE:
+            // SOLO CAMPOS PERMITIDOS POR FIRESTORE
+            // ------------------------------------------------
+
+            transaction.set(
+              pagoRef,
+              {
+                deudaId:
+                  data.deudaId,
+
+                clienteId:
+                  data.clienteId,
+
+                monto:
+                  Number(
+                    data.monto.toFixed(2)
+                  ),
+
+                fecha:
+                  data.fecha,
+
+                metodoPago:
+                  data.metodoPago,
+
+                observacion:
+                  data.observacion
+              }
+            );
+
+            // ------------------------------------------------
+            // DATOS PARA EL CORREO
+            // ------------------------------------------------
+
+            return {
+              clienteNombre:
+                getClienteName(
+                  data.clienteId
+                ),
+
+              clienteEmail:
+                getClienteEmail(
+                  data.clienteId
+                ),
+
+              concepto:
+                deudaActual.concepto ||
+                "Pago de deuda",
+
+              montoPago:
                 Number(
                   data.monto.toFixed(2)
                 ),
 
-              fecha:
-                data.fecha,
+              saldoAnterior:
+                Number(
+                  saldoAnteriorReal.toFixed(2)
+                ),
 
-              metodoPago:
-                data.metodoPago,
+              saldoNuevo:
+                nuevoSaldo,
 
-              observacion:
-                data.observacion
-            }
-          );
-
-        }
-      );
+              estado:
+                nuevoEstado
+            };
+          }
+        );
 
       // ======================================================
-      // ÉXITO
+      // ENVIAR COMPROBANTE
+      // ======================================================
+
+      let mensajeFinal =
+        "Pago registrado correctamente.";
+
+      if (
+        transactionResult?.clienteEmail
+      ) {
+
+        try {
+
+          showMessage(
+            "Pago registrado. Enviando comprobante por correo...",
+            "success"
+          );
+
+          await enviarComprobantePago({
+
+            email:
+              transactionResult.clienteEmail,
+
+            cliente:
+              transactionResult.clienteNombre,
+
+            concepto:
+              transactionResult.concepto,
+
+            monto:
+              transactionResult.montoPago,
+
+            fecha:
+              data.fecha,
+
+            metodoPago:
+              data.metodoPago,
+
+            saldoAnterior:
+              transactionResult.saldoAnterior,
+
+            saldoActual:
+              transactionResult.saldoNuevo,
+
+            estado:
+              transactionResult.saldoNuevo <=
+              0.009
+                ? "PAGO EXITOSO"
+                : "PAGO REGISTRADO",
+
+            observacion:
+              data.observacion
+          });
+
+          mensajeFinal =
+            "Pago registrado y comprobante enviado al correo del cliente.";
+
+        } catch (emailError) {
+
+          console.error(
+            "⚠️ El pago se registró, pero no se pudo enviar el correo:",
+            emailError
+          );
+
+          mensajeFinal =
+            "Pago registrado correctamente. No se pudo enviar el comprobante por correo.";
+        }
+
+      } else {
+
+        mensajeFinal =
+          "Pago registrado correctamente. El cliente no tiene un correo electrónico registrado.";
+      }
+
+      // ======================================================
+      // MENSAJE FINAL
       // ======================================================
 
       showMessage(
-        "Pago registrado correctamente.",
+        `${mensajeFinal} Redirigiendo...`,
         "success"
       );
 
@@ -1202,7 +1346,7 @@ pagoForm?.addEventListener(
             "pagos.html";
 
         },
-        800
+        1400
       );
 
     } catch (error) {

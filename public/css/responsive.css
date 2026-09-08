@@ -1,91 +1,173 @@
 /* ═══════════════════════════════════════════════
-   Responsive Breakpoints
-   ═══════════════════════════════════════════════ */
+   RESPONSIVE.CSS
+   MI CONTROL DE COBROS
+   Diseño responsive para:
+   💻 Desktop
+   💻 Laptop
+   📱 Tablet
+   📱 Mobile
+═══════════════════════════════════════════════ */
 
-/* ── Desktop-small / Laptop (≤ 1280px) ───────── */
+
+/* ═══════════════════════════════════════════════
+   CONFIGURACIÓN GENERAL
+═══════════════════════════════════════════════ */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Evita que imágenes y SVG generen desbordamiento */
+img,
+svg {
+  max-width: 100%;
+}
+
+/* Mejor experiencia táctil */
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Evita problemas de tamaño en elementos flex */
+* {
+  min-width: 0;
+}
+
+
+/* ═══════════════════════════════════════════════
+   DESKTOP GRANDE
+   > 1280px
+═══════════════════════════════════════════════ */
+
+@media (min-width: 1281px) {
+
+  .page-shell {
+    padding: 28px 32px 48px;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════
+   DESKTOP SMALL / LAPTOP
+   ≤ 1280px
+═══════════════════════════════════════════════ */
+
 @media (max-width: 1280px) {
+
   .stats-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .page-shell {
+    padding: 24px 24px 40px;
+  }
+
 }
 
-/* ── Tablet landscape (≤ 1024px) ─────────────── */
+
+/* ═══════════════════════════════════════════════
+   TABLET LANDSCAPE
+   ≤ 1024px
+═══════════════════════════════════════════════ */
+
 @media (max-width: 1024px) {
+
+  /* Sidebar oculto inicialmente */
   .sidebar {
     transform: translateX(-100%);
   }
 
+  /* Sidebar abierto */
   .sidebar.open {
     transform: translateX(0);
   }
 
+  /* Header móvil */
   .mobile-header {
     display: flex;
   }
 
+  /* Contenido principal */
   .main-content {
     margin-left: 0;
     padding-top: var(--header-height);
+    width: 100%;
   }
 
+  /* Ocultar header de escritorio */
   .top-header {
     display: none;
   }
 
+  /* Dashboard */
   .dashboard-tables {
     grid-template-columns: 1fr;
   }
 
+  /* Estadísticas */
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* Contenido */
   .page-shell {
     padding: 20px 20px 40px;
   }
-}
 
-/* ── Tablet portrait (≤ 768px) ───────────────── */
-@media (max-width: 768px) {
-  .two-columns {
-    grid-template-columns: 1fr;
-  }
-
-  .clients-layout {
-    grid-template-columns: 1fr;
-  }
-
+  /* Layouts */
+  .two-columns,
+  .clients-layout,
   .debts-layout {
     grid-template-columns: 1fr;
   }
 
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+}
 
+
+/* ═══════════════════════════════════════════════
+   TABLET PORTRAIT
+   ≤ 768px
+═══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* Formularios */
+  .form-row,
   .field-grid {
     grid-template-columns: 1fr;
   }
 
+  /* Headers de paneles */
   .panel-header,
-  .list-header {
+  .list-header,
+  .client-form-header,
+  .debt-form-header,
+  .summary-card-header {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
   }
 
+  /* Toolbars */
   .toolbar {
     width: 100%;
+    flex-wrap: wrap;
   }
 
-  .compact-field {
-    width: 100%;
-  }
-
+  .compact-field,
   .search-field {
     width: 100%;
   }
 
+  /* Hero del Dashboard */
   .dashboard-hero {
     align-items: flex-start;
     flex-direction: column;
@@ -94,6 +176,7 @@
 
   .dashboard-hero h2 {
     font-size: 24px;
+    line-height: 1.2;
   }
 
   .hero-date {
@@ -101,25 +184,20 @@
     font-size: 12px;
   }
 
-  .client-form-header,
-  .debt-form-header,
-  .summary-card-header {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 20px;
-  }
-
+  /* Formularios */
   .form-section,
   .form-actions {
     padding-left: 20px;
     padding-right: 20px;
   }
 
+  /* Paneles */
   .panel {
     padding: 18px;
     border-radius: var(--radius-md);
   }
 
+  /* Títulos */
   .page-title {
     padding: 22px;
     border-radius: var(--radius-md);
@@ -129,7 +207,12 @@
     font-size: 22px;
   }
 
-  /* Login split-screen → single column */
+  /* Acciones */
+  .row-actions {
+    flex-wrap: wrap;
+  }
+
+  /* Login responsive */
   .login-page {
     grid-template-columns: 1fr;
   }
@@ -142,23 +225,34 @@
     min-height: 100vh;
     padding: 32px 20px;
   }
+
 }
 
-/* ── Mobile (≤ 480px) ────────────────────────── */
-@media (max-width: 480px) {
+
+/* ═══════════════════════════════════════════════
+   MOBILE GRANDE
+   ≤ 640px
+═══════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+
+  /* Contenedor principal */
   .page-shell {
     padding: 16px 14px 32px;
   }
 
+  /* Estadísticas */
   .stats-grid {
     grid-template-columns: 1fr;
   }
 
+  /* Acciones rápidas */
   .quick-actions-grid {
     display: grid;
     grid-template-columns: 1fr;
   }
 
+  /* Hero */
   .dashboard-hero {
     padding: 20px;
     border-radius: var(--radius-md);
@@ -168,6 +262,7 @@
     font-size: 22px;
   }
 
+  /* Tarjetas */
   .stat-card {
     padding: 16px;
   }
@@ -176,10 +271,12 @@
     font-size: 22px;
   }
 
+  /* Panel */
   .panel {
-    padding: 14px;
+    padding: 16px;
   }
 
+  /* Page title */
   .page-title {
     padding: 18px;
   }
@@ -188,31 +285,251 @@
     font-size: 20px;
   }
 
+  /* Formularios */
+  .form-section,
+  .form-actions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Botones principales */
+  .primary-button,
+  .success-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Inputs para evitar zoom automático en iPhone */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Tablas */
+  .table-wrapper,
+  .overflow-x-auto {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 700px;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════
+   MOBILE
+   ≤ 480px
+═══════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+
+  /* Espaciado principal */
+  .page-shell {
+    padding: 14px 12px 28px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: min(280px, 85vw);
+  }
+
+  /* Header móvil */
+  .mobile-header {
+    padding: 0 12px;
+  }
+
+  /* Dashboard */
+  .dashboard-hero {
+    padding: 18px;
+  }
+
+  .dashboard-hero h2 {
+    font-size: 20px;
+  }
+
+  /* Tarjetas */
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-card strong {
+    font-size: 21px;
+  }
+
+  /* Paneles */
+  .panel {
+    padding: 14px;
+  }
+
+  /* Títulos */
+  .page-title {
+    padding: 16px;
+  }
+
+  .page-title h2 {
+    font-size: 19px;
+  }
+
+  /* Formularios */
   .client-form-header h3,
   .debt-form-header h3 {
     font-size: 18px;
   }
 
+  /* Métricas */
   .summary-metric dd,
   .summary-list dd {
-    font-size: 22px;
+    font-size: 21px;
   }
 
   .balance-box strong {
-    font-size: 22px;
+    font-size: 21px;
   }
 
+  /* Botones de acciones */
   .row-actions {
     flex-direction: column;
+    width: 100%;
   }
 
   .row-actions .secondary-button,
-  .row-actions .danger-button {
+  .row-actions .danger-button,
+  .row-actions .primary-button {
     width: 100%;
     justify-content: center;
   }
 
-  .mobile-header {
-    padding: 0 12px;
+  /* Toolbar */
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
   }
+
+  /* Campos */
+  .compact-field,
+  .search-field {
+    width: 100%;
+  }
+
+  /* Tabla */
+  table {
+    min-width: 650px;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════
+   CELULARES MUY PEQUEÑOS
+   ≤ 360px
+═══════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+
+  .page-shell {
+    padding: 12px 10px 24px;
+  }
+
+  .dashboard-hero {
+    padding: 16px;
+  }
+
+  .dashboard-hero h2 {
+    font-size: 18px;
+  }
+
+  .page-title h2 {
+    font-size: 18px;
+  }
+
+  .stat-card strong {
+    font-size: 20px;
+  }
+
+  .sidebar {
+    width: 88vw;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════
+   SOPORTE PARA LA INTERFAZ NUEVA CON TAILWIND
+═══════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+
+  #sidebar {
+    width: min(18rem, 85vw);
+  }
+
+  main {
+    width: 100%;
+    min-width: 0;
+  }
+
+}
+
+
+@media (max-width: 768px) {
+
+  header {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  main {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+}
+
+
+@media (max-width: 640px) {
+
+  header {
+    min-height: 64px;
+    height: auto !important;
+    padding: 12px 14px !important;
+  }
+
+  main {
+    padding: 16px 14px !important;
+  }
+
+  /* Filtros */
+  #buscarDeuda,
+  #estadoFiltro {
+    width: 100%;
+  }
+
+  /* Contenedores con scroll horizontal */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════
+   ACCESIBILIDAD Y MOVIMIENTO REDUCIDO
+═══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
 }

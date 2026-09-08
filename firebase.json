@@ -1,4 +1,8 @@
 {
+  "functions": {
+    "source": "functions"
+  },
+
   "hosting": {
     "public": "public",
     "ignore": [
@@ -33,6 +37,7 @@
     "cleanUrls": true,
     "trailingSlash": false
   },
+
   "firestore": {
     "database": "(default)",
     "location": "nam5",
