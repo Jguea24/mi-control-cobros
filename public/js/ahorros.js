@@ -8,7 +8,8 @@ import {
     collection,
     onSnapshot,
     orderBy,
-    query
+    query,
+    where
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 import {
@@ -29,7 +30,8 @@ import {
 // DOM
 // ============================================================
 
-const periodoFiltro = document.getElementById("periodoFiltro");
+const periodoFiltro =
+    document.getElementById("periodoFiltro");
 
 const fechaInicialContainer =
     document.getElementById("fechaInicialContainer");
@@ -46,7 +48,10 @@ const fechaFinal =
 const actualizarAhorroButton =
     document.getElementById("actualizarAhorroButton");
 
+// ============================================================
 // KPIs
+// ============================================================
+
 const ahorroGanadoHoy =
     document.getElementById("ahorroGanadoHoy");
 
@@ -71,7 +76,10 @@ const ahorroGanadoPeriodoDetalle =
 const ahorroAhorradoPeriodoDetalle =
     document.getElementById("ahorroAhorradoPeriodoDetalle");
 
-// Financiero
+// ============================================================
+// FINANCIERO
+// ============================================================
+
 const ahorroPorcentaje =
     document.getElementById("ahorroPorcentaje");
 
@@ -84,7 +92,10 @@ const ahorroDisponiblePeriodo =
 const ahorroTotalAcumulado =
     document.getElementById("ahorroTotalAcumulado");
 
-// Acumulados
+// ============================================================
+// ACUMULADOS
+// ============================================================
+
 const ahorroGanadoAcumulado =
     document.getElementById("ahorroGanadoAcumulado");
 
@@ -97,7 +108,10 @@ const ahorroSaldoTotal =
 const ahorroSaldoTotalDetalle =
     document.getElementById("ahorroSaldoTotalDetalle");
 
-// Tabla
+// ============================================================
+// TABLA
+// ============================================================
+
 const ahorrosCount =
     document.getElementById("ahorrosCount");
 
@@ -107,7 +121,10 @@ const ahorrosTableBody =
 const ahorrosEmptyState =
     document.getElementById("ahorrosEmptyState");
 
-// Resumen mensual
+// ============================================================
+// RESUMEN MENSUAL
+// ============================================================
+
 const resumenMensualBody =
     document.getElementById("resumenMensualBody");
 
@@ -129,50 +146,66 @@ const resumenMensualSaldo =
 
 let pagosData = [];
 let ahorrosData = [];
+let gastosData = [];
 
 let usuarioActual = null;
 
 let unsubscribePagos = null;
 let unsubscribeAhorros = null;
+let unsubscribeGastos = null;
 
 // ============================================================
 // INICIALIZACIÓN
 // ============================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    console.log("✅ ahorros.js cargado correctamente");
+        console.log(
+            "✅ ahorros.js cargado correctamente"
+        );
 
-    establecerPeriodoInicial();
-    inicializarEventos();
-    actualizarVisibilidadFechas();
-    actualizarVista();
-});
+        establecerPeriodoInicial();
+
+        inicializarEventos();
+
+        actualizarVisibilidadFechas();
+
+        actualizarVista();
+    }
+);
 
 // ============================================================
 // AUTENTICACIÓN
 // ============================================================
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(
+    auth,
+    (user) => {
 
-    console.log(
-        "[AHORROS] Usuario:",
-        user ? user.email || user.uid : "NO AUTENTICADO"
-    );
+        console.log(
+            "[AHORROS] Usuario:",
+            user
+                ? user.email || user.uid
+                : "NO AUTENTICADO"
+        );
 
-    usuarioActual = user;
+        usuarioActual = user;
 
-    if (!user) {
+        if (!user) {
 
-        detenerListeners();
+            detenerListeners();
 
-        window.location.href = "login.html";
+            window.location.href =
+                "login.html";
 
-        return;
+            return;
+        }
+
+        iniciarListeners();
     }
-
-    iniciarListeners();
-});
+);
 
 // ============================================================
 // PERÍODO INICIAL
@@ -183,23 +216,33 @@ function establecerPeriodoInicial() {
     if (periodoFiltro) {
 
         const opcionMes =
-            [...periodoFiltro.options].find(
-                option => option.value === "mes"
+            [
+                ...periodoFiltro.options
+            ].find(
+                option =>
+                    option.value === "mes"
             );
 
         if (opcionMes) {
-            periodoFiltro.value = "mes";
+
+            periodoFiltro.value =
+                "mes";
         }
     }
 
-    const hoy = obtenerFechaHoy();
+    const hoy =
+        obtenerFechaHoy();
 
     if (fechaInicial) {
-        fechaInicial.value = hoy;
+
+        fechaInicial.value =
+            hoy;
     }
 
     if (fechaFinal) {
-        fechaFinal.value = hoy;
+
+        fechaFinal.value =
+            hoy;
     }
 }
 
@@ -209,31 +252,51 @@ function establecerPeriodoInicial() {
 
 function inicializarEventos() {
 
-    periodoFiltro?.addEventListener("change", () => {
+    periodoFiltro?.addEventListener(
+        "change",
+        () => {
 
-        actualizarVisibilidadFechas();
+            actualizarVisibilidadFechas();
 
-        actualizarVista();
-    });
-
-    actualizarAhorroButton?.addEventListener("click", () => {
-
-        actualizarVista();
-    });
-
-    fechaInicial?.addEventListener("change", () => {
-
-        if (periodoFiltro?.value === "personalizado") {
             actualizarVista();
         }
-    });
+    );
 
-    fechaFinal?.addEventListener("change", () => {
+    actualizarAhorroButton?.addEventListener(
+        "click",
+        () => {
 
-        if (periodoFiltro?.value === "personalizado") {
             actualizarVista();
         }
-    });
+    );
+
+    fechaInicial?.addEventListener(
+        "change",
+        () => {
+
+            if (
+                periodoFiltro?.value ===
+                "personalizado"
+            ) {
+
+                actualizarVista();
+            }
+        }
+    );
+
+    fechaFinal?.addEventListener(
+        "change",
+        () => {
+
+            if (
+                periodoFiltro?.value ===
+                "personalizado"
+            ) {
+
+                actualizarVista();
+            }
+        }
+    );
 }
 
 // ============================================================
@@ -243,7 +306,8 @@ function inicializarEventos() {
 function actualizarVisibilidadFechas() {
 
     const personalizado =
-        periodoFiltro?.value === "personalizado";
+        periodoFiltro?.value ===
+        "personalizado";
 
     fechaInicialContainer?.classList.toggle(
         "hidden",
@@ -268,99 +332,202 @@ function iniciarListeners() {
         return;
     }
 
-    console.log("📡 Conectando Ahorros con Firestore...");
+    console.log(
+        "📡 Conectando Ahorros con Firestore..."
+    );
 
     // ========================================================
     // PAGOS
     // ========================================================
 
-    const pagosQuery = query(
-        collection(db, "pagos"),
-        orderBy("fecha", "desc")
-    );
+    const pagosQuery =
+        query(
+            collection(
+                db,
+                "pagos"
+            ),
+            orderBy(
+                "fecha",
+                "desc"
+            )
+        );
 
-    unsubscribePagos = onSnapshot(
-        pagosQuery,
+    unsubscribePagos =
+        onSnapshot(
+            pagosQuery,
 
-        (snapshot) => {
+            (snapshot) => {
 
-            pagosData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+                pagosData =
+                    snapshot.docs.map(
+                        docSnapshot => ({
+                            id:
+                                docSnapshot.id,
 
-            console.log(
-                "✅ PAGOS cargados:",
-                pagosData.length
-            );
+                            ...docSnapshot.data()
+                        })
+                    );
 
-            actualizarVista();
-        },
+                console.log(
+                    "✅ PAGOS cargados:",
+                    pagosData.length
+                );
 
-        (error) => {
+                actualizarVista();
+            },
 
-            console.error(
-                "❌ Error al leer pagos:",
-                error
-            );
+            (error) => {
 
-            pagosData = [];
+                console.error(
+                    "❌ Error al leer pagos:",
+                    error
+                );
 
-            actualizarVista();
+                pagosData = [];
 
-            mostrarErrorGanancias(
-                "No se pudieron cargar las ganancias."
-            );
-        }
-    );
+                actualizarVista();
+
+                mostrarErrorGanancias(
+                    "No se pudieron cargar las ganancias."
+                );
+            }
+        );
 
     // ========================================================
     // AHORROS
     // ========================================================
 
-    const ahorrosQuery = query(
-        collection(db, "ahorros"),
-        orderBy("fecha", "desc")
-    );
+    const ahorrosQuery =
+        query(
+            collection(
+                db,
+                "ahorros"
+            ),
+            orderBy(
+                "fecha",
+                "desc"
+            )
+        );
 
-    unsubscribeAhorros = onSnapshot(
-        ahorrosQuery,
+    unsubscribeAhorros =
+        onSnapshot(
+            ahorrosQuery,
 
-        (snapshot) => {
+            (snapshot) => {
 
-            ahorrosData = snapshot.docs
-                .map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }))
-                .filter(ahorro =>
-                    ahorro.usuarioId === usuarioActual.uid
+                ahorrosData =
+                    snapshot.docs
+                        .map(
+                            docSnapshot => ({
+                                id:
+                                    docSnapshot.id,
+
+                                ...docSnapshot.data()
+                            })
+                        )
+                        .filter(
+                            ahorro =>
+                                ahorro.usuarioId ===
+                                usuarioActual.uid
+                        );
+
+                console.log(
+                    "✅ AHORROS del usuario cargados:",
+                    ahorrosData.length
                 );
 
-            console.log(
-                "✅ AHORROS del usuario cargados:",
-                ahorrosData.length
-            );
+                actualizarVista();
+            },
 
-            actualizarVista();
-        },
+            (error) => {
 
-        (error) => {
+                console.error(
+                    "❌ Error al leer ahorros:",
+                    error
+                );
 
-            console.error(
-                "❌ Error al leer ahorros:",
-                error
-            );
+                ahorrosData = [];
 
-            ahorrosData = [];
+                actualizarVista();
 
-            actualizarVista();
+                mostrarErrorAhorros(
+                    "No se pudieron cargar los ahorros."
+                );
+            }
+        );
 
-            mostrarErrorAhorros(
-                "No se pudieron cargar los ahorros."
-            );
-        }
-    );
+    // ========================================================
+    // GASTOS
+    // ========================================================
+
+    const gastosQuery =
+        query(
+            collection(
+                db,
+                "gastos"
+            ),
+            where(
+                "usuarioId",
+                "==",
+                usuarioActual.uid
+            )
+        );
+
+    unsubscribeGastos =
+        onSnapshot(
+            gastosQuery,
+
+            (snapshot) => {
+
+                gastosData =
+                    snapshot.docs
+                        .map(
+                            docSnapshot => ({
+                                id:
+                                    docSnapshot.id,
+
+                                ...docSnapshot.data()
+                            })
+                        )
+                        .sort(
+                            (a, b) => {
+
+                                const fechaA =
+                                    obtenerFechaNormalizada(
+                                        a.fecha
+                                    );
+
+                                const fechaB =
+                                    obtenerFechaNormalizada(
+                                        b.fecha
+                                    );
+
+                                return fechaB.localeCompare(
+                                    fechaA
+                                );
+                            }
+                        );
+
+                console.log(
+                    "✅ GASTOS del usuario cargados:",
+                    gastosData.length
+                );
+
+                actualizarVista();
+            },
+
+            (error) => {
+
+                console.error(
+                    "❌ Error al leer gastos:",
+                    error
+                );
+
+                gastosData = [];
+
+                actualizarVista();
+            }
+        );
 }
 
 // ============================================================
@@ -369,14 +536,37 @@ function iniciarListeners() {
 
 function detenerListeners() {
 
-    if (typeof unsubscribePagos === "function") {
+    if (
+        typeof unsubscribePagos ===
+        "function"
+    ) {
+
         unsubscribePagos();
-        unsubscribePagos = null;
+
+        unsubscribePagos =
+            null;
     }
 
-    if (typeof unsubscribeAhorros === "function") {
+    if (
+        typeof unsubscribeAhorros ===
+        "function"
+    ) {
+
         unsubscribeAhorros();
-        unsubscribeAhorros = null;
+
+        unsubscribeAhorros =
+            null;
+    }
+
+    if (
+        typeof unsubscribeGastos ===
+        "function"
+    ) {
+
+        unsubscribeGastos();
+
+        unsubscribeGastos =
+            null;
     }
 }
 
@@ -399,80 +589,142 @@ function actualizarVista() {
 
 function actualizarResumen() {
 
-    const hoy = obtenerFechaHoy();
+    const hoy =
+        obtenerFechaHoy();
 
-    const periodo = obtenerRangoPeriodo();
+    const periodo =
+        obtenerRangoPeriodo();
 
     // ========================================================
     // PAGOS DE HOY
     // ========================================================
 
-    const pagosHoy = pagosData.filter(pago => {
-
-        return (
-            obtenerFechaNormalizada(pago.fecha) === hoy
+    const pagosHoy =
+        pagosData.filter(
+            pago =>
+                obtenerFechaNormalizada(
+                    pago.fecha
+                ) === hoy
         );
-    });
 
-    const ganadoHoy = sumarMontos(pagosHoy);
+    const ganadoHoy =
+        sumarMontos(
+            pagosHoy
+        );
 
     // ========================================================
     // AHORROS DE HOY
     // ========================================================
 
-    const ahorrosHoy = ahorrosData.filter(ahorro => {
-
-        return (
-            obtenerFechaNormalizada(ahorro.fecha) === hoy
+    const ahorrosHoy =
+        ahorrosData.filter(
+            ahorro =>
+                obtenerFechaNormalizada(
+                    ahorro.fecha
+                ) === hoy
         );
-    });
 
-    const ahorradoHoy = sumarMontos(ahorrosHoy);
+    const ahorradoHoy =
+        sumarMontos(
+            ahorrosHoy
+        );
 
     // ========================================================
     // PAGOS DEL PERÍODO
     // ========================================================
 
-    const pagosPeriodo = pagosData.filter(pago => {
+    const pagosPeriodo =
+        pagosData.filter(
+            pago => {
 
-        const fecha =
-            obtenerFechaNormalizada(pago.fecha);
+                const fecha =
+                    obtenerFechaNormalizada(
+                        pago.fecha
+                    );
 
-        return (
-            fecha &&
-            fecha >= periodo.inicio &&
-            fecha <= periodo.fin
+                return (
+                    fecha &&
+                    fecha >=
+                        periodo.inicio &&
+                    fecha <=
+                        periodo.fin
+                );
+            }
         );
-    });
 
     // ========================================================
     // AHORROS DEL PERÍODO
     // ========================================================
 
-    const ahorrosPeriodo = ahorrosData.filter(ahorro => {
+    const ahorrosPeriodo =
+        ahorrosData.filter(
+            ahorro => {
 
-        const fecha =
-            obtenerFechaNormalizada(ahorro.fecha);
+                const fecha =
+                    obtenerFechaNormalizada(
+                        ahorro.fecha
+                    );
 
-        return (
-            fecha &&
-            fecha >= periodo.inicio &&
-            fecha <= periodo.fin
+                return (
+                    fecha &&
+                    fecha >=
+                        periodo.inicio &&
+                    fecha <=
+                        periodo.fin
+                );
+            }
         );
-    });
+
+    // ========================================================
+    // GASTOS DEL PERÍODO
+    // ========================================================
+
+    const gastosPeriodo =
+        gastosData.filter(
+            gasto => {
+
+                const fecha =
+                    obtenerFechaNormalizada(
+                        gasto.fecha
+                    );
+
+                return (
+                    fecha &&
+                    fecha >=
+                        periodo.inicio &&
+                    fecha <=
+                        periodo.fin
+                );
+            }
+        );
 
     // ========================================================
     // TOTALES
     // ========================================================
 
     const ganadoPeriodo =
-        sumarMontos(pagosPeriodo);
+        sumarMontos(
+            pagosPeriodo
+        );
 
     const ahorradoPeriodo =
-        sumarMontos(ahorrosPeriodo);
+        sumarMontos(
+            ahorrosPeriodo
+        );
+
+    const gastadoPeriodo =
+        sumarMontos(
+            gastosPeriodo
+        );
+
+    // ========================================================
+    // SALDO REAL DEL PERÍODO
+    // ========================================================
 
     const disponiblePeriodo =
-        ganadoPeriodo - ahorradoPeriodo;
+        ganadoPeriodo -
+        ahorradoPeriodo -
+        gastadoPeriodo;
 
     // ========================================================
     // PORCENTAJE
@@ -480,27 +732,51 @@ function actualizarResumen() {
 
     let porcentaje = 0;
 
-    if (ganadoPeriodo > 0) {
+    if (
+        ganadoPeriodo > 0
+    ) {
 
         porcentaje =
-            (ahorradoPeriodo / ganadoPeriodo) * 100;
+            (
+                ahorradoPeriodo /
+                ganadoPeriodo
+            ) *
+            100;
     }
 
     porcentaje =
-        Math.max(0, porcentaje);
+        Math.max(
+            0,
+            porcentaje
+        );
 
     // ========================================================
     // ACUMULADOS
     // ========================================================
 
     const ganadoAcumulado =
-        sumarMontos(pagosData);
+        sumarMontos(
+            pagosData
+        );
 
     const ahorroAcumulado =
-        sumarMontos(ahorrosData);
+        sumarMontos(
+            ahorrosData
+        );
+
+    const gastadoAcumulado =
+        sumarMontos(
+            gastosData
+        );
+
+    // ========================================================
+    // SALDO REAL ACUMULADO
+    // ========================================================
 
     const saldoTotal =
-        ganadoAcumulado - ahorroAcumulado;
+        ganadoAcumulado -
+        ahorroAcumulado -
+        gastadoAcumulado;
 
     // ========================================================
     // HOY
@@ -508,7 +784,9 @@ function actualizarResumen() {
 
     setText(
         ahorroGanadoHoy,
-        formatCurrency(ganadoHoy)
+        formatCurrency(
+            ganadoHoy
+        )
     );
 
     setText(
@@ -521,7 +799,9 @@ function actualizarResumen() {
 
     setText(
         ahorroAhorradoHoy,
-        formatCurrency(ahorradoHoy)
+        formatCurrency(
+            ahorradoHoy
+        )
     );
 
     setText(
@@ -538,7 +818,9 @@ function actualizarResumen() {
 
     setText(
         ahorroGanadoPeriodo,
-        formatCurrency(ganadoPeriodo)
+        formatCurrency(
+            ganadoPeriodo
+        )
     );
 
     setText(
@@ -548,7 +830,9 @@ function actualizarResumen() {
 
     setText(
         ahorroAhorradoPeriodo,
-        formatCurrency(ahorradoPeriodo)
+        formatCurrency(
+            ahorradoPeriodo
+        )
     );
 
     setText(
@@ -569,17 +853,23 @@ function actualizarResumen() {
         ahorroPorcentajeDetalle,
 
         ganadoPeriodo > 0
-            ? `${formatCurrency(ahorradoPeriodo)} de ${formatCurrency(ganadoPeriodo)}`
+            ? `${formatCurrency(
+                  ahorradoPeriodo
+              )} de ${formatCurrency(
+                  ganadoPeriodo
+              )}`
             : "Sin ganancias registradas"
     );
 
     // ========================================================
-    // DISPONIBLE
+    // SALDO REAL DEL PERÍODO
     // ========================================================
 
     setText(
         ahorroDisponiblePeriodo,
-        formatCurrency(disponiblePeriodo)
+        formatearSaldoGeneral(
+            disponiblePeriodo
+        )
     );
 
     actualizarColorDisponible(
@@ -592,7 +882,9 @@ function actualizarResumen() {
 
     setText(
         ahorroTotalAcumulado,
-        formatCurrency(ahorroAcumulado)
+        formatCurrency(
+            ahorroAcumulado
+        )
     );
 
     // ========================================================
@@ -601,7 +893,9 @@ function actualizarResumen() {
 
     setText(
         ahorroGanadoAcumulado,
-        formatCurrency(ganadoAcumulado)
+        formatCurrency(
+            ganadoAcumulado
+        )
     );
 
     setText(
@@ -613,18 +907,26 @@ function actualizarResumen() {
     );
 
     // ========================================================
-    // SALDO TOTAL
+    // SALDO REAL TOTAL
     // ========================================================
 
     setText(
         ahorroSaldoTotal,
-        formatCurrency(saldoTotal)
+        formatearSaldoGeneral(
+            saldoTotal
+        )
     );
 
     setText(
         ahorroSaldoTotalDetalle,
 
-        `${formatCurrency(ganadoAcumulado)} ganado − ${formatCurrency(ahorroAcumulado)} ahorrado`
+        `${formatCurrency(
+            ganadoAcumulado
+        )} ganado − ${formatCurrency(
+            ahorroAcumulado
+        )} ahorrado − ${formatCurrency(
+            gastadoAcumulado
+        )} gastado`
     );
 
     actualizarColorSaldoTotal(
@@ -648,74 +950,138 @@ function actualizarResumenMensual() {
     // PAGOS
     // ========================================================
 
-    pagosData.forEach(pago => {
+    pagosData.forEach(
+        pago => {
 
-        const fecha =
-            obtenerFechaNormalizada(pago.fecha);
+            const fecha =
+                obtenerFechaNormalizada(
+                    pago.fecha
+                );
 
-        if (!fecha) {
-            return;
+            if (!fecha) {
+                return;
+            }
+
+            const mes =
+                fecha.substring(
+                    0,
+                    7
+                );
+
+            if (!meses[mes]) {
+
+                meses[mes] = {
+                    ganado: 0,
+                    ahorrado: 0,
+                    gastado: 0
+                };
+            }
+
+            meses[mes].ganado +=
+                obtenerMonto(
+                    pago.monto
+                );
         }
-
-        const mes =
-            fecha.substring(0, 7);
-
-        if (!meses[mes]) {
-
-            meses[mes] = {
-                ganado: 0,
-                ahorrado: 0
-            };
-        }
-
-        meses[mes].ganado +=
-            obtenerMonto(pago.monto);
-    });
+    );
 
     // ========================================================
     // AHORROS
     // ========================================================
 
-    ahorrosData.forEach(ahorro => {
+    ahorrosData.forEach(
+        ahorro => {
 
-        const fecha =
-            obtenerFechaNormalizada(ahorro.fecha);
+            const fecha =
+                obtenerFechaNormalizada(
+                    ahorro.fecha
+                );
 
-        if (!fecha) {
-            return;
+            if (!fecha) {
+                return;
+            }
+
+            const mes =
+                fecha.substring(
+                    0,
+                    7
+                );
+
+            if (!meses[mes]) {
+
+                meses[mes] = {
+                    ganado: 0,
+                    ahorrado: 0,
+                    gastado: 0
+                };
+            }
+
+            meses[mes].ahorrado +=
+                obtenerMonto(
+                    ahorro.monto
+                );
         }
+    );
 
-        const mes =
-            fecha.substring(0, 7);
+    // ========================================================
+    // GASTOS
+    // ========================================================
 
-        if (!meses[mes]) {
+    gastosData.forEach(
+        gasto => {
 
-            meses[mes] = {
-                ganado: 0,
-                ahorrado: 0
-            };
+            const fecha =
+                obtenerFechaNormalizada(
+                    gasto.fecha
+                );
+
+            if (!fecha) {
+                return;
+            }
+
+            const mes =
+                fecha.substring(
+                    0,
+                    7
+                );
+
+            if (!meses[mes]) {
+
+                meses[mes] = {
+                    ganado: 0,
+                    ahorrado: 0,
+                    gastado: 0
+                };
+            }
+
+            meses[mes].gastado +=
+                obtenerMonto(
+                    gasto.monto
+                );
         }
-
-        meses[mes].ahorrado +=
-            obtenerMonto(ahorro.monto);
-    });
+    );
 
     // ========================================================
     // ORDENAR
     // ========================================================
 
     const mesesOrdenados =
-        Object.keys(meses).sort(
-            (a, b) => b.localeCompare(a)
+        Object.keys(
+            meses
+        ).sort(
+            (a, b) =>
+                b.localeCompare(a)
         );
 
     // ========================================================
     // SIN DATOS
     // ========================================================
 
-    if (mesesOrdenados.length === 0) {
+    if (
+        mesesOrdenados.length === 0
+    ) {
 
-        resumenMensualBody.innerHTML = "";
+        resumenMensualBody.innerHTML =
+            "";
 
         resumenMensualEmpty?.classList.remove(
             "hidden"
@@ -749,63 +1115,126 @@ function actualizarResumenMensual() {
 
     let totalGanado = 0;
     let totalAhorrado = 0;
+    let totalGastado = 0;
 
     resumenMensualBody.innerHTML =
-        mesesOrdenados.map(mes => {
+        mesesOrdenados
+            .map(
+                mes => {
 
-            const ganado =
-                meses[mes].ganado;
+                    const ganado =
+                        meses[mes].ganado;
 
-            const ahorrado =
-                meses[mes].ahorrado;
+                    const ahorrado =
+                        meses[mes].ahorrado;
 
-            const saldo =
-                ganado - ahorrado;
+                    const gastado =
+                        meses[mes].gastado;
 
-            totalGanado += ganado;
-            totalAhorrado += ahorrado;
+                    const saldo =
+                        ganado -
+                        ahorrado -
+                        gastado;
 
-            return `
-                <tr class="hover:bg-slate-50 transition">
+                    totalGanado +=
+                        ganado;
 
-                    <td class="px-5 py-4 text-sm font-bold text-slate-800">
-                        ${formatearMes(mes)}
-                    </td>
+                    totalAhorrado +=
+                        ahorrado;
 
-                    <td class="px-5 py-4 text-right text-sm font-bold text-blue-600 whitespace-nowrap">
-                        ${formatCurrency(ganado)}
-                    </td>
+                    totalGastado +=
+                        gastado;
 
-                    <td class="px-5 py-4 text-right text-sm font-bold text-emerald-600 whitespace-nowrap">
-                        ${formatCurrency(ahorrado)}
-                    </td>
+                    const disponibleHTML =
+                        saldo < 0
+                            ? `
+                                <div class="flex flex-col items-end leading-tight">
+                                    <span class="font-black text-red-600">
+                                        ${formatCurrency(Math.abs(saldo))}
+                                    </span>
+                                    <span class="mt-1 rounded-full bg-red-50 px-2 py-1 text-[9px] font-black uppercase tracking-wide text-red-600">
+                                        ⚠ Déficit
+                                    </span>
+                                </div>
+                              `
+                            : saldo === 0
+                                ? `
+                                    <div class="flex flex-col items-end leading-tight">
+                                        <span class="font-black text-emerald-600">
+                                            ${formatCurrency(0)}
+                                        </span>
+                                        <span class="mt-1 rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-black uppercase tracking-wide text-emerald-600">
+                                            ✓ Sin déficit
+                                        </span>
+                                    </div>
+                                  `
+                                : `
+                                    <div class="flex flex-col items-end leading-tight">
+                                        <span class="font-black text-emerald-600">
+                                            ${formatCurrency(saldo)}
+                                        </span>
+                                        <span class="mt-1 rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-black uppercase tracking-wide text-emerald-600">
+                                            ✓ Disponible
+                                        </span>
+                                    </div>
+                                  `;
 
-                    <td class="px-5 py-4 text-right text-sm font-bold whitespace-nowrap ${obtenerClaseSaldo(saldo)}">
-                        ${formatCurrency(saldo)}
-                    </td>
+                    return `
+                        <tr class="hover:bg-slate-50 transition">
 
-                </tr>
-            `;
-        }).join("");
+                            <td class="px-5 py-4 text-sm font-bold text-slate-800 whitespace-nowrap">
+                                ${formatearMes(mes)}
+                            </td>
+
+                            <td class="px-5 py-4 text-right text-sm font-bold text-blue-600 whitespace-nowrap">
+                                ${formatCurrency(ganado)}
+                            </td>
+
+                            <td class="px-5 py-4 text-right text-sm font-bold text-emerald-600 whitespace-nowrap">
+                                ${formatCurrency(ahorrado)}
+                            </td>
+
+                            <td class="px-5 py-4 text-right text-sm font-bold text-red-600 whitespace-nowrap">
+                                ${formatCurrency(gastado)}
+                            </td>
+
+                            <td class="px-5 py-4 text-right text-sm whitespace-nowrap">
+                                ${disponibleHTML}
+                            </td>
+
+                        </tr>
+                    `;
+                }
+            )
+            .join("");
 
     // ========================================================
     // TOTALES
     // ========================================================
 
+    const saldoTotalMensual =
+        totalGanado -
+        totalAhorrado -
+        totalGastado;
+
     setText(
         resumenMensualTotalGanado,
-        formatCurrency(totalGanado)
+        formatCurrency(
+            totalGanado
+        )
     );
 
     setText(
         resumenMensualTotalAhorrado,
-        formatCurrency(totalAhorrado)
+        formatCurrency(
+            totalAhorrado
+        )
     );
 
     setText(
         resumenMensualSaldo,
-        formatCurrency(
-            totalGanado - totalAhorrado
+        formatearSaldoGeneral(
+            saldoTotalMensual
         )
     );
 }
@@ -825,38 +1254,55 @@ function actualizarTablaAhorros() {
 
     const registros =
         ahorrosData
-            .filter(ahorro => {
+            .filter(
+                ahorro => {
 
-                const fecha =
-                    obtenerFechaNormalizada(
-                        ahorro.fecha
+                    const fecha =
+                        obtenerFechaNormalizada(
+                            ahorro.fecha
+                        );
+
+                    return (
+                        fecha &&
+                        fecha >=
+                            periodo.inicio &&
+                        fecha <=
+                            periodo.fin
                     );
+                }
+            )
+            .sort(
+                (a, b) => {
 
-                return (
-                    fecha &&
-                    fecha >= periodo.inicio &&
-                    fecha <= periodo.fin
-                );
-            })
-            .sort((a, b) => {
+                    const fechaA =
+                        obtenerFechaNormalizada(
+                            a.fecha
+                        );
 
-                const fechaA =
-                    obtenerFechaNormalizada(a.fecha);
+                    const fechaB =
+                        obtenerFechaNormalizada(
+                            b.fecha
+                        );
 
-                const fechaB =
-                    obtenerFechaNormalizada(b.fecha);
-
-                return fechaB.localeCompare(fechaA);
-            });
+                    return fechaB.localeCompare(
+                        fechaA
+                    );
+                }
+            );
 
     setText(
         ahorrosCount,
-        String(registros.length)
+        String(
+            registros.length
+        )
     );
 
-    if (registros.length === 0) {
+    if (
+        registros.length === 0
+    ) {
 
-        ahorrosTableBody.innerHTML = "";
+        ahorrosTableBody.innerHTML =
+            "";
 
         ahorrosEmptyState?.classList.remove(
             "hidden"
@@ -878,57 +1324,62 @@ function actualizarTablaAhorros() {
     );
 
     ahorrosTableBody.innerHTML =
-        registros.map(ahorro => {
+        registros
+            .map(
+                ahorro => {
 
-            const fecha =
-                obtenerFechaNormalizada(
-                    ahorro.fecha
-                );
+                    const fecha =
+                        obtenerFechaNormalizada(
+                            ahorro.fecha
+                        );
 
-            const concepto =
-                escaparHTML(
-                    ahorro.concepto || "Ahorro"
-                );
+                    const concepto =
+                        escaparHTML(
+                            ahorro.concepto ||
+                            "Ahorro"
+                        );
 
-            const monto =
-                obtenerMonto(
-                    ahorro.monto
-                );
+                    const monto =
+                        obtenerMonto(
+                            ahorro.monto
+                        );
 
-            const observacion =
-                escaparHTML(
-                    ahorro.observacion || "—"
-                );
+                    const observacion =
+                        escaparHTML(
+                            ahorro.observacion ||
+                            "—"
+                        );
 
-            return `
-                <tr class="hover:bg-slate-50 transition">
+                    return `
+                        <tr class="hover:bg-slate-50 transition">
 
-                    <td class="px-5 py-4 text-sm text-slate-700 whitespace-nowrap">
-                        ${formatearFechaVisual(fecha)}
-                    </td>
+                            <td class="px-5 py-4 text-sm text-slate-700 whitespace-nowrap">
+                                ${formatearFechaVisual(fecha)}
+                            </td>
 
-                    <td class="px-5 py-4 text-sm font-medium text-slate-800">
-                        ${concepto}
-                    </td>
+                            <td class="px-5 py-4 text-sm font-medium text-slate-800">
+                                ${concepto}
+                            </td>
 
-                    <td class="px-5 py-4 text-right text-sm font-bold text-emerald-600 whitespace-nowrap">
-                        ${formatCurrency(monto)}
-                    </td>
+                            <td class="px-5 py-4 text-right text-sm font-bold text-emerald-600 whitespace-nowrap">
+                                ${formatCurrency(monto)}
+                            </td>
 
-                    <td class="px-5 py-4 text-sm text-slate-500">
-                        ${observacion}
-                    </td>
+                            <td class="px-5 py-4 text-sm text-slate-500">
+                                ${observacion}
+                            </td>
 
-                    <td class="px-5 py-4 text-center">
-                        <span class="badge badge-ahorro">
-                            AHORRADO
-                        </span>
-                    </td>
+                            <td class="px-5 py-4 text-center">
+                                <span class="badge badge-ahorro">
+                                    AHORRADO
+                                </span>
+                            </td>
 
-                </tr>
-            `;
-
-        }).join("");
+                        </tr>
+                    `;
+                }
+            )
+            .join("");
 }
 
 // ============================================================
@@ -937,7 +1388,8 @@ function actualizarTablaAhorros() {
 
 function obtenerRangoPeriodo() {
 
-    const hoy = new Date();
+    const hoy =
+        new Date();
 
     hoy.setHours(
         0,
@@ -947,16 +1399,21 @@ function obtenerRangoPeriodo() {
     );
 
     const tipo =
-        periodoFiltro?.value || "mes";
+        periodoFiltro?.value ||
+        "mes";
 
     // ========================================================
     // HOY
     // ========================================================
 
-    if (tipo === "hoy") {
+    if (
+        tipo === "hoy"
+    ) {
 
         const fecha =
-            convertirDateAISO(hoy);
+            convertirDateAISO(
+                hoy
+            );
 
         return {
             inicio: fecha,
@@ -966,34 +1423,49 @@ function obtenerRangoPeriodo() {
 
     // ========================================================
     // SEMANA
-    // LUNES - DOMINGO
     // ========================================================
 
-    if (tipo === "semana") {
+    if (
+        tipo === "semana"
+    ) {
 
         const dia =
             hoy.getDay();
 
         const diferencia =
-            dia === 0 ? 6 : dia - 1;
+            dia === 0
+                ? 6
+                : dia - 1;
 
         const inicio =
-            new Date(hoy);
+            new Date(
+                hoy
+            );
 
         inicio.setDate(
-            inicio.getDate() - diferencia
+            inicio.getDate() -
+            diferencia
         );
 
         const fin =
-            new Date(inicio);
+            new Date(
+                inicio
+            );
 
         fin.setDate(
             fin.getDate() + 6
         );
 
         return {
-            inicio: convertirDateAISO(inicio),
-            fin: convertirDateAISO(fin)
+            inicio:
+                convertirDateAISO(
+                    inicio
+                ),
+
+            fin:
+                convertirDateAISO(
+                    fin
+                )
         };
     }
 
@@ -1001,7 +1473,9 @@ function obtenerRangoPeriodo() {
     // MES ACTUAL
     // ========================================================
 
-    if (tipo === "mes") {
+    if (
+        tipo === "mes"
+    ) {
 
         const inicio =
             new Date(
@@ -1018,8 +1492,15 @@ function obtenerRangoPeriodo() {
             );
 
         return {
-            inicio: convertirDateAISO(inicio),
-            fin: convertirDateAISO(fin)
+            inicio:
+                convertirDateAISO(
+                    inicio
+                ),
+
+            fin:
+                convertirDateAISO(
+                    fin
+                )
         };
     }
 
@@ -1027,22 +1508,34 @@ function obtenerRangoPeriodo() {
     // PERSONALIZADO
     // ========================================================
 
-    if (tipo === "personalizado") {
+    if (
+        tipo === "personalizado"
+    ) {
 
         let inicio =
             fechaInicial?.value ||
-            convertirDateAISO(hoy);
+            convertirDateAISO(
+                hoy
+            );
 
         let fin =
             fechaFinal?.value ||
-            convertirDateAISO(hoy);
+            convertirDateAISO(
+                hoy
+            );
 
-        if (inicio > fin) {
+        if (
+            inicio > fin
+        ) {
 
-            const temporal = inicio;
+            const temporal =
+                inicio;
 
-            inicio = fin;
-            fin = temporal;
+            inicio =
+                fin;
+
+            fin =
+                temporal;
         }
 
         return {
@@ -1052,7 +1545,9 @@ function obtenerRangoPeriodo() {
     }
 
     const fecha =
-        convertirDateAISO(hoy);
+        convertirDateAISO(
+            hoy
+        );
 
     return {
         inicio: fecha,
@@ -1066,21 +1561,28 @@ function obtenerRangoPeriodo() {
 
 function obtenerTextoPeriodo() {
 
-    switch (periodoFiltro?.value) {
+    switch (
+        periodoFiltro?.value
+    ) {
 
         case "hoy":
+
             return "Hoy";
 
         case "semana":
+
             return "Esta semana";
 
         case "mes":
+
             return "Este mes";
 
         case "personalizado":
+
             return "Período personalizado";
 
         default:
+
             return "Este mes";
     }
 }
@@ -1100,11 +1602,16 @@ function obtenerFechaHoy() {
 // MONTO
 // ============================================================
 
-function obtenerMonto(valor) {
+function obtenerMonto(
+    valor
+) {
 
-    const monto = Number(valor);
+    const monto =
+        Number(valor);
 
-    return Number.isFinite(monto)
+    return Number.isFinite(
+        monto
+    )
         ? monto
         : 0;
 }
@@ -1113,10 +1620,15 @@ function obtenerMonto(valor) {
 // SUMAR MONTOS
 // ============================================================
 
-function sumarMontos(registros) {
+function sumarMontos(
+    registros
+) {
 
     return registros.reduce(
-        (total, registro) => {
+        (
+            total,
+            registro
+        ) => {
 
             return (
                 total +
@@ -1124,7 +1636,6 @@ function sumarMontos(registros) {
                     registro.monto
                 )
             );
-
         },
         0
     );
@@ -1134,7 +1645,9 @@ function sumarMontos(registros) {
 // NORMALIZAR FECHA
 // ============================================================
 
-function obtenerFechaNormalizada(valor) {
+function obtenerFechaNormalizada(
+    valor
+) {
 
     if (!valor) {
         return "";
@@ -1142,8 +1655,10 @@ function obtenerFechaNormalizada(valor) {
 
     // Firebase Timestamp
     if (
-        typeof valor === "object" &&
-        typeof valor.toDate === "function"
+        typeof valor ===
+            "object" &&
+        typeof valor.toDate ===
+            "function"
     ) {
 
         return convertirDateAISO(
@@ -1153,27 +1668,36 @@ function obtenerFechaNormalizada(valor) {
 
     // Timestamp serializado
     if (
-        typeof valor === "object" &&
-        typeof valor.seconds === "number"
+        typeof valor ===
+            "object" &&
+        typeof valor.seconds ===
+            "number"
     ) {
 
         return convertirDateAISO(
             new Date(
-                valor.seconds * 1000
+                valor.seconds *
+                1000
             )
         );
     }
 
     // Date
-    if (valor instanceof Date) {
+    if (
+        valor instanceof Date
+    ) {
 
-        return convertirDateAISO(valor);
+        return convertirDateAISO(
+            valor
+        );
     }
 
     // YYYY-MM-DD
     if (
         typeof valor === "string" &&
-        /^\d{4}-\d{2}-\d{2}$/.test(valor)
+        /^\d{4}-\d{2}-\d{2}$/.test(
+            valor
+        )
     ) {
 
         return valor;
@@ -1182,24 +1706,32 @@ function obtenerFechaNormalizada(valor) {
     // DD/MM/YYYY
     if (
         typeof valor === "string" &&
-        /^\d{2}\/\d{2}\/\d{4}$/.test(valor)
+        /^\d{2}\/\d{2}\/\d{4}$/.test(
+            valor
+        )
     ) {
 
         const partes =
             valor.split("/");
 
-        return `
-            ${partes[2]}-${partes[1]}-${partes[0]}
-        `.replace(/\s/g, "");
+        return `${partes[2]}-${partes[1]}-${partes[0]}`;
     }
 
     // Texto convertible
-    if (typeof valor === "string") {
+    if (
+        typeof valor === "string"
+    ) {
 
         const fecha =
-            new Date(valor);
+            new Date(
+                valor
+            );
 
-        if (!Number.isNaN(fecha.getTime())) {
+        if (
+            !Number.isNaN(
+                fecha.getTime()
+            )
+        ) {
 
             return convertirDateAISO(
                 fecha
@@ -1208,12 +1740,20 @@ function obtenerFechaNormalizada(valor) {
     }
 
     // Timestamp numérico
-    if (typeof valor === "number") {
+    if (
+        typeof valor === "number"
+    ) {
 
         const fecha =
-            new Date(valor);
+            new Date(
+                valor
+            );
 
-        if (!Number.isNaN(fecha.getTime())) {
+        if (
+            !Number.isNaN(
+                fecha.getTime()
+            )
+        ) {
 
             return convertirDateAISO(
                 fecha
@@ -1228,7 +1768,9 @@ function obtenerFechaNormalizada(valor) {
 // DATE → ISO
 // ============================================================
 
-function convertirDateAISO(fecha) {
+function convertirDateAISO(
+    fecha
+) {
 
     const year =
         fecha.getFullYear();
@@ -1236,12 +1778,18 @@ function convertirDateAISO(fecha) {
     const month =
         String(
             fecha.getMonth() + 1
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
     const day =
         String(
             fecha.getDate()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
     return `${year}-${month}-${day}`;
 }
@@ -1250,7 +1798,9 @@ function convertirDateAISO(fecha) {
 // FECHA VISUAL
 // ============================================================
 
-function formatearFechaVisual(fecha) {
+function formatearFechaVisual(
+    fecha
+) {
 
     if (!fecha) {
         return "—";
@@ -1259,7 +1809,10 @@ function formatearFechaVisual(fecha) {
     const partes =
         fecha.split("-");
 
-    if (partes.length !== 3) {
+    if (
+        partes.length !== 3
+    ) {
+
         return fecha;
     }
 
@@ -1270,20 +1823,29 @@ function formatearFechaVisual(fecha) {
 // MES VISUAL
 // ============================================================
 
-function formatearMes(mes) {
+function formatearMes(
+    mes
+) {
 
     const partes =
         mes.split("-");
 
-    if (partes.length !== 2) {
+    if (
+        partes.length !== 2
+    ) {
+
         return mes;
     }
 
     const anio =
-        Number(partes[0]);
+        Number(
+            partes[0]
+        );
 
     const numeroMes =
-        Number(partes[1]);
+        Number(
+            partes[1]
+        );
 
     const fecha =
         new Date(
@@ -1302,21 +1864,51 @@ function formatearMes(mes) {
         .format(fecha)
         .replace(
             /^./,
-            letra => letra.toUpperCase()
+            letra =>
+                letra.toUpperCase()
         );
+}
+
+// ============================================================
+// FORMATEAR SALDO GENERAL
+// ============================================================
+
+function formatearSaldoGeneral(
+    valor
+) {
+
+    const monto =
+        Number(valor) || 0;
+
+    if (
+        monto < 0
+    ) {
+
+        return `Déficit: ${formatCurrency(
+            Math.abs(monto)
+        )}`;
+    }
+
+    return formatCurrency(
+        monto
+    );
 }
 
 // ============================================================
 // CLASE DEL SALDO
 // ============================================================
 
-function obtenerClaseSaldo(valor) {
+function obtenerClaseSaldo(
+    valor
+) {
 
     if (valor > 0) {
-        return "text-blue-600";
+
+        return "text-emerald-600";
     }
 
     if (valor === 0) {
+
         return "text-emerald-600";
     }
 
@@ -1327,9 +1919,14 @@ function obtenerClaseSaldo(valor) {
 // COLOR DISPONIBLE
 // ============================================================
 
-function actualizarColorDisponible(valor) {
+function actualizarColorDisponible(
+    valor
+) {
 
-    if (!ahorroDisponiblePeriodo) {
+    if (
+        !ahorroDisponiblePeriodo
+    ) {
+
         return;
     }
 
@@ -1340,7 +1937,9 @@ function actualizarColorDisponible(valor) {
     );
 
     ahorroDisponiblePeriodo.classList.add(
-        obtenerClaseSaldo(valor)
+        obtenerClaseSaldo(
+            valor
+        )
     );
 }
 
@@ -1348,7 +1947,9 @@ function actualizarColorDisponible(valor) {
 // COLOR SALDO TOTAL
 // ============================================================
 
-function actualizarColorSaldoTotal(valor) {
+function actualizarColorSaldoTotal(
+    valor
+) {
 
     if (!ahorroSaldoTotal) {
         return;
@@ -1361,7 +1962,9 @@ function actualizarColorSaldoTotal(valor) {
     );
 
     ahorroSaldoTotal.classList.add(
-        obtenerClaseSaldo(valor)
+        obtenerClaseSaldo(
+            valor
+        )
     );
 }
 
@@ -1369,46 +1972,76 @@ function actualizarColorSaldoTotal(valor) {
 // TEXTO DE CANTIDAD
 // ============================================================
 
-function cantidadTexto(cantidad, tipo) {
+function cantidadTexto(
+    cantidad,
+    tipo
+) {
 
     if (cantidad === 0) {
 
-        return tipo === "pago"
-            ? "Sin pagos registrados"
-            : "Sin ahorros registrados";
+        return (
+            tipo === "pago"
+                ? "Sin pagos registrados"
+                : "Sin ahorros registrados"
+        );
     }
 
     if (cantidad === 1) {
 
-        return tipo === "pago"
-            ? "1 pago registrado"
-            : "1 ahorro registrado";
+        return (
+            tipo === "pago"
+                ? "1 pago registrado"
+                : "1 ahorro registrado"
+        );
     }
 
-    return tipo === "pago"
-        ? `${cantidad} pagos registrados`
-        : `${cantidad} ahorros registrados`;
+    return (
+        tipo === "pago"
+            ? `${cantidad} pagos registrados`
+            : `${cantidad} ahorros registrados`
+    );
 }
 
 // ============================================================
 // ESCAPAR HTML
 // ============================================================
 
-function escaparHTML(texto) {
+function escaparHTML(
+    texto
+) {
 
-    return String(texto)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return String(
+        texto
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 // ============================================================
 // ERROR GANANCIAS
 // ============================================================
 
-function mostrarErrorGanancias(mensaje) {
+function mostrarErrorGanancias(
+    mensaje
+) {
 
     setText(
         ahorroGanadoHoyDetalle,
@@ -1425,7 +2058,9 @@ function mostrarErrorGanancias(mensaje) {
 // ERROR AHORROS
 // ============================================================
 
-function mostrarErrorAhorros(mensaje) {
+function mostrarErrorAhorros(
+    mensaje
+) {
 
     if (!ahorrosTableBody) {
         return;
@@ -1446,12 +2081,13 @@ function mostrarErrorAhorros(mensaje) {
 }
 
 // ============================================================
-// LIMPIAR
+// LIMPIAR LISTENERS
 // ============================================================
 
 window.addEventListener(
     "beforeunload",
     () => {
+
         detenerListeners();
     }
 );

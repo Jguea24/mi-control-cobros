@@ -132,7 +132,8 @@
 
     #resumenMensualBody td:nth-child(2),
     #resumenMensualBody td:nth-child(3),
-    #resumenMensualBody td:nth-child(4) {
+    #resumenMensualBody td:nth-child(4),
+    #resumenMensualBody td:nth-child(5) {
       text-align: right;
       white-space: nowrap;
     }
@@ -146,6 +147,10 @@
     }
 
     #resumenMensualBody td:nth-child(4) {
+      color: #dc2626 !important;
+    }
+
+    #resumenMensualBody td:nth-child(5) {
       color: #7c3aed !important;
     }
   </style>
@@ -708,7 +713,7 @@
                 class="mt-1 block text-[11px] font-medium
                        text-slate-400"
               >
-                $0,00 ganado − $0,00 ahorrado
+                $0,00 ganado − $0,00 ahorrado − $0,00 gastado
               </small>
             </article>
 
@@ -790,7 +795,7 @@
                 </h2>
 
                 <p class="mt-0.5 text-xs text-slate-400">
-                  Ganado, ahorrado y saldo disponible.
+                  Ganado, ahorrado, gastado y saldo disponible.
                 </p>
               </div>
 
@@ -819,6 +824,10 @@
 
                     <th class="px-5 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-950">
                       Ahorrado
+                    </th>
+
+                    <th class="px-5 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-950">
+                      Gastado
                     </th>
 
                     <th class="px-5 py-3 text-right text-[10px] font-black uppercase tracking-wider text-slate-950">

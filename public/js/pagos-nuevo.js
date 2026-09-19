@@ -106,26 +106,19 @@ let deudaSeleccionada = null;
 // ============================================================
 
 function getCliente(clienteId) {
-
   return clientes.find(
-    (item) =>
-      item.id === clienteId
+    (item) => item.id === clienteId
   ) || null;
 }
 
 function getClienteName(clienteId) {
-
   const cliente =
     getCliente(clienteId);
 
-  return (
-    cliente?.nombre ||
-    "Cliente"
-  );
+  return cliente?.nombre || "Cliente";
 }
 
 function getClienteEmail(clienteId) {
-
   const cliente =
     getCliente(clienteId);
 
@@ -141,7 +134,6 @@ function getClienteEmail(clienteId) {
 // ============================================================
 
 if (fechaInput) {
-
   fechaInput.value =
     getTodayInputValue();
 }
@@ -195,7 +187,6 @@ function getSaldoDeuda(deuda) {
 // ============================================================
 
 function getTodayKey() {
-
   return getTodayInputValue();
 }
 
@@ -208,26 +199,20 @@ function getDebtStatusAfterPayment(
   fechaVencimiento
 ) {
 
-  // DEUDA COMPLETAMENTE PAGADA
   if (saldo <= 0.009) {
-
     return "PAGADO";
   }
 
-  // FECHA ACTUAL
   const today =
     getTodayKey();
 
-  // DEUDA VENCIDA
   if (
     fechaVencimiento &&
     fechaVencimiento < today
   ) {
-
     return "VENCIDA";
   }
 
-  // DEUDA PENDIENTE
   return "PENDIENTE";
 }
 
@@ -253,7 +238,6 @@ function formatDateForMessage(
       date.getTime()
     )
   ) {
-
     return dateString;
   }
 
@@ -282,8 +266,7 @@ function showMessage(
 
   if (!message) {
 
-    pagoMessage.textContent =
-      "";
+    pagoMessage.textContent = "";
 
     pagoMessage.className =
       "mt-3 min-h-5 rounded-xl px-4 py-3 text-sm font-semibold";
@@ -306,9 +289,7 @@ function showMessage(
 // ERROR FIRESTORE
 // ============================================================
 
-function getFirestoreErrorMessage(
-  error
-) {
+function getFirestoreErrorMessage(error) {
 
   console.error(
     "❌ Error Firestore:",
@@ -316,45 +297,35 @@ function getFirestoreErrorMessage(
   );
 
   if (
-    error?.code ===
-    "permission-denied"
+    error?.code === "permission-denied"
   ) {
-
     return (
       "Firestore rechazó la operación. " +
-      "Verifica las reglas y que pagos-nuevo.js " +
-      "esté actualizado."
+      "Verifica las reglas y que pagos-nuevo.js esté actualizado."
     );
   }
 
   if (
-    error?.code ===
-    "invalid-payment"
+    error?.code === "invalid-payment"
   ) {
-
     return (
       "El pago no puede superar el saldo pendiente."
     );
   }
 
   if (
-    error?.code ===
-    "not-found"
+    error?.code === "not-found"
   ) {
-
     return (
       "La deuda seleccionada ya no existe."
     );
   }
 
   if (
-    error?.code ===
-    "unauthenticated"
+    error?.code === "unauthenticated"
   ) {
-
     return (
-      "Tu sesión no está activa. " +
-      "Inicia sesión nuevamente."
+      "Tu sesión no está activa. Inicia sesión nuevamente."
     );
   }
 
@@ -368,9 +339,7 @@ function getFirestoreErrorMessage(
 // ESTADO DEL BOTÓN
 // ============================================================
 
-function setSavingState(
-  saving
-) {
+function setSavingState(saving) {
 
   if (!savePagoButton) {
     return;
@@ -379,16 +348,13 @@ function setSavingState(
   if (saving) {
 
     if (
-      !savePagoButton.dataset
-        .originalHtml
+      !savePagoButton.dataset.originalHtml
     ) {
-
       savePagoButton.dataset.originalHtml =
         savePagoButton.innerHTML;
     }
 
-    savePagoButton.disabled =
-      true;
+    savePagoButton.disabled = true;
 
     savePagoButton.classList.add(
       "cursor-not-allowed",
@@ -416,13 +382,11 @@ function setSavingState(
   );
 
   if (
-    savePagoButton.dataset
-      .originalHtml
+    savePagoButton.dataset.originalHtml
   ) {
 
     savePagoButton.innerHTML =
-      savePagoButton.dataset
-        .originalHtml;
+      savePagoButton.dataset.originalHtml;
 
     delete savePagoButton
       .dataset
@@ -440,8 +404,7 @@ function renderClientes() {
     return;
   }
 
-  clienteSelect.innerHTML =
-    "";
+  clienteSelect.innerHTML = "";
 
   const activos =
     clientes.filter(
@@ -450,12 +413,9 @@ function renderClientes() {
     );
 
   const placeholder =
-    document.createElement(
-      "option"
-    );
+    document.createElement("option");
 
-  placeholder.value =
-    "";
+  placeholder.value = "";
 
   placeholder.textContent =
     activos.length
@@ -470,9 +430,7 @@ function renderClientes() {
     (cliente) => {
 
       const option =
-        document.createElement(
-          "option"
-        );
+        document.createElement("option");
 
       option.value =
         cliente.id;
@@ -549,8 +507,7 @@ function renderDeudasForClient(
     return;
   }
 
-  deudaSelect.innerHTML =
-    "";
+  deudaSelect.innerHTML = "";
 
   const pendientes =
     getClientPendingDebts(
@@ -558,20 +515,16 @@ function renderDeudasForClient(
     );
 
   const placeholder =
-    document.createElement(
-      "option"
-    );
+    document.createElement("option");
 
-  placeholder.value =
-    "";
+  placeholder.value = "";
 
   if (!clienteId) {
 
     placeholder.textContent =
       "Selecciona un cliente primero";
 
-    deudaSelect.disabled =
-      true;
+    deudaSelect.disabled = true;
 
   } else if (
     pendientes.length === 0
@@ -580,16 +533,14 @@ function renderDeudasForClient(
     placeholder.textContent =
       "Este cliente no tiene deudas pendientes";
 
-    deudaSelect.disabled =
-      true;
+    deudaSelect.disabled = true;
 
   } else {
 
     placeholder.textContent =
       "Selecciona una deuda";
 
-    deudaSelect.disabled =
-      false;
+    deudaSelect.disabled = false;
   }
 
   deudaSelect.appendChild(
@@ -600,14 +551,10 @@ function renderDeudasForClient(
     (deuda) => {
 
       const option =
-        document.createElement(
-          "option"
-        );
+        document.createElement("option");
 
       const saldo =
-        getSaldoDeuda(
-          deuda
-        );
+        getSaldoDeuda(deuda);
 
       const vencimiento =
         deuda.fechaVencimiento
@@ -637,15 +584,12 @@ function renderDeudasForClient(
 // SELECCIONAR DEUDA
 // ============================================================
 
-function selectDebt(
-  deudaId
-) {
+function selectDebt(deudaId) {
 
   deudaSeleccionada =
     deudas.find(
       (deuda) =>
-        deuda.id ===
-        deudaId
+        deuda.id === deudaId
     ) || null;
 
   if (!deudaSeleccionada) {
@@ -662,16 +606,12 @@ function selectDebt(
 
   setText(
     saldoActual,
-    formatCurrency(
-      saldo
-    )
+    formatCurrency(saldo)
   );
 
   setText(
     saldoAnterior,
-    formatCurrency(
-      saldo
-    )
+    formatCurrency(saldo)
   );
 
   setText(
@@ -712,8 +652,7 @@ function selectDebt(
 
 function resetDebtPreview() {
 
-  deudaSeleccionada =
-    null;
+  deudaSeleccionada = null;
 
   setText(
     saldoActual,
@@ -746,36 +685,27 @@ function resetDebtPreview() {
   );
 
   if (montoInput) {
-
-    montoInput.removeAttribute(
-      "max"
-    );
+    montoInput.removeAttribute("max");
   }
 
   if (montoAyuda) {
-
     montoAyuda.textContent =
       "No puedes superar el saldo pendiente.";
   }
 
   if (savePagoButton) {
-
-    savePagoButton.disabled =
-      true;
+    savePagoButton.disabled = true;
   }
 }
 
-function resetDebtSelection(
-  message
-) {
+function resetDebtSelection(message) {
 
   if (deudaSelect) {
 
     deudaSelect.innerHTML =
       `<option value="">${message}</option>`;
 
-    deudaSelect.disabled =
-      true;
+    deudaSelect.disabled = true;
   }
 
   resetDebtPreview();
@@ -798,9 +728,7 @@ function updatePreview() {
     );
 
   const pagoValido =
-    Number.isFinite(
-      monto
-    ) &&
+    Number.isFinite(monto) &&
     monto > 0;
 
   const saldoNuevo =
@@ -858,14 +786,12 @@ function getFormData() {
 
     clienteId:
       String(
-        clienteSelect?.value ||
-        ""
+        clienteSelect?.value || ""
       ).trim(),
 
     deudaId:
       String(
-        deudaSelect?.value ||
-        ""
+        deudaSelect?.value || ""
       ).trim(),
 
     monto:
@@ -875,20 +801,17 @@ function getFormData() {
 
     fecha:
       String(
-        fechaInput?.value ||
-        ""
+        fechaInput?.value || ""
       ).trim(),
 
     metodoPago:
       String(
-        metodoPagoInput?.value ||
-        ""
+        metodoPagoInput?.value || ""
       ).trim(),
 
     observacion:
       String(
-        observacionInput?.value ||
-        ""
+        observacionInput?.value || ""
       ).trim()
   };
 }
@@ -897,32 +820,24 @@ function getFormData() {
 // VALIDACIÓN
 // ============================================================
 
-function validateForm(
-  data
-) {
+function validateForm(data) {
 
   if (!data.clienteId) {
-
     return "Selecciona un cliente.";
   }
 
   if (!data.deudaId) {
-
     return "Selecciona una deuda pendiente.";
   }
 
   if (
-    !Number.isFinite(
-      data.monto
-    ) ||
+    !Number.isFinite(data.monto) ||
     data.monto <= 0
   ) {
-
     return "Ingresa un monto mayor a cero.";
   }
 
   if (!data.fecha) {
-
     return "Selecciona la fecha del pago.";
   }
 
@@ -930,24 +845,20 @@ function validateForm(
     data.fecha >
     getTodayKey()
   ) {
-
     return "La fecha del pago no puede ser futura.";
   }
 
   if (!data.metodoPago) {
-
     return "Selecciona un método de pago.";
   }
 
   const deuda =
     deudas.find(
       (item) =>
-        item.id ===
-        data.deudaId
+        item.id === data.deudaId
     );
 
   if (!deuda) {
-
     return "La deuda seleccionada ya no está disponible.";
   }
 
@@ -955,20 +866,16 @@ function validateForm(
     deuda.clienteId !==
     data.clienteId
   ) {
-
     return "La deuda no pertenece al cliente seleccionado.";
   }
 
   const saldo =
-    getSaldoDeuda(
-      deuda
-    );
+    getSaldoDeuda(deuda);
 
   if (
     data.monto >
     saldo + 0.009
   ) {
-
     return `El pago no puede superar el saldo de ${formatCurrency(
       saldo
     )}.`;
@@ -993,9 +900,7 @@ pagoForm?.addEventListener(
       getFormData();
 
     const validation =
-      validateForm(
-        data
-      );
+      validateForm(data);
 
     if (validation) {
 
@@ -1006,9 +911,7 @@ pagoForm?.addEventListener(
       return;
     }
 
-    setSavingState(
-      true
-    );
+    setSavingState(true);
 
     showMessage(
       "Registrando pago...",
@@ -1029,7 +932,7 @@ pagoForm?.addEventListener(
         );
 
       // ======================================================
-      // REFERENCIA DEL NUEVO PAGO
+      // REFERENCIA DEL PAGO
       // ======================================================
 
       const pagoRef =
@@ -1064,8 +967,7 @@ pagoForm?.addEventListener(
                   "La deuda ya no existe."
                 ),
                 {
-                  code:
-                    "not-found"
+                  code: "not-found"
                 }
               );
             }
@@ -1087,8 +989,7 @@ pagoForm?.addEventListener(
                   "La deuda no pertenece al cliente seleccionado."
                 ),
                 {
-                  code:
-                    "invalid-payment"
+                  code: "invalid-payment"
                 }
               );
             }
@@ -1108,8 +1009,7 @@ pagoForm?.addEventListener(
 
             if (
               data.monto >
-              saldoAnteriorReal +
-              0.009
+              saldoAnteriorReal + 0.009
             ) {
 
               throw Object.assign(
@@ -1117,8 +1017,7 @@ pagoForm?.addEventListener(
                   "El pago supera el saldo disponible."
                 ),
                 {
-                  code:
-                    "invalid-payment"
+                  code: "invalid-payment"
                 }
               );
             }
@@ -1129,8 +1028,7 @@ pagoForm?.addEventListener(
 
             const montoPagadoAnterior =
               Number(
-                deudaActual.montoPagado ||
-                0
+                deudaActual.montoPagado || 0
               );
 
             // ------------------------------------------------
@@ -1169,8 +1067,6 @@ pagoForm?.addEventListener(
 
             // ------------------------------------------------
             // ACTUALIZAR DEUDA
-            // IMPORTANTE:
-            // SOLO CAMPOS PERMITIDOS POR FIRESTORE
             // ------------------------------------------------
 
             transaction.update(
@@ -1189,8 +1085,6 @@ pagoForm?.addEventListener(
 
             // ------------------------------------------------
             // REGISTRAR PAGO
-            // IMPORTANTE:
-            // SOLO CAMPOS PERMITIDOS POR FIRESTORE
             // ------------------------------------------------
 
             transaction.set(
@@ -1219,10 +1113,11 @@ pagoForm?.addEventListener(
             );
 
             // ------------------------------------------------
-            // DATOS PARA EL CORREO
+            // DATOS PARA EMAILJS
             // ------------------------------------------------
 
             return {
+
               clienteNombre:
                 getClienteName(
                   data.clienteId
@@ -1252,12 +1147,13 @@ pagoForm?.addEventListener(
 
               estado:
                 nuevoEstado
+
             };
           }
         );
 
       // ======================================================
-      // ENVIAR COMPROBANTE
+      // ENVIAR COMPROBANTE POR EMAIL
       // ======================================================
 
       let mensajeFinal =
@@ -1308,6 +1204,7 @@ pagoForm?.addEventListener(
 
             observacion:
               data.observacion
+
           });
 
           mensajeFinal =
@@ -1341,10 +1238,8 @@ pagoForm?.addEventListener(
 
       setTimeout(
         () => {
-
           window.location.href =
             "pagos.html";
-
         },
         1400
       );
@@ -1362,9 +1257,7 @@ pagoForm?.addEventListener(
         )
       );
 
-      setSavingState(
-        false
-      );
+      setSavingState(false);
     }
 
   }
@@ -1397,7 +1290,6 @@ deudaSelect?.addEventListener(
 montoInput?.addEventListener(
   "input",
   () => {
-
     updatePreview();
   }
 );

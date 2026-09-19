@@ -217,18 +217,67 @@ function formatDate(
     return "—";
   }
 
+  /*
+   * La aplicación trabaja con fechas
+   * en formato YYYY-MM-DD.
+   *
+   * Ejemplo:
+   * 2026-09-08
+   *
+   * Resultado:
+   * 08/09/2026
+   */
+
+  const cleanDate =
+    String(
+      dateString
+    ).trim();
+
+  // Validar formato YYYY-MM-DD
+  const match =
+    /^(\d{4})-(\d{2})-(\d{2})$/
+      .exec(cleanDate);
+
+  if (!match) {
+
+    return cleanDate;
+  }
+
+  const year =
+    Number(match[1]);
+
+  const month =
+    Number(match[2]);
+
+  const day =
+    Number(match[3]);
+
+  // Crear fecha en hora local
   const date =
     new Date(
-      `${dateString}T00:00:00`
+      year,
+      month - 1,
+      day
     );
 
+  // Validar que la fecha realmente exista
   if (
     Number.isNaN(
       date.getTime()
     )
   ) {
 
-    return dateString;
+    return cleanDate;
+  }
+
+  // Validación adicional
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+
+    return cleanDate;
   }
 
   return new Intl.DateTimeFormat(
@@ -299,9 +348,15 @@ function buildPaymentData(
       "Pago de deuda"
     );
 
+  const fechaOriginal =
+    safeText(
+      datos.fecha,
+      ""
+    );
+
   const fecha =
     formatDate(
-      datos.fecha
+      fechaOriginal
     );
 
   const metodoPago =
@@ -342,11 +397,7 @@ function buildPaymentData(
 
     fecha,
 
-    fechaOriginal:
-      safeText(
-        datos.fecha,
-        ""
-      ),
+    fechaOriginal,
 
     metodoPago,
 
@@ -476,11 +527,17 @@ export async function enviarComprobantePago(
 
   const templateParams = {
 
-    // Correo del cliente
+    // =====================================================
+    // DESTINATARIO
+    // =====================================================
+
     to_email:
       payment.email,
 
-    // Datos principales
+    // =====================================================
+    // DATOS PRINCIPALES
+    // =====================================================
+
     cliente:
       payment.cliente,
 
@@ -520,7 +577,10 @@ export async function enviarComprobantePago(
     observacion:
       payment.observacion,
 
-    // Datos adicionales
+    // =====================================================
+    // DATOS ADICIONALES
+    // =====================================================
+
     empresa:
       "Mi Control de Cobros",
 
@@ -533,9 +593,9 @@ export async function enviarComprobantePago(
     mensaje:
       "Hemos recibido correctamente tu pago.",
 
-    // -----------------------------------------------------
+    // =====================================================
     // COMPROBANTE EN TEXTO
-    // -----------------------------------------------------
+    // =====================================================
 
     comprobante:
       [
@@ -554,9 +614,11 @@ export async function enviarComprobantePago(
         `Saldo actual: ${payment.saldoActualFormateado}`,
         "",
         `Estado: ${payment.estado}`,
+
         payment.observacion
           ? `Observación: ${payment.observacion}`
           : "",
+
         "",
         "Gracias por realizar tu pago.",
         "",
@@ -566,6 +628,39 @@ export async function enviarComprobantePago(
         .join("\n")
 
   };
+
+  // -------------------------------------------------------
+  // MOSTRAR DATOS EN CONSOLA
+  // -------------------------------------------------------
+
+  console.log(
+    "📧 Preparando envío de comprobante:",
+    {
+      destinatario:
+        templateParams.to_email,
+
+      cliente:
+        templateParams.cliente,
+
+      monto:
+        templateParams.monto,
+
+      fecha:
+        templateParams.fecha,
+
+      metodoPago:
+        templateParams.metodo_pago,
+
+      saldoAnterior:
+        templateParams.saldo_anterior,
+
+      saldoActual:
+        templateParams.saldo_actual,
+
+      estado:
+        templateParams.estado
+    }
+  );
 
   // -------------------------------------------------------
   // ENVIAR
@@ -588,7 +683,8 @@ export async function enviarComprobantePago(
 
     return {
 
-      success: true,
+      success:
+        true,
 
       status:
         response.status,
