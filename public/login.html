@@ -3,1708 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta
-    name="description"
-    content="Mi Control de Cobros - Inicio de sesión"
-  >
-
-  <meta name="theme-color" content="#1d4ed8">
-
+  <meta name="theme-color" content="#2563eb">
+  <meta name="description" content="Mi Control de Cobros - Sistema de gestión financiera">
   <title>Iniciar sesión</title>
-
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/login.css?v=1.0.0">
   <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/icons/icon.svg">
-  
-
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              50: "#eff6ff",
-              100: "#dbeafe",
-              200: "#bfdbfe",
-              300: "#93c5fd",
-              400: "#60a5fa",
-              500: "#3b82f6",
-              600: "#2563eb",
-              700: "#1d4ed8",
-              800: "#1e40af",
-              900: "#1e3a8a"
-            }
-          },
-          boxShadow: {
-            soft: "0 20px 50px rgba(15, 23, 42, 0.12)"
-          }
-        }
-      }
-    };
-  </script>
-
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --blue-light: #4f8cff;
-      --navy: #071a52;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --line: #dbe3ef;
-      --green: #00d995;
-    }
-
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      min-height: 100%;
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      min-height: 100dvh;
-      overflow-x: hidden;
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(
-          circle at 10% 10%,
-          rgba(80, 140, 255, 0.34),
-          transparent 24%
-        ),
-        radial-gradient(
-          circle at 90% 84%,
-          rgba(126, 92, 255, 0.34),
-          transparent 28%
-        ),
-        linear-gradient(
-          135deg,
-          #0a2d82 0%,
-          #123f9a 38%,
-          #3435c5 72%,
-          #5a45e8 100%
-        );
-    }
-
-    input,
-    button {
-      font: inherit;
-    }
-
-    button {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    input::placeholder {
-      color: #9aa9bf;
-      opacity: 1;
-    }
-
-    .login-shell {
-      position: relative;
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding:
-        max(18px, env(safe-area-inset-top))
-        max(18px, env(safe-area-inset-right))
-        max(18px, env(safe-area-inset-bottom))
-        max(18px, env(safe-area-inset-left));
-      overflow: hidden;
-      isolation: isolate;
-    }
-
-    /* Decoración del fondo */
-    .login-shell::before {
-      content: "";
-      position: absolute;
-      width: clamp(260px, 30vw, 460px);
-      height: clamp(260px, 30vw, 460px);
-      left: clamp(-170px, -7vw, -60px);
-      top: clamp(-170px, -8vw, -70px);
-      border-radius: 50%;
-      border: clamp(42px, 5vw, 78px) solid rgba(120, 176, 255, 0.18);
-      box-shadow: 0 0 0 70px rgba(86, 128, 255, 0.06);
-      z-index: -2;
-      pointer-events: none;
-    }
-
-    .login-shell::after {
-      content: "";
-      position: absolute;
-      width: clamp(280px, 30vw, 460px);
-      height: clamp(280px, 30vw, 460px);
-      right: clamp(-180px, -8vw, -70px);
-      bottom: clamp(-190px, -9vw, -80px);
-      border-radius: 50%;
-      background:
-        radial-gradient(
-          circle,
-          rgba(151, 138, 255, 0.24),
-          rgba(94, 82, 223, 0.08) 58%,
-          transparent 72%
-        );
-      filter: blur(2px);
-      z-index: -2;
-      pointer-events: none;
-    }
-
-    .bg-orb-left,
-    .bg-orb-right {
-      position: absolute;
-      border-radius: 999px;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .bg-orb-left {
-      width: 52px;
-      height: 52px;
-      left: 3.5%;
-      bottom: 12%;
-      background: linear-gradient(145deg, #5d99ff, #193b9c);
-      box-shadow: 0 10px 30px rgba(14, 40, 120, .35);
-    }
-
-    .bg-orb-right {
-      width: 48px;
-      height: 48px;
-      right: 3.6%;
-      top: 22%;
-      background: linear-gradient(145deg, #957fff, #5548d1);
-      box-shadow: 0 10px 30px rgba(62, 52, 180, .28);
-    }
-
-    .decor-dots {
-      position: absolute;
-      width: 82px;
-      height: 82px;
-      background-image:
-        radial-gradient(
-          rgba(255,255,255,.72) 1.5px,
-          transparent 1.5px
-        );
-      background-size: 13px 13px;
-      opacity: .7;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .decor-dots.left {
-      left: 2.8%;
-      top: 8%;
-    }
-
-    .decor-dots.right {
-      right: 2.8%;
-      bottom: 7%;
-    }
-
-    .decor-copy {
-      position: absolute;
-      top: 42px;
-      right: clamp(24px, 5vw, 76px);
-      color: rgba(255,255,255,.88);
-      font-size: 10px;
-      line-height: 2.1;
-      font-weight: 800;
-      letter-spacing: .34em;
-      text-transform: uppercase;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .decor-copy span {
-      display: block;
-    }
-
-    .decor-copy::after,
-    .decor-footer::after {
-      content: "";
-      display: block;
-      width: 42px;
-      height: 2px;
-      margin-top: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.74);
-    }
-
-    .decor-footer {
-      position: absolute;
-      left: clamp(24px, 4vw, 66px);
-      bottom: 30px;
-      color: rgba(255,255,255,.66);
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: .31em;
-      text-transform: uppercase;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    /* Tarjeta */
-        .login-card {
-      position: relative;
-      z-index: 2;
-      width: min(100%, 860px);
-      min-height: 480px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.03fr) minmax(0, .97fr);
-      overflow: hidden;
-      border-radius: 20px;
-      background: #ffffff;
-      box-shadow:
-        0 28px 70px rgba(4, 15, 45, .28),
-        0 10px 24px rgba(4, 15, 45, .11);
-    }
-
-    /* Panel izquierdo */
-        .brand-panel {
-      position: relative;
-      overflow: hidden;
-      min-width: 0;
-      min-height: 480px;
-      background: #020617;
-      isolation: isolate;
-    }
-
-    .brand-panel::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(2,6,23,.02) 0%,
-          rgba(2,6,23,.14) 34%,
-          rgba(2,6,23,.90) 100%
-        );
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .brand-panel-image {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      object-position: center center;
-      z-index: 0;
-    }
-
-    .brand-panel-content {
-      position: relative;
-      z-index: 2;
-      margin-top: auto;
-      min-width: 0;
-      padding: clamp(20px, 2.5vw, 30px);
-    }
-
-        .brand-title {
-      margin: 0 0 8px;
-      max-width: 390px;
-      color: #fff;
-      font-size: clamp(28px, 3vw, 38px);
-      line-height: 1.03;
-      font-weight: 900;
-      letter-spacing: -.036em;
-    }
-
-    .brand-title span {
-      color: #4f8cff;
-    }
-
-    .brand-subtitle {
-      margin: 0;
-      color: rgba(255,255,255,.91);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .feature-row {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
-    .feature-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 38px;
-      height: 38px;
-      flex: 0 0 38px;
-      border-radius: 11px;
-      background: rgba(8,23,57,.70);
-      color: var(--green);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
-      backdrop-filter: blur(8px);
-    }
-
-    /* Panel derecho */
-    .form-panel {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      background: rgba(255,255,255,.98);
-      padding: clamp(24px, 4vw, 38px);
-    }
-
-    .login-form-content {
-      width: min(100%, 390px);
-      margin: auto;
-    }
-
-    .login-icon-box {
-      width: 42px;
-      height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 13px;
-      border-radius: 13px;
-      background: #eff6ff;
-      color: var(--primary);
-    }
-
-    .login-icon-box svg {
-      width: 21px;
-      height: 21px;
-    }
-
-    .login-heading {
-      text-align: left;
-    }
-
-    .login-welcome {
-      display: block;
-      margin-bottom: 3px;
-      color: var(--primary);
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-
-    .login-heading h2 {
-      margin: 0;
-      color: #020617;
-      font-size: 29px;
-      line-height: 1.08;
-      font-weight: 900;
-      letter-spacing: -.04em;
-    }
-
-    .login-heading p {
-      margin: 9px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .login-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    .login-field label {
-      display: block;
-      margin-bottom: 6px;
-      color: #0f172a;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .login-input-wrap {
-      position: relative;
-    }
-
-    .login-input {
-      width: 100%;
-      height: 45px;
-      border-radius: 9px;
-      border: 1px solid var(--line);
-      background: #f8fafc;
-      padding: 0 40px;
-      color: #0f172a;
-      font-size: 14px;
-      outline: none;
-      transition:
-        border-color .2s ease,
-        background-color .2s ease,
-        box-shadow .2s ease;
-    }
-
-    .login-input:focus {
-      border-color: #60a5fa;
-      background: #fff;
-      box-shadow: 0 0 0 4px rgba(37,99,235,.09);
-    }
-
-    .login-input-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #94a3b8;
-      pointer-events: none;
-    }
-
-    .login-input-icon svg {
-      width: 17px;
-      height: 17px;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 0;
-      background: transparent;
-      color: #94a3b8;
-      cursor: pointer;
-    }
-
-    .password-toggle svg {
-      width: 17px;
-      height: 17px;
-    }
-
-    .password-toggle:hover,
-    .password-toggle:focus-visible {
-      color: var(--primary);
-    }
-
-    .login-error {
-      min-height: 13px;
-      margin: 3px 0 0;
-      color: #dc2626;
-      font-size: 9px;
-      font-weight: 600;
-    }
-
-    .login-button {
-      width: 100%;
-      min-height: 46px;
-      border: 0;
-      border-radius: 9px;
-      background:
-        linear-gradient(
-          135deg,
-          #3b82f6,
-          #2563eb 58%,
-          #1d4ed8
-        );
-      color: #fff;
-      font-size: 13px;
-      font-weight: 900;
-      box-shadow: 0 8px 20px rgba(37,99,235,.23);
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .login-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 11px 23px rgba(37,99,235,.29);
-    }
-
-    .login-button:disabled {
-      cursor: not-allowed;
-      opacity: .75;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .login-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 2px 0 0;
-    }
-
-    .login-divider span {
-      flex: 1;
-      height: 1px;
-      background: #e8edf4;
-    }
-
-    .login-divider b {
-      color: #64748b;
-      font-size: 10px;
-      font-weight: 500;
-    }
-
-    .forgot-password {
-      width: fit-content;
-      margin: 0 auto;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--primary);
-      font-size: 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .forgot-password:hover {
-      text-decoration: underline;
-    }
-
-    .login-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      width: min(100%, 390px);
-      margin: auto auto 0;
-      padding-top: 14px;
-      border-top: 1px solid #edf0f5;
-      color: #94a3b8;
-      font-size: 9px;
-    }
-
-    .system-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .system-status i {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #10b981;
-      flex: 0 0 6px;
-    }
-
-    .status-message {
-      display: none;
-      width: 100%;
-    }
-
-    .status-message.show {
-      display: flex;
-    }
-
-    #loginMessageText {
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    .login-spinner {
-      width: 16px;
-      height: 16px;
-      animation: loginSpin .8s linear infinite;
-    }
-
-    @keyframes loginSpin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Tablet */
-    @media (max-width: 1023px) {
-      .login-card {
-        width: min(100%, 820px);
-        min-height: 470px;
-      }
-
-      .brand-panel {
-        min-height: 470px;
-      }
-
-      .decor-copy,
-      .decor-footer,
-      .decor-dots {
-        opacity: .55;
-      }
-    }
-
-    /* Móvil */
-    @media (max-width: 767px) {
-      .login-shell {
-        align-items: stretch;
-        justify-content: center;
-        padding:
-          max(8px, env(safe-area-inset-top))
-          max(8px, env(safe-area-inset-right))
-          max(8px, env(safe-area-inset-bottom))
-          max(8px, env(safe-area-inset-left));
-      }
-
-      .login-card {
-        width: 100%;
-        min-height: 0;
-        grid-template-columns: 1fr;
-        border-radius: 16px;
-      }
-
-      .brand-panel {
-        min-height: clamp(220px, 38svh, 290px);
-        max-height: 290px;
-      }
-
-      .brand-panel-content {
-        padding: 17px;
-      }
-
-      .brand-title {
-        font-size: clamp(24px, 8vw, 34px);
-      }
-
-      .brand-subtitle {
-        font-size: 12px;
-      }
-
-      .feature-icon {
-        width: 30px;
-        height: 30px;
-        flex-basis: 30px;
-        border-radius: 9px;
-      }
-
-      .brand-panel-content .feature-row {
-        gap: 9px;
-      }
-
-      .brand-panel-content .feature-row span:last-child {
-        font-size: 10px;
-      }
-
-      .form-panel {
-        padding: 20px;
-      }
-
-      .login-form-content {
-        width: 100%;
-        max-width: 390px;
-        margin: 0 auto;
-      }
-
-      .login-icon-box {
-        width: 40px;
-        height: 40px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 11px;
-      }
-
-      .login-heading {
-        text-align: center;
-      }
-
-      .login-welcome {
-        font-size: 9px;
-      }
-
-      .login-heading h2 {
-        font-size: 27px;
-      }
-
-      .login-heading p {
-        margin-top: 7px;
-        font-size: 11px;
-      }
-
-      .login-form {
-        margin-top: 22px;
-      }
-
-      .login-input {
-        height: 44px;
-        min-height: 44px;
-        font-size: 16px;
-      }
-
-      .login-button {
-        min-height: 46px;
-      }
-
-      .login-footer {
-        width: 100%;
-        margin-top: 18px;
-        padding-top: 12px;
-        font-size: 8px;
-      }
-
-      .decor-copy,
-      .decor-footer,
-      .decor-dots,
-      .bg-orb-left,
-      .bg-orb-right {
-        display: none;
-      }
-    }
-
-    /* Teléfonos pequeños */
-    @media (max-width: 480px) {
-      .login-card {
-        border-radius: 14px;
-      }
-
-      .brand-panel {
-        min-height: 220px;
-        max-height: 270px;
-      }
-
-      .brand-panel-content {
-        padding: 14px;
-      }
-
-      .brand-title {
-        font-size: clamp(22px, 8vw, 29px);
-      }
-
-      .brand-panel-content .mb-4 {
-        margin-bottom: 10px !important;
-      }
-
-      .form-panel {
-        padding: 17px;
-      }
-
-      .login-heading h2 {
-        font-size: 24px;
-      }
-
-      .login-heading p {
-        font-size: 10px;
-      }
-
-      .login-form {
-        gap: 10px;
-        margin-top: 18px;
-      }
-
-      .login-field label {
-        margin-bottom: 5px;
-        font-size: 10px;
-      }
-
-      .login-input {
-        height: 42px;
-        min-height: 42px;
-      }
-
-      .login-button {
-        min-height: 44px;
-        font-size: 12px;
-      }
-
-      .login-divider {
-        gap: 8px;
-      }
-    }
-
-    /* 320–360 px */
-    @media (max-width: 360px) {
-      .login-shell {
-        padding: 4px;
-      }
-
-      .login-card {
-        border-radius: 12px;
-      }
-
-      .brand-panel {
-        min-height: 200px;
-        max-height: 235px;
-      }
-
-      .brand-panel-content {
-        padding: 12px;
-      }
-
-      .brand-panel-content .space-y-3 {
-        display: none;
-      }
-
-      .brand-subtitle {
-        font-size: 11px;
-      }
-
-      .form-panel {
-        padding: 13px;
-      }
-
-      .login-icon-box {
-        width: 36px;
-        height: 36px;
-      }
-
-      .login-icon-box svg {
-        width: 18px;
-        height: 18px;
-      }
-
-      .login-heading h2 {
-        font-size: 22px;
-      }
-
-      .login-heading p {
-        display: none;
-      }
-
-      .login-form {
-        margin-top: 16px;
-      }
-
-      .login-input {
-        height: 41px;
-        min-height: 41px;
-      }
-
-      .login-button {
-        min-height: 43px;
-      }
-
-      .login-footer {
-        font-size: 7px;
-      }
-    }
-
-    /* Teléfono horizontal */
-    @media (max-width: 900px) and (orientation: landscape) {
-      .login-shell {
-        align-items: flex-start;
-        padding-top: 8px;
-        padding-bottom: 8px;
-      }
-
-      .login-card {
-        grid-template-columns: 1fr 1fr;
-        min-height: 390px;
-      }
-
-      .brand-panel {
-        min-height: 390px;
-      }
-
-      .brand-panel-content {
-        padding: 16px;
-      }
-
-      .form-panel {
-        padding: 16px;
-      }
-
-      .brand-panel-content .space-y-3 {
-        display: none;
-      }
-
-      .login-heading p {
-        margin-top: 5px;
-      }
-
-      .login-form {
-        margin-top: 14px;
-      }
-    }
-
-    /* Touch / iPhone / Android */
-    @media (pointer: coarse) {
-      .login-input,
-      .login-button,
-      #togglePassword {
-        min-height: 46px;
-      }
-
-      .login-button {
-        min-height: 48px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        transition-duration: .01ms !important;
-        animation-duration: .01ms !important;
-      }
-    }
-  </style>
 
 </head>
 
 <body>
-
   <main class="login-shell">
 
-    <span class="bg-orb-left" aria-hidden="true"></span>
-    <span class="bg-orb-right" aria-hidden="true"></span>
-    <span class="decor-dots left" aria-hidden="true"></span>
-    <span class="decor-dots right" aria-hidden="true"></span>
+    <div class="bg-orb bg-orb-left" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-right" aria-hidden="true"></div>
+    <div class="decor-dots decor-dots-left" aria-hidden="true"></div>
+    <div class="decor-dots decor-dots-right" aria-hidden="true"></div>
 
-    <div class="decor-copy" aria-hidden="true">
-      <span>Tu gestión</span>
-      <span>más simple</span>
-      <span>siempre contigo</span>
-    </div>
+    <section class="login-card">
 
-    <div class="decor-footer" aria-hidden="true">Mi control de cobros</div>
+      <section class="brand-panel">
+        <img src="assets/img/foto-login.png" alt="Mi Control de Cobros" class="brand-panel-image">
+        <div class="brand-panel-overlay" aria-hidden="true"></div>
 
-    <section
-      class="login-card grid grid-cols-1 md:grid-cols-2"
-      aria-label="Inicio de sesión"
-    >
-
-      <!-- =====================================================
-           PANEL IZQUIERDO
-      ====================================================== -->
-      <div
-        class="brand-panel flex flex-col justify-end p-4 text-white"
-      >
-
-        <!-- Imagen de fondo -->
-        <img
-          src="assets/img/foto-login.png"
-          alt="Mi Control de Cobros"
-          class="brand-panel-image"
-        >
-
-        <!-- Contenido sobre la imagen -->
         <div class="brand-panel-content">
 
-          <!-- Logo -->
-          <div class="mb-4 flex items-center gap-3">
-            <div
-              class="flex h-11 w-11 items-center justify-center rounded-xl
-                     bg-primary-600 text-lg font-black text-white
-                     shadow-lg shadow-primary-600/30"
-            >
-              $
-            </div>
-
-            <div>
-              <h1 class="text-xl font-black tracking-tight">
-                Mi Control
-              </h1>
-
-              <p class="text-xs font-medium text-white/80">
-                Gestión de cobros
-              </p>
+          <div class="brand-logo">
+            <div class="brand-logo-symbol" aria-hidden="true">$</div>
+            <div class="brand-logo-text">
+              <h1>Mi Control</h1>
+              <p>Gestión de cobros</p>
             </div>
           </div>
 
-          <!-- Badge -->
-          <div
-            class="mb-4 inline-flex w-fit items-center gap-2 rounded-full
-                   border border-white/15 bg-slate-900/55 px-3 py-1.5
-                   text-[10px] font-bold text-slate-200 backdrop-blur-sm"
-          >
-            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-            Sistema de gestión financiera
+          <div class="brand-badge">
+            <span class="brand-badge-dot" aria-hidden="true"></span>
+            <span>Sistema de gestión financiera</span>
           </div>
 
-          
-          <!-- Texto -->
-          <p class="mt-3 max-w-md text-sm leading-6 text-white/90 sm:text-base">
-            Gestiona tus cobros de forma sencilla.
+          <p class="brand-description">
+            Gestiona tus cobros de forma sencilla, rápida y organizada.
           </p>
 
-          <!-- Características -->
-          <div class="mt-5 space-y-3">
-
+          <div class="brand-features">
             <div class="feature-row">
-              <span
-                class="feature-icon"
-              >
-                ✓
-              </span>
-
-              <span class="text-sm font-semibold text-white">
-                Control de clientes y deudas
-              </span>
+              <span class="feature-icon" aria-hidden="true">✓</span>
+              <span>Control de clientes y deudas</span>
             </div>
 
             <div class="feature-row">
-              <span
-                class="feature-icon"
-              >
-                $
-              </span>
-
-              <span class="text-sm font-semibold text-white">
-                Registro de pagos y saldos
-              </span>
+              <span class="feature-icon" aria-hidden="true">$</span>
+              <span>Registro de pagos y saldos</span>
             </div>
 
             <div class="feature-row">
-              <span
-                class="feature-icon"
-              >
-                ◷
-              </span>
-
-              <span class="text-sm font-semibold text-white">
-                Ahorros y gastos personales
-              </span>
+              <span class="feature-icon" aria-hidden="true">◷</span>
+              <span>Ahorros y gastos personales</span>
             </div>
-
           </div>
 
         </div>
-      </div>
-      <!-- =====================================================
-           PANEL DERECHO — LOGIN
-      ====================================================== -->
-      <div class="form-panel">
+      </section>
+
+      <section class="form-panel">
 
         <div class="login-form-content">
 
-          <!-- ICONO -->
           <div class="login-icon-box" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="10" width="16" height="10" rx="2"></rect>
               <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-              <path d="M12 14v2"></path>
+              <path d="M12 14v3"></path>
             </svg>
           </div>
 
-          <!-- ENCABEZADO -->
           <div class="login-heading">
-
-            <span class="login-welcome">
-              Bienvenido
-            </span>
-
-            <h2>
-              Inicia sesión
-            </h2>
-
-            <p>
-              Ingresa tus credenciales para acceder al sistema.
-            </p>
-
+            <span class="login-welcome">Bienvenido</span>
+            <h2>Inicia sesión</h2>
+            <p>Ingresa tus credenciales para acceder al sistema.</p>
           </div>
 
-          <!-- FORMULARIO -->
-          <form
-            id="loginForm"
-            class="login-form"
-            novalidate
-          >
+          <form id="loginForm" class="login-form" autocomplete="on" novalidate>
 
-            <!-- CORREO -->
             <div class="login-field">
-
-              <label for="email">
-                Correo electrónico
-              </label>
+              <label for="email">Correo electrónico</label>
 
               <div class="login-input-wrap">
-
-                <span
-                  class="login-input-icon"
-                  aria-hidden="true"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  >
+                <span class="login-input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="5" width="18" height="14" rx="2"></rect>
                     <path d="m3 7 9 6 9-6"></path>
                   </svg>
                 </span>
 
                 <input
+                  type="email"
                   id="email"
                   name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
                   class="login-input"
                   placeholder="ejemplo@correo.com"
+                  autocomplete="email"
+                  inputmode="email"
+                  required
                 >
-
               </div>
 
-              <p
-                id="emailError"
-                class="login-error"
-              ></p>
-
+              <p id="emailError" class="login-error"></p>
             </div>
 
-            <!-- CONTRASEÑA -->
             <div class="login-field">
-
-              <label for="password">
-                Contraseña
-              </label>
+              <label for="password">Contraseña</label>
 
               <div class="login-input-wrap">
-
-                <span
-                  class="login-input-icon"
-                  aria-hidden="true"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  >
+                <span class="login-input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="5" y="10" width="14" height="10" rx="2"></rect>
                     <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
                   </svg>
                 </span>
 
                 <input
+                  type="password"
                   id="password"
                   name="password"
-                  type="password"
-                  autocomplete="current-password"
-                  required
                   class="login-input"
                   placeholder="Ingresa tu contraseña"
+                  autocomplete="current-password"
+                  required
                 >
 
-                <button
-                  id="togglePassword"
-                  type="button"
-                  class="password-toggle"
-                  aria-label="Mostrar contraseña"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  >
-                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
+                <button type="button" id="passwordToggle" class="password-toggle"
+                        aria-label="Mostrar contraseña" title="Mostrar contraseña">
+                  <svg id="passwordEyeIcon" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="1.8"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+                    <circle cx="12" cy="12" r="2.5"></circle>
                   </svg>
                 </button>
-
               </div>
 
-              <p
-                id="passwordError"
-                class="login-error"
-              ></p>
-
+              <p id="passwordError" class="login-error"></p>
             </div>
 
-            <!-- MENSAJE FIREBASE -->
-            <div
-              id="loginMessage"
-              class="status-message items-start gap-3 rounded-xl border px-3 py-3 text-xs"
-              role="alert"
-              aria-live="polite"
-            >
-
-              <div
-                id="loginMessageIcon"
-                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-              >
-                ✓
+            <div id="loginMessage" class="status-message" role="alert" aria-live="polite">
+              <span id="loginMessageIcon" class="status-message-icon">!</span>
+              <div class="status-message-content">
+                <p id="loginMessageTitle" class="status-message-title"></p>
+                <p id="loginMessageText" class="status-message-text"></p>
               </div>
-
-              <div>
-                <p
-                  id="loginMessageTitle"
-                  class="font-black text-slate-700"
-                >
-                  Información
-                </p>
-
-                <p
-                  id="loginMessageText"
-                  class="mt-0.5 text-slate-500"
-                ></p>
-              </div>
-
             </div>
 
-            <!-- BOTÓN -->
-            <button
-              id="loginButton"
-              type="submit"
-              class="login-button flex w-full items-center justify-center gap-2"
-            >
+            <button type="submit" id="loginButton" class="login-button">
+              <span id="loginButtonText">Ingresar al sistema</span>
+              <span id="loginButtonArrow" aria-hidden="true">→</span>
 
-              <span
-                id="loginButtonSpinner"
-                class="hidden"
-              >
-                <svg
-                  class="login-spinner"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  ></circle>
-
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                  ></path>
+              <span id="loginButtonSpinner" class="login-button-spinner hidden" aria-hidden="true">
+                <svg class="login-spinner" viewBox="0 0 24 24" fill="none">
+                  <circle class="spinner-track" cx="12" cy="12" r="9"
+                          stroke="currentColor" stroke-width="3"></circle>
+                  <path d="M21 12a9 9 0 0 0-9-9"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
                 </svg>
               </span>
-
-              <span id="loginButtonText">
-                Ingresar al sistema
-              </span>
-
-              <span id="loginButtonArrow">
-                →
-              </span>
-
             </button>
 
-            <!-- SEPARADOR -->
-            <div
-              class="login-divider"
-              aria-hidden="true"
-            >
+            <div class="login-divider">
               <span></span>
               <b>o</b>
               <span></span>
             </div>
 
-            <!-- RECUPERACIÓN -->
-            <button
-              type="button"
-              class="forgot-password"
-            >
+            <button type="button" class="forgot-password" id="forgotPasswordButton">
               ¿Olvidaste tu contraseña?
             </button>
 
           </form>
-
         </div>
 
-        <!-- PIE -->
         <footer class="login-footer">
-
-          <span>
-            © 2026 Mi Control de Cobros
-          </span>
-
-          <span class="system-status">
-            <i></i>
-            Sistema activo
-          </span>
-
+          <span>© 2026 Mi Control de Cobros</span>
+          <span class="system-version">v1.0.0</span>
+          <span class="system-status"><i></i>Sistema activo</span>
         </footer>
 
-      </div>
-
-
+      </section>
     </section>
-
   </main>
 
-
-  <!-- =========================================================
-       FIREBASE / LOGIN
-  ========================================================== -->
-
-  <script type="module">
-
-    import {
-      signInWithEmailAndPassword,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-
-    import {
-      auth
-    } from "./js/firebase-config.js";
-
-
-    const loginForm =
-      document.getElementById("loginForm");
-
-    const emailInput =
-      document.getElementById("email");
-
-    const passwordInput =
-      document.getElementById("password");
-
-    const emailError =
-      document.getElementById("emailError");
-
-    const passwordError =
-      document.getElementById("passwordError");
-
-    const loginButton =
-      document.getElementById("loginButton");
-
-    const loginButtonText =
-      document.getElementById("loginButtonText");
-
-    const loginButtonSpinner =
-      document.getElementById("loginButtonSpinner");
-
-    const loginButtonArrow =
-      document.getElementById("loginButtonArrow");
-
-    const togglePassword =
-      document.getElementById("togglePassword");
-
-    const loginMessage =
-      document.getElementById("loginMessage");
-
-    const loginMessageTitle =
-      document.getElementById("loginMessageTitle");
-
-    const loginMessageText =
-      document.getElementById("loginMessageText");
-
-    const loginMessageIcon =
-      document.getElementById("loginMessageIcon");
-
-
-    // =========================================================
-    // MOSTRAR / OCULTAR CONTRASEÑA
-    // =========================================================
-
-    togglePassword.addEventListener("click", () => {
-
-      const isPassword =
-        passwordInput.type === "password";
-
-      passwordInput.type =
-        isPassword ? "text" : "password";
-
-      togglePassword.textContent =
-        isPassword ? "Ocultar" : "Ver";
-
-      togglePassword.setAttribute(
-        "aria-label",
-        isPassword
-          ? "Ocultar contraseña"
-          : "Mostrar contraseña"
-      );
-
-    });
-
-
-    // =========================================================
-    // MENSAJE
-    // =========================================================
-
-    function showMessage(
-      title,
-      text,
-      type = "error"
-    ) {
-
-      loginMessage.classList.add("show");
-
-      loginMessageTitle.textContent = title;
-      loginMessageText.textContent = text;
-
-      if (type === "success") {
-
-        loginMessage.className =
-          "status-message show items-start gap-3 rounded-xl " +
-          "border border-emerald-100 bg-emerald-50 px-3 py-3 text-xs";
-
-        loginMessageIcon.className =
-          "flex h-7 w-7 shrink-0 items-center justify-center " +
-          "rounded-lg bg-emerald-100 text-emerald-600";
-
-        loginMessageIcon.textContent = "✓";
-
-        loginMessageTitle.className =
-          "font-black text-emerald-700";
-
-        return;
-      }
-
-      loginMessage.className =
-        "status-message show items-start gap-3 rounded-xl " +
-        "border border-red-100 bg-red-50 px-3 py-3 text-xs";
-
-      loginMessageIcon.className =
-        "flex h-7 w-7 shrink-0 items-center justify-center " +
-        "rounded-lg bg-red-100 text-red-600";
-
-      loginMessageIcon.textContent = "!";
-
-      loginMessageTitle.className =
-        "font-black text-red-700";
-    }
-
-
-    function hideMessage() {
-
-      loginMessage.classList.remove("show");
-
-    }
-
-
-    // =========================================================
-    // LIMPIAR ERRORES
-    // =========================================================
-
-    function clearErrors() {
-
-      emailError.textContent = "";
-      passwordError.textContent = "";
-
-      emailError.classList.add("hidden");
-      passwordError.classList.add("hidden");
-
-      emailInput.classList.remove(
-        "border-red-300",
-        "bg-red-50"
-      );
-
-      passwordInput.classList.remove(
-        "border-red-300",
-        "bg-red-50"
-      );
-
-    }
-
-
-    // =========================================================
-    // LOADING
-    // =========================================================
-
-    function setLoading(loading) {
-
-      loginButton.disabled = loading;
-
-      if (loading) {
-
-        loginButtonSpinner.classList.remove("hidden");
-
-        loginButtonText.textContent =
-          "Verificando...";
-
-        loginButtonArrow.classList.add("hidden");
-
-        return;
-      }
-
-      loginButtonSpinner.classList.add("hidden");
-
-      loginButtonText.textContent =
-        "Ingresar al sistema";
-
-      loginButtonArrow.classList.remove("hidden");
-
-    }
-
-
-    // =========================================================
-    // ERRORES FIREBASE
-    // =========================================================
-
-    function getFirebaseErrorMessage(error) {
-
-      switch (error.code) {
-
-        case "auth/invalid-email":
-          return "El correo electrónico no es válido.";
-
-        case "auth/user-not-found":
-          return "No existe una cuenta con este correo.";
-
-        case "auth/wrong-password":
-          return "La contraseña es incorrecta.";
-
-        case "auth/invalid-credential":
-          return "El correo o la contraseña son incorrectos.";
-
-        case "auth/too-many-requests":
-          return "Demasiados intentos. Espera unos minutos y vuelve a intentarlo.";
-
-        case "auth/network-request-failed":
-          return "No se pudo conectar con Firebase. Revisa tu conexión.";
-
-        case "auth/user-disabled":
-          return "Esta cuenta está deshabilitada.";
-
-        default:
-          return "No fue posible iniciar sesión. Inténtalo nuevamente.";
-      }
-
-    }
-
-
-    // =========================================================
-    // LOGIN
-    // =========================================================
-
-    loginForm.addEventListener("submit", async (event) => {
-
-      event.preventDefault();
-
-      clearErrors();
-      hideMessage();
-
-      const email =
-        emailInput.value.trim();
-
-      const password =
-        passwordInput.value;
-
-
-      let valid = true;
-
-
-      if (!email) {
-
-        emailError.textContent =
-          "Ingresa tu correo electrónico.";
-
-        emailError.classList.remove("hidden");
-
-        emailInput.classList.add(
-          "border-red-300",
-          "bg-red-50"
-        );
-
-        valid = false;
-
-      }
-
-
-      if (!password) {
-
-        passwordError.textContent =
-          "Ingresa tu contraseña.";
-
-        passwordError.classList.remove("hidden");
-
-        passwordInput.classList.add(
-          "border-red-300",
-          "bg-red-50"
-        );
-
-        valid = false;
-
-      }
-
-
-      if (!valid) {
-        return;
-      }
-
-
-      setLoading(true);
-
-
-      try {
-
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-
-        showMessage(
-          "Acceso correcto",
-          "Ingresando al sistema...",
-          "success"
-        );
-
-
-        setTimeout(() => {
-
-          window.location.href =
-            "index.html";
-
-        }, 500);
-
-
-      } catch (error) {
-
-        console.error(
-          "Error de autenticación:",
-          error
-        );
-
-        showMessage(
-          "No se pudo iniciar sesión",
-          getFirebaseErrorMessage(error),
-          "error"
-        );
-
-        setLoading(false);
-
-      }
-
-    });
-
-
-    // =========================================================
-    // SI YA ESTÁ AUTENTICADO
-    // =========================================================
-
-    onAuthStateChanged(
-      auth,
-      (user) => {
-
-        if (user) {
-
-          window.location.href =
-            "index.html";
-
-        }
-
-      }
-    );
-
-  </script>
-
+  <script type="module" src="js/auth.js?v=1.0.0"></script>
 </body>
 </html>

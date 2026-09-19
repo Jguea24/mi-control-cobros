@@ -1,3 +1,9 @@
+// ============================================================
+// public/js/clientes-nuevo.js
+// REGISTRO DE NUEVO CLIENTE
+// Mi Control de Cobros
+// ============================================================
+
 import {
   addDoc,
   collection,
@@ -13,146 +19,477 @@ import {
   db
 } from "./firebase-config.js";
 
+// ============================================================
+// FIRESTORE
+// ============================================================
+
 const clientesCollection = collection(db, "clientes");
 
-const clienteForm = document.querySelector("#clienteForm");
-const saveClienteButton = document.querySelector("#saveClienteButton");
-const clienteMessage = document.querySelector("#clienteMessage");
+// ============================================================
+// DOM
+// ============================================================
 
-/**
- * Mostrar mensaje al usuario
- */
+const clienteForm =
+  document.getElementById("clienteForm");
+
+const saveClienteButton =
+  document.getElementById("saveClienteButton");
+
+const clienteMessage =
+  document.getElementById("clienteMessage");
+
+// ============================================================
+// ESTADO
+// ============================================================
+
+let usuarioActual = null;
+let formularioListo = false;
+
+// ============================================================
+// MENSAJES
+// ============================================================
+
 function showMessage(message, type = "error") {
-  if (!clienteMessage) return;
+  if (!clienteMessage) {
+    return;
+  }
 
   clienteMessage.textContent = message;
 
   clienteMessage.className =
-    `form-message text-sm font-semibold rounded-xl px-4 py-3 ${
-      type === "error"
-        ? "bg-red-50 text-red-700"
-        : "bg-green-50 text-green-700"
+    `mt-3 rounded-xl px-4 py-3 text-sm font-semibold ${
+      type === "success"
+        ? "bg-emerald-50 text-emerald-700"
+        : "bg-red-50 text-red-700"
     }`;
+
+  if (!message) {
+    clienteMessage.classList.add("hidden");
+  } else {
+    clienteMessage.classList.remove("hidden");
+  }
 }
 
-/**
- * Obtener datos del formulario
- */
-function getClienteFormData() {
+// ============================================================
+// OBTENER DATOS DEL FORMULARIO
+// ============================================================
+
+function getFormData() {
+  if (!clienteForm) {
+    return null;
+  }
+
   const formData = new FormData(clienteForm);
 
   return {
-    nombre: String(formData.get("nombre") || "").trim(),
-    telefono: String(formData.get("telefono") || "").trim(),
-    correo: String(formData.get("correo") || "").trim(),
-    direccion: String(formData.get("direccion") || "").trim(),
-    notas: String(formData.get("notas") || "").trim()
+    nombres: String(
+      formData.get("nombres") || ""
+    ).trim(),
+
+    apellidos: String(
+      formData.get("apellidos") || ""
+    ).trim(),
+
+    telefono: String(
+      formData.get("telefono") || ""
+    ).trim(),
+
+    correo: String(
+      formData.get("correo") || ""
+    ).trim(),
+
+    direccion: String(
+      formData.get("direccion") || ""
+    ).trim(),
+
+    notas: String(
+      formData.get("notas") || ""
+    ).trim()
   };
 }
 
-/**
- * Validar formulario
- */
+// ============================================================
+// VALIDAR FORMULARIO
+// ============================================================
+
 function validateForm(data) {
-  if (!data.nombre) {
-    showMessage("El nombre del cliente es obligatorio.");
+  if (!data) {
+    showMessage("No se pudo leer el formulario.");
     return false;
   }
 
-  if (!data.correo) {
-    showMessage("El correo electrónico es obligatorio.");
+  // ==========================================================
+  // NOMBRES
+  // ==========================================================
+
+  if (!data.nombres) {
+    showMessage(
+      "Los nombres del cliente son obligatorios."
+    );
+
+    document
+      .getElementById("nombres")
+      ?.focus();
+
     return false;
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (data.nombres.length > 100) {
+    showMessage(
+      "Los nombres no pueden superar los 100 caracteres."
+    );
 
-  if (!emailRegex.test(data.correo)) {
-    showMessage("El correo electrónico no es válido.");
+    document
+      .getElementById("nombres")
+      ?.focus();
+
+    return false;
+  }
+
+  // ==========================================================
+  // APELLIDOS
+  // ==========================================================
+
+  if (!data.apellidos) {
+    showMessage(
+      "Los apellidos del cliente son obligatorios."
+    );
+
+    document
+      .getElementById("apellidos")
+      ?.focus();
+
+    return false;
+  }
+
+  if (data.apellidos.length > 100) {
+    showMessage(
+      "Los apellidos no pueden superar los 100 caracteres."
+    );
+
+    document
+      .getElementById("apellidos")
+      ?.focus();
+
+    return false;
+  }
+
+  // ==========================================================
+  // TELÉFONO
+  // ==========================================================
+
+  if (data.telefono.length > 30) {
+    showMessage(
+      "El teléfono no puede superar los 30 caracteres."
+    );
+
+    document
+      .getElementById("telefono")
+      ?.focus();
+
+    return false;
+  }
+
+  // ==========================================================
+  // CORREO OPCIONAL
+  // ==========================================================
+
+  if (data.correo) {
+    const emailRegex =
+      /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    if (!emailRegex.test(data.correo)) {
+      showMessage(
+        "El correo electrónico no es válido."
+      );
+
+      document
+        .getElementById("correo")
+        ?.focus();
+
+      return false;
+    }
+  }
+
+  if (data.correo.length > 120) {
+    showMessage(
+      "El correo no puede superar los 120 caracteres."
+    );
+
+    document
+      .getElementById("correo")
+      ?.focus();
+
+    return false;
+  }
+
+  // ==========================================================
+  // DIRECCIÓN
+  // ==========================================================
+
+  if (data.direccion.length > 200) {
+    showMessage(
+      "La dirección no puede superar los 200 caracteres."
+    );
+
+    document
+      .getElementById("direccion")
+      ?.focus();
+
+    return false;
+  }
+
+  // ==========================================================
+  // NOTAS
+  // ==========================================================
+
+  if (data.notas.length > 1000) {
+    showMessage(
+      "Las notas no pueden superar los 1000 caracteres."
+    );
+
+    document
+      .getElementById("notas")
+      ?.focus();
+
     return false;
   }
 
   return true;
 }
 
-/**
- * Traducir errores de Firebase
- */
+// ============================================================
+// ESTADO DEL BOTÓN
+// ============================================================
+
+function setSavingState(saving) {
+  if (!saveClienteButton) {
+    return;
+  }
+
+  if (saving) {
+    saveClienteButton.disabled = true;
+
+    saveClienteButton.classList.add(
+      "cursor-not-allowed",
+      "opacity-70"
+    );
+
+    if (!saveClienteButton.dataset.originalHtml) {
+      saveClienteButton.dataset.originalHtml =
+        saveClienteButton.innerHTML;
+    }
+
+    saveClienteButton.innerHTML = `
+      <span
+        class="inline-flex h-5 w-5 animate-spin rounded-full
+               border-2 border-white/40 border-t-white">
+      </span>
+      Guardando...
+    `;
+
+    return;
+  }
+
+  saveClienteButton.disabled = false;
+
+  saveClienteButton.classList.remove(
+    "cursor-not-allowed",
+    "opacity-70"
+  );
+
+  if (saveClienteButton.dataset.originalHtml) {
+    saveClienteButton.innerHTML =
+      saveClienteButton.dataset.originalHtml;
+
+    delete saveClienteButton.dataset.originalHtml;
+  }
+}
+
+// ============================================================
+// ERROR FIRESTORE
+// ============================================================
+
 function getFirestoreErrorMessage(error) {
-  const messages = {
-    "permission-denied":
-      "Firestore rechazó el guardado. Verifica que tengas permisos.",
-    "unauthenticated":
-      "Tu sesión no está activa. Vuelve a iniciar sesión.",
-    "unavailable":
-      "Firestore no está disponible en este momento. Intenta nuevamente."
-  };
+  console.error(
+    "❌ Error al guardar cliente:",
+    error
+  );
 
-  console.error("Error de Firestore:", error);
+  switch (error?.code) {
+    case "permission-denied":
+      return (
+        "Firestore rechazó el registro. " +
+        "Verifica que las reglas de Firestore estén actualizadas."
+      );
 
-  return (
-    messages[error.code] ||
-    `No se pudo guardar el cliente. Error: ${
-      error.code || error.message
-    }`
+    case "unauthenticated":
+      return (
+        "Tu sesión no está activa. Inicia sesión nuevamente."
+      );
+
+    case "unavailable":
+      return (
+        "Firestore no está disponible en este momento. Intenta nuevamente."
+      );
+
+    case "failed-precondition":
+      return (
+        "No se pudo completar la operación. Revisa la configuración de Firebase."
+      );
+
+    default:
+      return (
+        error?.message ||
+        "No se pudo guardar el cliente. Intenta nuevamente."
+      );
+  }
+}
+
+// ============================================================
+// REGISTRAR CLIENTE
+// ============================================================
+
+async function guardarCliente() {
+  if (!usuarioActual) {
+    showMessage(
+      "Tu sesión no está activa. Inicia sesión nuevamente."
+    );
+    return;
+  }
+
+  const data = getFormData();
+
+  if (!validateForm(data)) {
+    return;
+  }
+
+  setSavingState(true);
+
+  showMessage(
+    "Guardando cliente...",
+    "success"
+  );
+
+  try {
+    // ========================================================
+    // NOMBRE COMPLETO
+    // Se mantiene para compatibilidad con los módulos
+    // que actualmente utilizan cliente.nombre.
+    // ========================================================
+
+    const nombreCompleto =
+      `${data.nombres} ${data.apellidos}`
+        .replace(/\s+/g, " ")
+        .trim();
+
+    // ========================================================
+    // DOCUMENTO FIRESTORE
+    // ========================================================
+
+    const cliente = {
+      nombres: data.nombres,
+      apellidos: data.apellidos,
+
+      // Compatibilidad con módulos existentes
+      nombre: nombreCompleto,
+
+      telefono: data.telefono,
+      correo: data.correo,
+      direccion: data.direccion,
+      notas: data.notas,
+
+      fechaRegistro:
+        serverTimestamp(),
+
+      activo: true
+    };
+
+    // ========================================================
+    // GUARDAR
+    // ========================================================
+
+    const nuevoClienteRef =
+      await addDoc(
+        clientesCollection,
+        cliente
+      );
+
+    console.log(
+      "✅ Cliente registrado correctamente:",
+      nuevoClienteRef.id
+    );
+
+    showMessage(
+      "Cliente registrado correctamente. Redirigiendo...",
+      "success"
+    );
+
+    setTimeout(() => {
+      window.location.href = "clientes.html";
+    }, 1000);
+
+  } catch (error) {
+    showMessage(
+      getFirestoreErrorMessage(error)
+    );
+
+    setSavingState(false);
+  }
+}
+
+// ============================================================
+// EVENTO DEL FORMULARIO
+// ============================================================
+
+if (clienteForm) {
+  clienteForm.addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
+
+      if (!formularioListo) {
+        showMessage(
+          "Espera un momento mientras se valida tu sesión."
+        );
+        return;
+      }
+
+      await guardarCliente();
+    }
   );
 }
 
-/**
- * Guardar cliente
- */
-if (clienteForm) {
-  clienteForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+// ============================================================
+// AUTENTICACIÓN
+// ============================================================
 
-    const clienteData = getClienteFormData();
+onAuthStateChanged(
+  auth,
+  (user) => {
+    usuarioActual = user;
 
-    // Validar datos
-    if (!validateForm(clienteData)) {
+    if (!user) {
+      formularioListo = false;
+
+      if (saveClienteButton) {
+        saveClienteButton.disabled = true;
+      }
+
+      window.location.href =
+        "login.html";
+
       return;
     }
 
-    // Evitar doble envío
+    formularioListo = true;
+
     if (saveClienteButton) {
-      saveClienteButton.disabled = true;
-      saveClienteButton.classList.add("opacity-70", "cursor-not-allowed");
+      saveClienteButton.disabled = false;
     }
 
-    try {
-      await addDoc(clientesCollection, {
-        ...clienteData,
-        fechaRegistro: serverTimestamp(),
-        activo: true
-      });
-
-      showMessage(
-        "Cliente creado correctamente. Regresando al listado...",
-        "success"
-      );
-
-      // Regresar a la página principal de clientes
-      setTimeout(() => {
-        window.location.href = "clientes.html";
-      }, 1200);
-
-    } catch (error) {
-      showMessage(getFirestoreErrorMessage(error));
-
-      if (saveClienteButton) {
-        saveClienteButton.disabled = false;
-        saveClienteButton.classList.remove(
-          "opacity-70",
-          "cursor-not-allowed"
-        );
-      }
-    }
-  });
-}
-
-/**
- * Verificar sesión
- */
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "login.html";
+    console.log(
+      "✅ Usuario autenticado. Formulario de cliente listo."
+    );
   }
-});
+);

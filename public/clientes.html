@@ -10,7 +10,7 @@
 
   <meta name="theme-color" content="#1d4ed8">
 
-  <title>Clientes | Mi Control de Cobros</title>
+  <title>Clientes</title>
 
 
   <!-- ICONO -->
@@ -109,32 +109,231 @@
   <style>
 
     /* ==========================================
-       TABLA DE CLIENTES
+       TABLA DE CLIENTES - UI FINAL
     ========================================== */
 
-    #clientesTableBody td:nth-child(5),
-    #clientesTableBody td:nth-child(6) {
-
-      white-space: nowrap;
-
+    .clientes-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
     }
 
+    .clientes-table-wrapper::-webkit-scrollbar {
+      height: 7px;
+    }
 
-    #clientesTableBody td:nth-child(5) {
+    .clientes-table-wrapper::-webkit-scrollbar-track {
+      background: #f8fafc;
+    }
 
+    .clientes-table-wrapper::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
+    }
+
+    #clientesTable {
+      width: 100%;
+      min-width: 980px;
+      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    #clientesTable thead th {
+      height: 56px;
+      padding: 0 18px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    #clientesTable thead th:nth-child(n+4) {
       text-align: center;
-
     }
 
+    #clientesTableBody tr {
+      background: #ffffff;
+      transition: background-color .18s ease, box-shadow .18s ease;
+    }
+
+    #clientesTableBody tr:hover {
+      background: #f8fafc;
+      box-shadow: inset 3px 0 0 #2563eb;
+    }
+
+    #clientesTableBody td {
+      padding: 17px 18px !important;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: #475569;
+      font-size: 13px;
+    }
+
+    #clientesTableBody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    /* CLIENTE */
+    #clientesTableBody td:nth-child(1) {
+      color: #0f172a;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    /* TELÉFONO */
+    #clientesTableBody td:nth-child(2) {
+      color: #475569;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* CORREO */
+    #clientesTableBody td:nth-child(3) {
+      color: #64748b;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ESTADO */
+    #clientesTableBody td:nth-child(4) {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    #clientesTableBody td:nth-child(4) span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 70px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    /* REGISTRO */
+    #clientesTableBody td:nth-child(5) {
+      text-align: center;
+      white-space: nowrap;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ACCIONES */
+    #clientesTableBody td:nth-child(6) {
+      min-width: 180px;
+      text-align: center;
+      white-space: nowrap;
+    }
 
     #clientesTableBody td:nth-child(6) > div {
-
-      justify-content: center;
-
-      flex-wrap: nowrap;
-
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 7px !important;
+      flex-wrap: nowrap !important;
     }
 
+    #clientesTableBody td:nth-child(6) a,
+    #clientesTableBody td:nth-child(6) button {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      height: 35px;
+      min-width: 39px;
+      padding: 0 9px !important;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px !important;
+      background: #ffffff;
+      color: #475569;
+      font-size: 11px !important;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+      transition: transform .16s ease, box-shadow .16s ease,
+                  background-color .16s ease, border-color .16s ease;
+    }
+
+    #clientesTableBody td:nth-child(6) a:hover,
+    #clientesTableBody td:nth-child(6) button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 14px rgba(15, 23, 42, .08);
+    }
+
+    /* VER */
+    #clientesTableBody td:nth-child(6) > div > :first-child {
+      color: #2563eb !important;
+      background: #eff6ff !important;
+      border-color: #bfdbfe !important;
+    }
+
+    /* EDITAR */
+    #clientesTableBody td:nth-child(6) > div > :nth-child(2) {
+      color: #475569 !important;
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+    }
+
+    #clientesTableBody td:nth-child(6) > div > :nth-child(2):hover {
+      color: #1d4ed8 !important;
+      background: #eff6ff !important;
+      border-color: #93c5fd !important;
+    }
+
+    /* DESACTIVAR */
+    #clientesTableBody td:nth-child(6) > div > :last-child {
+      color: #dc2626 !important;
+      background: #fff1f2 !important;
+      border-color: #fecaca !important;
+    }
+
+    #clientesTableBody td:nth-child(6) > div > :last-child:hover {
+      color: #b91c1c !important;
+      background: #fee2e2 !important;
+      border-color: #fca5a5 !important;
+    }
+
+    #clientesLoadingRow td {
+      padding-top: 55px !important;
+      padding-bottom: 55px !important;
+    }
+
+    @media (max-width: 1100px) {
+      #clientesTable {
+        min-width: 930px;
+      }
+
+      #clientesTable thead th,
+      #clientesTableBody td {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+      }
+
+      #clientesTableBody td:nth-child(6) {
+        min-width: 170px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      #clientesTable {
+        min-width: 930px;
+      }
+
+      #clientesTableBody td {
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+      }
+    }
 
     /* ==========================================
        SIDEBAR
@@ -836,7 +1035,7 @@
                       type="search"
                       autocomplete="off"
 
-                      placeholder="Buscar por nombre, correo o teléfono"
+                      placeholder="Buscar por nombres, apellidos, correo o teléfono"
 
                       class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pl-11 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-100/50"
                     >
@@ -869,11 +1068,12 @@
                  TABLA RESPONSIVE
             ==================================== -->
 
-            <div class="overflow-x-auto">
+            <div class="clientes-table-wrapper">
 
 
               <table
-                class="w-full min-w-[1200px] table-fixed text-left"
+                id="clientesTable"
+                class="w-full min-w-[980px] table-fixed text-left"
               >
 
 
@@ -885,89 +1085,42 @@
 
 
                 <colgroup>
-
-                  <col class="w-[26%]">
-
-                  <col class="w-[13%]">
-
-                  <col class="w-[23%]">
-
-                  <col class="w-[10%]">
-
-                  <col class="w-[12%]">
-
-                  <col class="w-[16%]">
-
+                  <col class="w-[28%]">
+                  <col class="w-[15%]">
+                  <col class="w-[24%]">
+                  <col class="w-[11%]">
+                  <col class="w-[11%]">
+                  <col class="w-[11%]">
                 </colgroup>
 
 
                 <thead>
 
+                  <tr class="border-b border-slate-100 bg-slate-50/80">
 
-                  <tr
-                    class="border-b border-slate-100 bg-slate-50/80"
-                  >
-
-
-                    <th
-                      scope="col"
-                      class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500"
-                    >
-
+                    <th scope="col">
                       Cliente
-
                     </th>
 
-
-                    <th
-                      scope="col"
-                      class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500"
-                    >
-
+                    <th scope="col">
                       Teléfono
-
                     </th>
 
-
-                    <th
-                      scope="col"
-                      class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-500"
-                    >
-
+                    <th scope="col">
                       Correo
-
                     </th>
 
-
-                    <th
-                      scope="col"
-                      class="px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500"
-                    >
-
+                    <th scope="col">
                       Estado
-
                     </th>
 
-
-                    <th
-                      scope="col"
-                      class="whitespace-nowrap px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500"
-                    >
-
+                    <th scope="col">
                       Registro
-
                     </th>
 
-
-                    <th
-                      scope="col"
-                      class="whitespace-nowrap px-6 py-4 text-center text-xs font-black uppercase tracking-wider text-slate-500"
-                    >
-
+                    <th scope="col">
                       Acciones
-
                     </th>
-
 
                   </tr>
 
@@ -1377,7 +1530,7 @@
 
   <script
     type="module"
-    src="js/clientes.js"
+    src="js/clientes.js?v=3"
   ></script>
 
 

@@ -4,7 +4,9 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-import { auth } from "./firebase-config.js";
+import {
+  auth
+} from "./firebase-config.js";
 
 
 // ============================================================
@@ -29,11 +31,14 @@ const path = window.location.pathname
   .replace(/\/+$/, "")
   .toLowerCase();
 
-const currentPage = path.split("/").pop() || "";
+const currentPage =
+  path.split("/").pop() || "";
+
 
 const isLoginPage =
   currentPage === "login" ||
   currentPage === "login.html";
+
 
 const isDashboardPage =
   currentPage === "" ||
@@ -51,15 +56,38 @@ const loginForm =
 const loginMessage =
   document.querySelector("#loginMessage");
 
+const loginMessageIcon =
+  document.querySelector("#loginMessageIcon");
+
+const loginMessageTitle =
+  document.querySelector("#loginMessageTitle");
+
+const loginMessageText =
+  document.querySelector("#loginMessageText");
+
 const logoutButton =
   document.querySelector("#logoutButton");
 
+const loginButton =
+  document.querySelector("#loginButton");
+
+const loginButtonText =
+  document.querySelector("#loginButtonText");
+
+const loginButtonSpinner =
+  document.querySelector("#loginButtonSpinner");
+
+const loginButtonArrow =
+  document.querySelector("#loginButtonArrow");
+
 
 // ============================================================
-// MOSTRAR MENSAJES
+// MOSTRAR MENSAJE
+// Compatible con el nuevo diseño de login.css
 // ============================================================
 
 function showMessage(
+  title,
   message,
   type = "error"
 ) {
@@ -68,10 +96,68 @@ function showMessage(
     return;
   }
 
-  loginMessage.textContent = message;
 
-  loginMessage.className =
-    `form-message ${type}`;
+  loginMessage.classList.remove(
+    "message-success",
+    "message-error"
+  );
+
+
+  loginMessage.classList.add(
+    type === "success"
+      ? "message-success"
+      : "message-error"
+  );
+
+
+  loginMessage.classList.add(
+    "show"
+  );
+
+
+  if (loginMessageTitle) {
+
+    loginMessageTitle.textContent =
+      title;
+
+  }
+
+
+  if (loginMessageText) {
+
+    loginMessageText.textContent =
+      message;
+
+  }
+
+
+  if (loginMessageIcon) {
+
+    loginMessageIcon.textContent =
+      type === "success"
+        ? "✓"
+        : "!";
+
+  }
+
+}
+
+
+// ============================================================
+// OCULTAR MENSAJE
+// ============================================================
+
+function hideMessage() {
+
+  if (!loginMessage) {
+    return;
+  }
+
+
+  loginMessage.classList.remove(
+    "show"
+  );
+
 }
 
 
@@ -114,10 +200,89 @@ function getAuthErrorMessage(
 
   };
 
+
   return (
     messages[errorCode] ||
     "No se pudo iniciar sesión. Revisa tus datos."
   );
+
+}
+
+
+// ============================================================
+// ESTADO DE CARGA DEL BOTÓN
+// ============================================================
+
+function setLoginLoading(
+  loading
+) {
+
+  if (loginButton) {
+
+    loginButton.disabled =
+      loading;
+
+  }
+
+
+  if (!loading) {
+
+    if (loginButtonSpinner) {
+
+      loginButtonSpinner.classList.add(
+        "hidden"
+      );
+
+    }
+
+
+    if (loginButtonText) {
+
+      loginButtonText.textContent =
+        "Ingresar al sistema";
+
+    }
+
+
+    if (loginButtonArrow) {
+
+      loginButtonArrow.classList.remove(
+        "hidden"
+      );
+
+    }
+
+
+    return;
+
+  }
+
+
+  if (loginButtonSpinner) {
+
+    loginButtonSpinner.classList.remove(
+      "hidden"
+    );
+
+  }
+
+
+  if (loginButtonText) {
+
+    loginButtonText.textContent =
+      "Verificando...";
+
+  }
+
+
+  if (loginButtonArrow) {
+
+    loginButtonArrow.classList.add(
+      "hidden"
+    );
+
+  }
+
 }
 
 
@@ -132,6 +297,9 @@ if (loginForm) {
     async (event) => {
 
       event.preventDefault();
+
+
+      hideMessage();
 
 
       const formData =
@@ -150,47 +318,139 @@ if (loginForm) {
         );
 
 
-      const submitButton =
-        loginForm.querySelector(
-          "button[type='submit']"
+      const emailInput =
+        document.querySelector("#email");
+
+
+      const passwordInput =
+        document.querySelector("#password");
+
+
+      const emailError =
+        document.querySelector("#emailError");
+
+
+      const passwordError =
+        document.querySelector("#passwordError");
+
+
+      // --------------------------------------------------------
+      // LIMPIAR ERRORES
+      // --------------------------------------------------------
+
+      if (emailError) {
+
+        emailError.textContent =
+          "";
+
+      }
+
+
+      if (passwordError) {
+
+        passwordError.textContent =
+          "";
+
+      }
+
+
+      if (emailInput) {
+
+        emailInput.classList.remove(
+          "input-error"
         );
 
+      }
 
-      // ------------------------------------------
-      // VALIDACIÓN
-      // ------------------------------------------
 
-      if (!email || !password) {
+      if (passwordInput) {
 
-        showMessage(
-          "Ingresa correo y contraseña.",
-          "error"
+        passwordInput.classList.remove(
+          "input-error"
         );
+
+      }
+
+
+      // --------------------------------------------------------
+      // VALIDAR CORREO
+      // --------------------------------------------------------
+
+      if (!email) {
+
+        if (emailError) {
+
+          emailError.textContent =
+            "Ingresa tu correo electrónico.";
+
+        }
+
+
+        if (emailInput) {
+
+          emailInput.classList.add(
+            "input-error"
+          );
+
+          emailInput.focus();
+
+        }
+
 
         return;
+
+      }
+
+
+      // --------------------------------------------------------
+      // VALIDAR CONTRASEÑA
+      // --------------------------------------------------------
+
+      if (!password) {
+
+        if (passwordError) {
+
+          passwordError.textContent =
+            "Ingresa tu contraseña.";
+
+        }
+
+
+        if (passwordInput) {
+
+          passwordInput.classList.add(
+            "input-error"
+          );
+
+          passwordInput.focus();
+
+        }
+
+
+        return;
+
       }
 
 
-      // ------------------------------------------
-      // DESHABILITAR BOTÓN
-      // ------------------------------------------
+      // --------------------------------------------------------
+      // ACTIVAR LOADING
+      // --------------------------------------------------------
 
-      if (submitButton) {
-
-        submitButton.disabled = true;
-
-      }
+      setLoginLoading(
+        true
+      );
 
 
       showMessage(
-        "Validando acceso...",
+        "Validando acceso",
+        "Estamos verificando tus credenciales...",
         "success"
       );
 
 
-      // ------------------------------------------
+      // --------------------------------------------------------
       // AUTENTICACIÓN FIREBASE
-      // ------------------------------------------
+      // --------------------------------------------------------
 
       try {
 
@@ -200,16 +460,28 @@ if (loginForm) {
           password
         );
 
+
         /*
          * IMPORTANTE:
          *
-         * No hacemos aquí:
+         * No hacemos:
          *
          * window.location.href = "index.html";
          *
-         * Firebase ejecutará onAuthStateChanged()
+         * Firebase ejecutará:
+         *
+         * onAuthStateChanged()
+         *
          * cuando confirme la autenticación.
          */
+
+
+        showMessage(
+          "Acceso correcto",
+          "Ingresando al sistema...",
+          "success"
+        );
+
 
       } catch (error) {
 
@@ -220,6 +492,7 @@ if (loginForm) {
 
 
         showMessage(
+          "No se pudo iniciar sesión",
           getAuthErrorMessage(
             error.code
           ),
@@ -227,11 +500,9 @@ if (loginForm) {
         );
 
 
-        if (submitButton) {
-
-          submitButton.disabled = false;
-
-        }
+        setLoginLoading(
+          false
+        );
 
       }
 
@@ -253,19 +524,23 @@ if (logoutButton) {
 
       try {
 
-        logoutButton.disabled = true;
+        logoutButton.disabled =
+          true;
 
-        await signOut(auth);
+
+        await signOut(
+          auth
+        );
+
 
         /*
          * No redireccionamos manualmente.
          *
-         * onAuthStateChanged() detectará:
-         *
-         * user = null
-         *
+         * onAuthStateChanged()
+         * detectará user = null
          * y enviará al Login.
          */
+
 
       } catch (error) {
 
@@ -275,7 +550,8 @@ if (logoutButton) {
         );
 
 
-        logoutButton.disabled = false;
+        logoutButton.disabled =
+          false;
 
       }
 
@@ -308,13 +584,15 @@ onAuthStateChanged(
     if (!user) {
 
       /*
-       * Si estamos en /login o /login.html,
-       * simplemente permanecemos allí.
-       *
-       * NO hacemos redirect.
+       * Estamos en Login:
+       * nos quedamos allí.
        */
 
       if (isLoginPage) {
+
+        setLoginLoading(
+          false
+        );
 
         return;
 
@@ -322,8 +600,8 @@ onAuthStateChanged(
 
 
       /*
-       * Si estamos en cualquier página privada,
-       * enviamos al Login.
+       * Estamos en una página privada:
+       * regresamos al Login.
        */
 
       window.location.replace(
@@ -339,13 +617,10 @@ onAuthStateChanged(
     // USUARIO AUTENTICADO
     // ========================================================
 
-    if (user && isLoginPage) {
-
-      /*
-       * Ya inició sesión.
-       *
-       * Enviamos al Dashboard.
-       */
+    if (
+      user &&
+      isLoginPage
+    ) {
 
       window.location.replace(
         DASHBOARD_PAGE

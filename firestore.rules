@@ -32,7 +32,7 @@ service cloud.firestore {
         && (
           request.resource.data[field].size() == 0
           || request.resource.data[field].matches(
-            "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+            "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}$"
           )
         );
     }
@@ -40,7 +40,7 @@ service cloud.firestore {
     function validDateString(field) {
       return request.resource.data[field] is string
         && request.resource.data[field].matches(
-          "^\\d{4}-\\d{2}-\\d{2}$"
+          "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
         );
     }
 
@@ -79,6 +79,8 @@ service cloud.firestore {
 
     function clienteFields() {
       return [
+        "nombres",
+        "apellidos",
         "nombre",
         "telefono",
         "correo",
@@ -89,17 +91,152 @@ service cloud.firestore {
       ];
     }
 
-    function isValidCliente() {
-      return hasOnlyAllowedFields(clienteFields())
-        && hasRequiredFields(clienteFields())
-        && validString("nombre", 1, 120)
-        && validString("telefono", 0, 30)
-        && validOptionalEmailString("correo", 120)
-        && validString("direccion", 0, 200)
-        && validString("notas", 0, 1000)
-        && validCreatedAt("fechaRegistro")
+    // ===============================================================
+    // VALIDAR CLIENTE NUEVO
+    // ===============================================================
+
+    function isValidClienteCreate() {
+      return hasOnlyAllowedFields(
+          clienteFields()
+        )
+
+        && hasRequiredFields(
+          clienteFields()
+        )
+
+        && validString(
+          "nombres",
+          1,
+          100
+        )
+
+        && validString(
+          "apellidos",
+          1,
+          100
+        )
+
+        && validString(
+          "nombre",
+          1,
+          200
+        )
+
+        && validString(
+          "telefono",
+          0,
+          30
+        )
+
+        && validOptionalEmailString(
+          "correo",
+          120
+        )
+
+        && validString(
+          "direccion",
+          0,
+          200
+        )
+
+        && validString(
+          "notas",
+          0,
+          1000
+        )
+
+        && validCreatedAt(
+          "fechaRegistro"
+        )
+
         && request.resource.data.activo is bool;
     }
+
+
+    // ===============================================================
+    // VALIDAR ACTUALIZACIÓN DE CLIENTE
+    // ===============================================================
+
+    function isValidClienteUpdate() {
+
+      return hasOnlyAllowedFields(
+          clienteFields()
+        )
+
+        && request.resource.data.keys().hasAll([
+          "nombre",
+          "telefono",
+          "correo",
+          "direccion",
+          "notas",
+          "fechaRegistro",
+          "activo"
+        ])
+
+        && validString(
+          "nombre",
+          1,
+          200
+        )
+
+        && validString(
+          "telefono",
+          0,
+          30
+        )
+
+        && validOptionalEmailString(
+          "correo",
+          120
+        )
+
+        && validString(
+          "direccion",
+          0,
+          200
+        )
+
+        && validString(
+          "notas",
+          0,
+          1000
+        )
+
+        && request.resource.data.fechaRegistro is timestamp
+
+        && request.resource.data.activo is bool
+
+        && (
+          (
+            request.resource.data.keys().hasAll([
+              "nombres",
+              "apellidos"
+            ])
+
+            && validString(
+              "nombres",
+              1,
+              100
+            )
+
+            && validString(
+              "apellidos",
+              1,
+              100
+            )
+          )
+
+          ||
+
+          (
+            !request.resource.data.keys().hasAny([
+              "nombres",
+              "apellidos"
+            ])
+          )
+        );
+    }
+
 
     function clienteImmutableFieldsUnchanged() {
       return request.resource.data.fechaRegistro
@@ -127,29 +264,79 @@ service cloud.firestore {
     }
 
     function isValidDeuda() {
-      return hasOnlyAllowedFields(deudaFields())
-        && hasRequiredFields(deudaFields())
-        && validString("clienteId", 1, 160)
-        && validString("concepto", 1, 160)
-        && validMoney("monto", 0.01)
-        && validMoney("montoPagado", 0)
-        && validMoney("saldo", 0)
-        && validDateString("fecha")
-        && validCreatedAt("fechaRegistro")
-        && validDateString("fechaVencimiento")
-        && validEstado("estado")
-        && validString("notas", 0, 1000)
+      return hasOnlyAllowedFields(
+          deudaFields()
+        )
+
+        && hasRequiredFields(
+          deudaFields()
+        )
+
+        && validString(
+          "clienteId",
+          1,
+          160
+        )
+
+        && validString(
+          "concepto",
+          1,
+          160
+        )
+
+        && validMoney(
+          "monto",
+          0.01
+        )
+
+        && validMoney(
+          "montoPagado",
+          0
+        )
+
+        && validMoney(
+          "saldo",
+          0
+        )
+
+        && validDateString(
+          "fecha"
+        )
+
+        && validCreatedAt(
+          "fechaRegistro"
+        )
+
+        && validDateString(
+          "fechaVencimiento"
+        )
+
+        && validEstado(
+          "estado"
+        )
+
+        && validString(
+          "notas",
+          0,
+          1000
+        )
+
         && request.resource.data.montoPagado
            <= request.resource.data.monto
+
         && request.resource.data.saldo
            <= request.resource.data.monto;
     }
 
     function isValidDeudaCreate() {
       return isValidDeuda()
-        && request.resource.data.montoPagado == 0
+
+        && request.resource.data.montoPagado
+           == 0
+
         && request.resource.data.saldo
            == request.resource.data.monto
+
         && request.resource.data.estado
            == "PENDIENTE";
     }
@@ -157,59 +344,59 @@ service cloud.firestore {
     function isValidDeudaPaymentUpdate() {
       return isAuthenticated()
 
-        // Solo se pueden modificar estos tres campos
-        && request.resource.data.diff(resource.data)
-          .affectedKeys()
-          .hasOnly([
-            "montoPagado",
-            "saldo",
-            "estado"
-          ])
+        && request.resource.data.diff(
+             resource.data
+           )
+           .affectedKeys()
+           .hasOnly([
+             "montoPagado",
+             "saldo",
+             "estado"
+           ])
 
-        // Los datos principales de la deuda no pueden cambiar
         && request.resource.data.clienteId
            == resource.data.clienteId
+
         && request.resource.data.concepto
            == resource.data.concepto
+
         && request.resource.data.monto
            == resource.data.monto
+
         && request.resource.data.fecha
            == resource.data.fecha
+
         && request.resource.data.fechaRegistro
            == resource.data.fechaRegistro
+
         && request.resource.data.fechaVencimiento
            == resource.data.fechaVencimiento
+
         && request.resource.data.notas
            == resource.data.notas
 
-        // Tipos correctos
         && request.resource.data.montoPagado
            is number
+
         && request.resource.data.saldo
            is number
 
-        // Nunca puede existir saldo negativo
         && request.resource.data.saldo >= 0
 
-        // No se puede pagar más que el monto total
         && request.resource.data.montoPagado
            <= request.resource.data.monto
 
-        // El monto pagado no puede disminuir
         && request.resource.data.montoPagado
            >= resource.data.montoPagado
 
-        // El saldo no puede aumentar
         && request.resource.data.saldo
            <= resource.data.saldo
 
-        // Estado válido
-        && request.resource.data.estado
-           in [
-             "PENDIENTE",
-             "PAGADO",
-             "VENCIDA"
-           ];
+        && request.resource.data.estado in [
+          "PENDIENTE",
+          "PAGADO",
+          "VENCIDA"
+        ];
     }
 
 
@@ -229,14 +416,44 @@ service cloud.firestore {
     }
 
     function isValidPago() {
-      return hasOnlyAllowedFields(pagoFields())
-        && hasRequiredFields(pagoFields())
-        && validString("deudaId", 1, 160)
-        && validString("clienteId", 1, 160)
-        && validMoney("monto", 0.01)
-        && validDateString("fecha")
-        && validMetodoPago("metodoPago")
-        && validString("observacion", 0, 1000);
+      return hasOnlyAllowedFields(
+          pagoFields()
+        )
+
+        && hasRequiredFields(
+          pagoFields()
+        )
+
+        && validString(
+          "deudaId",
+          1,
+          160
+        )
+
+        && validString(
+          "clienteId",
+          1,
+          160
+        )
+
+        && validMoney(
+          "monto",
+          0.01
+        )
+
+        && validDateString(
+          "fecha"
+        )
+
+        && validMetodoPago(
+          "metodoPago"
+        )
+
+        && validString(
+          "observacion",
+          0,
+          1000
+        );
     }
 
     function debtPathForPago() {
@@ -316,9 +533,7 @@ service cloud.firestore {
     }
 
     function isValidAhorro() {
-
-      return
-        isAuthenticated()
+      return isAuthenticated()
 
         && hasOnlyAllowedFields(
           ahorroFields()
@@ -328,52 +543,44 @@ service cloud.firestore {
           ahorroFields()
         )
 
-        // Monto
         && validMoney(
           "monto",
           0.01
         )
 
-        // Fecha del ahorro
         && validDateString(
           "fecha"
         )
 
-        // Concepto
         && validString(
           "concepto",
           1,
           100
         )
 
-        // Observación
         && validString(
           "observacion",
           0,
           500
         )
 
-        // UID
         && validString(
           "usuarioId",
           1,
           200
         )
 
-        // Correo
         && validOptionalEmailString(
           "usuarioEmail",
           200
         )
 
-        // Fecha de registro
         && request.resource.data.fechaRegistro
            is timestamp
 
         && request.resource.data.fechaRegistro
            <= request.time
 
-        // El ahorro pertenece al usuario autenticado
         && request.resource.data.usuarioId
            == request.auth.uid;
     }
@@ -396,9 +603,7 @@ service cloud.firestore {
     }
 
     function isValidGasto() {
-
-      return
-        isAuthenticated()
+      return isAuthenticated()
 
         && hasOnlyAllowedFields(
           gastoFields()
@@ -408,52 +613,44 @@ service cloud.firestore {
           gastoFields()
         )
 
-        // Monto
         && validMoney(
           "monto",
           0.01
         )
 
-        // Fecha
         && validDateString(
           "fecha"
         )
 
-        // Categoría
         && validString(
           "categoria",
           1,
           50
         )
 
-        // Descripción
         && validString(
           "descripcion",
           1,
           200
         )
 
-        // UID del usuario
         && validString(
           "usuarioId",
           1,
           200
         )
 
-        // Correo
         && validOptionalEmailString(
           "usuarioEmail",
           200
         )
 
-        // Fecha de registro
         && request.resource.data.fechaRegistro
            is timestamp
 
         && request.resource.data.fechaRegistro
            <= request.time
 
-        // El gasto pertenece al usuario autenticado
         && request.resource.data.usuarioId
            == request.auth.uid;
     }
@@ -470,11 +667,11 @@ service cloud.firestore {
 
       allow create:
         if isAuthenticated()
-        && isValidCliente();
+        && isValidClienteCreate();
 
       allow update:
         if isAuthenticated()
-        && isValidCliente()
+        && isValidClienteUpdate()
         && clienteImmutableFieldsUnchanged();
 
       allow delete:
@@ -529,16 +726,13 @@ service cloud.firestore {
 
     match /ahorros/{ahorroId} {
 
-      // Consultar ahorros
       allow read:
         if isAuthenticated();
 
-      // Registrar ahorro
       allow create:
         if isAuthenticated()
         && isValidAhorro();
 
-      // No modificar ni eliminar
       allow update, delete:
         if false;
     }
@@ -550,18 +744,15 @@ service cloud.firestore {
 
     match /gastos/{gastoId} {
 
-      // Cada usuario solo puede consultar sus propios gastos
       allow read:
         if isAuthenticated()
         && resource.data.usuarioId
            == request.auth.uid;
 
-      // Registrar gasto
       allow create:
         if isAuthenticated()
         && isValidGasto();
 
-      // No modificar ni eliminar por ahora
       allow update, delete:
         if false;
     }
