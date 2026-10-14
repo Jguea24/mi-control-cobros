@@ -43,6 +43,10 @@ export function getTodayInputValue() {
 }
 
 export function getDebtStatus(deuda) {
+  if (deuda?.estado === "ANULADA") {
+    return "ANULADA";
+  }
+
   const saldo =
     Number(deuda.saldo || 0);
 

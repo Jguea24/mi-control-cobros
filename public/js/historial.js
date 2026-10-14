@@ -117,9 +117,10 @@ function getEstadoBadgeClass(
   estado
 ) {
   const classes = {
-    PAGADA: "paid",
+    PAGADO: "paid",
     PENDIENTE: "pending",
-    VENCIDA: "overdue"
+    VENCIDA: "overdue",
+    ANULADA: "inactive"
   };
 
   return (

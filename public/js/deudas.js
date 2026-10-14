@@ -130,9 +130,10 @@ function getEstadoBadgeClass(
   estado
 ) {
   const classes = {
-    PAGADA: "paid",
+    PAGADO: "paid",
     PENDIENTE: "pending",
-    VENCIDA: "overdue"
+    VENCIDA: "overdue",
+    ANULADA: "inactive"
   };
 
   return (
@@ -202,7 +203,7 @@ function renderResumen() {
           total +
           (
             deuda.estadoActual ===
-            "PAGADA"
+            "PAGADO"
               ? 0
               : Math.max(
                   saldo,

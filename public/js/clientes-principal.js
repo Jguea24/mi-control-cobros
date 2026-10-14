@@ -3,8 +3,8 @@ import {
   onSnapshot,
   orderBy,
   query,
-  deleteDoc,
-  doc
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 import {
   onAuthStateChanged
@@ -79,18 +79,20 @@ function renderEmptyState() {
   clientesTableBody.appendChild(row);
 }
 
-async function deleteCliente(clienteId, clienteNombre) {
+async function desactivarCliente(clienteId, clienteNombre) {
   // Confirmación
-  if (!confirm(`¿Está seguro de que desea eliminar a "${clienteNombre}"?`)) {
+  if (!confirm(`¿Está seguro de que desea desactivar a "${clienteNombre}"?`)) {
     return;
   }
 
   try {
-    await deleteDoc(doc(db, "clientes", clienteId));
-    showNotification("Cliente eliminado correctamente.", "success");
+    await updateDoc(doc(db, "clientes", clienteId), {
+      activo: false
+    });
+    showNotification("Cliente desactivado correctamente.", "success");
   } catch (error) {
-    console.error("Error al eliminar:", error);
-    showNotification("Error al eliminar el cliente.", "error");
+    console.error("Error al desactivar:", error);
+    showNotification("Error al desactivar el cliente.", "error");
   }
 }
 
@@ -133,10 +135,11 @@ function renderClientes() {
     correoCell.className = "px-6 py-4 text-sm text-slate-600";
     correoCell.textContent = cliente.correo || "-";
 
-    // Dirección
-    const direccionCell = document.createElement("td");
-    direccionCell.className = "px-6 py-4 text-sm text-slate-600";
-    direccionCell.textContent = cliente.direccion || "-";
+    // Estado
+    const estadoCell = document.createElement("td");
+    estadoCell.className = "px-6 py-4 text-sm font-bold";
+    estadoCell.textContent = cliente.activo === false ? "Inactivo" : "Activo";
+    estadoCell.classList.add(cliente.activo === false ? "text-slate-400" : "text-emerald-700");
 
     // Acciones
     const actionsCell = document.createElement("td");
@@ -160,9 +163,9 @@ function renderClientes() {
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
               Editar
             </a>
-            <button onclick="window.deleteCliente('${cliente.id}', '${cliente.nombre}')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+            <button onclick="window.desactivarCliente('${cliente.id}', '${cliente.nombre}')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-              Eliminar
+              Desactivar
             </button>
           </div>
         </div>
@@ -175,7 +178,7 @@ function renderClientes() {
 }
 
 // Exponer función globalmente para botones inline
-window.deleteCliente = deleteCliente;
+window.desactivarCliente = desactivarCliente;
 
 // Event listeners
 buscarCliente.addEventListener("input", (event) => {

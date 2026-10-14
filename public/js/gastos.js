@@ -259,25 +259,33 @@ function detenerListener() {
 
 function actualizarVista() {
 
+    const mostrarTodos =
+        periodoFiltro?.value ===
+        "todos";
+
     const periodo =
-        obtenerRangoPeriodo();
+        mostrarTodos
+            ? null
+            : obtenerRangoPeriodo();
 
     const registrosPeriodo =
-        gastosData.filter(
-            (gasto) => {
+        mostrarTodos
+            ? gastosData
+            : gastosData.filter(
+                (gasto) => {
 
-                const fecha =
-                    obtenerFechaNormalizada(
-                        gasto.fecha
+                    const fecha =
+                        obtenerFechaNormalizada(
+                            gasto.fecha
+                        );
+
+                    return (
+                        fecha &&
+                        fecha >= periodo.inicio &&
+                        fecha <= periodo.fin
                     );
-
-                return (
-                    fecha &&
-                    fecha >= periodo.inicio &&
-                    fecha <= periodo.fin
-                );
-            }
-        );
+                }
+            );
 
     const totalPeriodo =
         sumarMontos(
@@ -755,6 +763,9 @@ function obtenerTextoPeriodo() {
 
         case "personalizado":
             return "Período personalizado";
+
+        case "todos":
+            return "Todos los registros";
 
         default:
             return "Este mes";

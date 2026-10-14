@@ -133,7 +133,7 @@ function getClienteName(clienteId) {
 
 function getEstadoBadgeClass(estado) {
   const classes = {
-    PAGADA: "paid",
+    PAGADO: "paid",
     PENDIENTE: "pending",
     VENCIDA: "overdue"
   };
@@ -231,7 +231,7 @@ function getDebtSummary() {
     withStatus.filter(
       (deuda) =>
         deuda.estadoActual ===
-        "PAGADA"
+        "PAGADO"
     ).length;
 
   const vencidas =

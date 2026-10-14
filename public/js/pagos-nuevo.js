@@ -479,6 +479,7 @@ function getClientPendingDebts(
 
         return (
           mismoCliente &&
+          deuda.estado !== "ANULADA" &&
           saldo > 0.009
         );
       }
